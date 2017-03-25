@@ -1,0 +1,292 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		757029D11E7B900A005B6E76 /* NVTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 757029D01E7B900A005B6E76 /* NVTabBar.m */; };
+		757029D21E7B900A005B6E76 /* NVTabBar.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 757029CF1E7B900A005B6E76 /* NVTabBar.h */; };
+		757029E01E7B9055005B6E76 /* NVTabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 757029DD1E7B9055005B6E76 /* NVTabBarView.m */; };
+		757029E11E7B9055005B6E76 /* NVTBBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 757029DF1E7B9055005B6E76 /* NVTBBadgeView.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		757029CA1E7B900A005B6E76 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				757029D21E7B900A005B6E76 /* NVTabBar.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		757029CC1E7B900A005B6E76 /* libNVTabBar.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNVTabBar.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		757029CF1E7B900A005B6E76 /* NVTabBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVTabBar.h; sourceTree = "<group>"; };
+		757029D01E7B900A005B6E76 /* NVTabBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVTabBar.m; sourceTree = "<group>"; };
+		757029D91E7B9045005B6E76 /* NSDictionaryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionaryUtils.h; sourceTree = "<group>"; };
+		757029DA1E7B9045005B6E76 /* UZAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZAppUtils.h; sourceTree = "<group>"; };
+		757029DB1E7B9045005B6E76 /* UZModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZModule.h; sourceTree = "<group>"; };
+		757029DC1E7B9055005B6E76 /* NVTabBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NVTabBarView.h; sourceTree = "<group>"; };
+		757029DD1E7B9055005B6E76 /* NVTabBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NVTabBarView.m; sourceTree = "<group>"; };
+		757029DE1E7B9055005B6E76 /* NVTBBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NVTBBadgeView.h; sourceTree = "<group>"; };
+		757029DF1E7B9055005B6E76 /* NVTBBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NVTBBadgeView.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		757029C91E7B900A005B6E76 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		757029C31E7B900A005B6E76 = {
+			isa = PBXGroup;
+			children = (
+				757029CE1E7B900A005B6E76 /* NVTabBar */,
+				757029CD1E7B900A005B6E76 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		757029CD1E7B900A005B6E76 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				757029CC1E7B900A005B6E76 /* libNVTabBar.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		757029CE1E7B900A005B6E76 /* NVTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				757029D81E7B9045005B6E76 /* headFile */,
+				757029CF1E7B900A005B6E76 /* NVTabBar.h */,
+				757029D01E7B900A005B6E76 /* NVTabBar.m */,
+				757029DC1E7B9055005B6E76 /* NVTabBarView.h */,
+				757029DD1E7B9055005B6E76 /* NVTabBarView.m */,
+				757029DE1E7B9055005B6E76 /* NVTBBadgeView.h */,
+				757029DF1E7B9055005B6E76 /* NVTBBadgeView.m */,
+			);
+			path = NVTabBar;
+			sourceTree = "<group>";
+		};
+		757029D81E7B9045005B6E76 /* headFile */ = {
+			isa = PBXGroup;
+			children = (
+				757029D91E7B9045005B6E76 /* NSDictionaryUtils.h */,
+				757029DA1E7B9045005B6E76 /* UZAppUtils.h */,
+				757029DB1E7B9045005B6E76 /* UZModule.h */,
+			);
+			path = headFile;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		757029CB1E7B900A005B6E76 /* NVTabBar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 757029D51E7B900A005B6E76 /* Build configuration list for PBXNativeTarget "NVTabBar" */;
+			buildPhases = (
+				757029C81E7B900A005B6E76 /* Sources */,
+				757029C91E7B900A005B6E76 /* Frameworks */,
+				757029CA1E7B900A005B6E76 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NVTabBar;
+			productName = NVTabBar;
+			productReference = 757029CC1E7B900A005B6E76 /* libNVTabBar.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		757029C41E7B900A005B6E76 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = wei;
+				TargetAttributes = {
+					757029CB1E7B900A005B6E76 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 3BV97V76Y3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 757029C71E7B900A005B6E76 /* Build configuration list for PBXProject "NVTabBar" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 757029C31E7B900A005B6E76;
+			productRefGroup = 757029CD1E7B900A005B6E76 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				757029CB1E7B900A005B6E76 /* NVTabBar */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		757029C81E7B900A005B6E76 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				757029E01E7B9055005B6E76 /* NVTabBarView.m in Sources */,
+				757029D11E7B900A005B6E76 /* NVTabBar.m in Sources */,
+				757029E11E7B9055005B6E76 /* NVTBBadgeView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		757029D31E7B900A005B6E76 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		757029D41E7B900A005B6E76 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		757029D61E7B900A005B6E76 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 3BV97V76Y3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		757029D71E7B900A005B6E76 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 3BV97V76Y3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		757029C71E7B900A005B6E76 /* Build configuration list for PBXProject "NVTabBar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				757029D31E7B900A005B6E76 /* Debug */,
+				757029D41E7B900A005B6E76 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		757029D51E7B900A005B6E76 /* Build configuration list for PBXNativeTarget "NVTabBar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				757029D61E7B900A005B6E76 /* Debug */,
+				757029D71E7B900A005B6E76 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 757029C41E7B900A005B6E76 /* Project object */;
+}

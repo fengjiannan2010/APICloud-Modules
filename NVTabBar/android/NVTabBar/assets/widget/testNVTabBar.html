@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+	<head>
+	
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=2.0,minimum-scale=1.0,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		
+		<title>newDemoGit</title>
+		
+		<link rel="stylesheet" type="text/css" href="./css/api.css" />
+		<style type="text/css">
+			
+			button {
+				padding : 30px 30px 30px 30px;
+			}
+			
+		</style>
+		
+	</head>
+	<body>
+	
+		<button onClick="openTabBar()">
+			openTabBar
+		</button>
+		
+		<button onClick="setSelected()">
+			setSelected
+		</button>
+		
+		<button onClick="setBadge()">
+			setBadge
+		</button>
+		
+		
+	</body>
+	<script type="text/javascript" src="./script/api.js"></script>
+	<script type="text/javascript">
+		function openTabBar(){
+			
+			var NVTabBar = api.require('NVTabBar');
+			NVTabBar.open({
+    			styles: {
+        			bg: '#fff',
+        			h: 50,
+        			dividingLine: {
+            			width: 0.5,
+            			color: '#000'
+        			},
+        			badge: {
+            			bgColor: '#f00',
+            			numColor: '#fff',
+            			size: 6.0
+        			}
+    			},
+    			items: [{
+        			w: api.winWidth / 3.0,
+        			bg: {
+            			marginB: 0,
+            			image: 'rgba(0,0,0,0)'
+        			},
+        			iconRect: {
+            			w: 25.0,
+            			h: 25.0,
+        			},
+        		icon: {
+            		normal: 'widget://image/1.png',
+            		highlight: 'widget://image/2.png',
+            		selected: 'widget://image/3.png'
+        		},
+        		title: {
+            		text: '消息',
+            		size: 12.0,
+            		normal: '#696969',
+            		selected: '#ff0',
+            		marginB: 6.0
+        		}
+    			}, {
+        			w: api.winWidth / 3.0,
+        			bg: {
+            			marginB: 0,
+            			image: 'rgba(0,0,0,0)'
+        			},
+        			iconRect: {
+            			w: 25.0,
+            			h: 25.0,
+        			},
+        		icon: {
+            		normal: 'widget://image/4.png',
+            		highlight: 'widget://image/5.png',
+            		selected: 'widget://image/6.png'
+        		},
+        		title: {
+            		text: '联系人',
+            		size: 12.0,
+            		normal: '#696969',
+            		selected: '#ff0',
+            		marginB: 6.0
+        		}
+    			}, {
+        			w: api.winWidth / 3.0,
+        			bg: {
+            			marginB: 0,
+            			image: 'rgba(0,0,0,0)'
+        			},
+        			iconRect: {
+           				w: 25.0,
+            			h: 25.0,
+        			},
+        			icon: {
+            			normal: 'widget://image/10.png',
+            		highlight: 'widget://image/8.png',
+            		selected: 'widget://image/9.png'
+        			},
+        			title: {
+            			text: '动态',
+            			size: 12.0,
+            			normal: '#696969',
+            			selected: '#ff0',
+            			marginB: 6.0
+        			}
+    			}],
+   			 selectedIndex: 0
+		}, function(ret, err) {
+    		if (ret) {
+        		alert(JSON.stringify(ret));
+    		}
+		});
+		
+		}
+		/////////////////////////////////////////
+		
+		
+		function setSelected(){
+			var NVTabBar = api.require('NVTabBar');
+			NVTabBar.setSelect({
+    			index: 1,
+    			interval: 1000,
+    			icons:[
+    				'widget://image/NVTabBar/1.png',
+    				'widget://image/NVTabBar/2.png',
+    				'widget://image/NVTabBar/3.png',
+    				'widget://image/NVTabBar/4.png'
+    			]
+			});
+		}
+		
+		function setBadge(){
+			var NVTabBar = api.require('NVTabBar');
+			NVTabBar.setBadge({
+				index: 1,
+				badge: '12345678'
+			});
+		}
+	</script>
+</html>
