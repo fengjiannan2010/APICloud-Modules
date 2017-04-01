@@ -4,7 +4,7 @@
 点击下列模块名称可以跳转到具体的模块源码分支查看详细使用说明。想了解更多APICloud模块可以到[APICloud模块Store](https://www.apicloud.com/modulestore)查看。
 
 # 界面布局类
-- [UIListView:](https://github.com/apicloudcom/UIListView)，一个可侧滑滚动的列表模块
+- [UIListView:](https://github.com/apicloudcom/UIListView)一个可以侧滑滚动的列表模块
 - UIChatBox
 - UIInput
 - UIMediaScanner
