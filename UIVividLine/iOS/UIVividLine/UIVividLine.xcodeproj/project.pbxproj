@@ -1,0 +1,309 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		03EE132D1D2BDF7B00AB2C04 /* UZVLBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EE13241D2BDF7B00AB2C04 /* UZVLBubbleView.m */; };
+		03EE132E1D2BDF7B00AB2C04 /* UZVLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EE13261D2BDF7B00AB2C04 /* UZVLineView.m */; };
+		03EE132F1D2BDF7B00AB2C04 /* UZVLScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EE13281D2BDF7B00AB2C04 /* UZVLScrollView.m */; };
+		03EE13301D2BDF7B00AB2C04 /* UZVLYaxisView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EE132A1D2BDF7B00AB2C04 /* UZVLYaxisView.m */; };
+		03EE13311D2BDF7B00AB2C04 /* UZVividLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EE132C1D2BDF7B00AB2C04 /* UZVividLine.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		03EE13131D2BDF2C00AB2C04 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		03EE13151D2BDF2C00AB2C04 /* libUIVividLine.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libUIVividLine.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		03EE13231D2BDF7B00AB2C04 /* UZVLBubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZVLBubbleView.h; sourceTree = "<group>"; };
+		03EE13241D2BDF7B00AB2C04 /* UZVLBubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZVLBubbleView.m; sourceTree = "<group>"; };
+		03EE13251D2BDF7B00AB2C04 /* UZVLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZVLineView.h; sourceTree = "<group>"; };
+		03EE13261D2BDF7B00AB2C04 /* UZVLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZVLineView.m; sourceTree = "<group>"; };
+		03EE13271D2BDF7B00AB2C04 /* UZVLScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZVLScrollView.h; sourceTree = "<group>"; };
+		03EE13281D2BDF7B00AB2C04 /* UZVLScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZVLScrollView.m; sourceTree = "<group>"; };
+		03EE13291D2BDF7B00AB2C04 /* UZVLYaxisView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZVLYaxisView.h; sourceTree = "<group>"; };
+		03EE132A1D2BDF7B00AB2C04 /* UZVLYaxisView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZVLYaxisView.m; sourceTree = "<group>"; };
+		03EE132B1D2BDF7B00AB2C04 /* UZVividLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZVividLine.h; sourceTree = "<group>"; };
+		03EE132C1D2BDF7B00AB2C04 /* UZVividLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZVividLine.m; sourceTree = "<group>"; };
+		03EE13321D2BDF8F00AB2C04 /* UZAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZAppUtils.h; sourceTree = "<group>"; };
+		03EE13331D2BDF9C00AB2C04 /* UZModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZModule.h; sourceTree = "<group>"; };
+		03EE13341D2BDFA400AB2C04 /* NSDictionaryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionaryUtils.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		03EE13121D2BDF2C00AB2C04 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		03EE130C1D2BDF2C00AB2C04 = {
+			isa = PBXGroup;
+			children = (
+				03EE13211D2BDF6300AB2C04 /* headFile */,
+				03EE13171D2BDF2C00AB2C04 /* UIVividLine */,
+				03EE13161D2BDF2C00AB2C04 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		03EE13161D2BDF2C00AB2C04 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				03EE13151D2BDF2C00AB2C04 /* libUIVividLine.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		03EE13171D2BDF2C00AB2C04 /* UIVividLine */ = {
+			isa = PBXGroup;
+			children = (
+				03EE13221D2BDF7B00AB2C04 /* src */,
+				03EE132B1D2BDF7B00AB2C04 /* UZVividLine.h */,
+				03EE132C1D2BDF7B00AB2C04 /* UZVividLine.m */,
+			);
+			path = UIVividLine;
+			sourceTree = "<group>";
+		};
+		03EE13211D2BDF6300AB2C04 /* headFile */ = {
+			isa = PBXGroup;
+			children = (
+				03EE13321D2BDF8F00AB2C04 /* UZAppUtils.h */,
+				03EE13331D2BDF9C00AB2C04 /* UZModule.h */,
+				03EE13341D2BDFA400AB2C04 /* NSDictionaryUtils.h */,
+			);
+			path = headFile;
+			sourceTree = "<group>";
+		};
+		03EE13221D2BDF7B00AB2C04 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				03EE13231D2BDF7B00AB2C04 /* UZVLBubbleView.h */,
+				03EE13241D2BDF7B00AB2C04 /* UZVLBubbleView.m */,
+				03EE13251D2BDF7B00AB2C04 /* UZVLineView.h */,
+				03EE13261D2BDF7B00AB2C04 /* UZVLineView.m */,
+				03EE13271D2BDF7B00AB2C04 /* UZVLScrollView.h */,
+				03EE13281D2BDF7B00AB2C04 /* UZVLScrollView.m */,
+				03EE13291D2BDF7B00AB2C04 /* UZVLYaxisView.h */,
+				03EE132A1D2BDF7B00AB2C04 /* UZVLYaxisView.m */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		03EE13141D2BDF2C00AB2C04 /* UIVividLine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 03EE131E1D2BDF2C00AB2C04 /* Build configuration list for PBXNativeTarget "UIVividLine" */;
+			buildPhases = (
+				03EE13111D2BDF2C00AB2C04 /* Sources */,
+				03EE13121D2BDF2C00AB2C04 /* Frameworks */,
+				03EE13131D2BDF2C00AB2C04 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UIVividLine;
+			productName = UIVividLine;
+			productReference = 03EE13151D2BDF2C00AB2C04 /* libUIVividLine.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		03EE130D1D2BDF2C00AB2C04 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "___APICloud___";
+				TargetAttributes = {
+					03EE13141D2BDF2C00AB2C04 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 03EE13101D2BDF2C00AB2C04 /* Build configuration list for PBXProject "UIVividLine" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 03EE130C1D2BDF2C00AB2C04;
+			productRefGroup = 03EE13161D2BDF2C00AB2C04 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				03EE13141D2BDF2C00AB2C04 /* UIVividLine */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		03EE13111D2BDF2C00AB2C04 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03EE13301D2BDF7B00AB2C04 /* UZVLYaxisView.m in Sources */,
+				03EE13311D2BDF7B00AB2C04 /* UZVividLine.m in Sources */,
+				03EE132E1D2BDF7B00AB2C04 /* UZVLineView.m in Sources */,
+				03EE132F1D2BDF7B00AB2C04 /* UZVLScrollView.m in Sources */,
+				03EE132D1D2BDF7B00AB2C04 /* UZVLBubbleView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		03EE131C1D2BDF2C00AB2C04 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		03EE131D1D2BDF2C00AB2C04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		03EE131F1D2BDF2C00AB2C04 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		03EE13201D2BDF2C00AB2C04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		03EE13101D2BDF2C00AB2C04 /* Build configuration list for PBXProject "UIVividLine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				03EE131C1D2BDF2C00AB2C04 /* Debug */,
+				03EE131D1D2BDF2C00AB2C04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		03EE131E1D2BDF2C00AB2C04 /* Build configuration list for PBXNativeTarget "UIVividLine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				03EE131F1D2BDF2C00AB2C04 /* Debug */,
+				03EE13201D2BDF2C00AB2C04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 03EE130D1D2BDF2C00AB2C04 /* Project object */;
+}
