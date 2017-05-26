@@ -1,0 +1,8 @@
+{
+	modules:[
+		{
+		    name:'UIVividLine',
+		    class:'com.apicloud.uivividline.UzUIVividLine'
+		}
+	]
+}

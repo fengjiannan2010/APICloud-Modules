@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>WinA</title>
+    <link rel="stylesheet" type="text/css" href="css/api.css" />
+    <link rel="stylesheet" type="text/css" href="css/box.css" />
+    <script type="text/javascript" src="script/public.js"></script>
+    <style>
+    	p{
+    		color:#999;
+    		padding:5px;
+    	}
+    </style>
+	<script type="text/javascript">
+	    
+	    function openView(){
+	    	var v = api.require('UIVividLine');
+	    	v.open({
+	    		rect : {
+					x : 0,
+					y : 10,
+					w : api.winWidth,
+					h : 250
+				},
+				styles : {
+					bg : 'widget://image/UIVividLine.jpg', //（可选项）字符串类型；模块背景配置，支持grb、rgba、#、img；默认：rgba(0,0,0,0)
+					xAxisGap : 300 / 5, //（可选项）X 轴标记间隔距离；默认：w/6
+					yAxis : {//（可选项）JSON 对象；K 线图坐标系 y 轴配置参数
+						max : 28, //（可选项）数字类型；Y 轴最大值；默认：5
+						min : 18, //（可选项）数字类型；Y 轴最小值（大于零）；默认：1
+						step : 5, //（可选项）数字类型；Y 轴步幅；默认：1
+						suffix : '℃', //（可选项）字符串类型；Y 轴标注后缀；默认:空字符串
+						width : 300 / 5, //（可选项）数字类型；Y 轴的标注所占的宽度；默认： w/6.5
+						color : '#696969', //（可选项）字符串类型；Y 轴标注字体颜色，支持rgb、rgba、#；默认：#696969
+						size : 12 //（可选项）数字类型；Y 轴标注字体大小；默认：12
+					},
+					xAxis : {//（可选项）JSON 对象；X 轴的样式配置
+						color : '#fff', //（可选项）字符串类型；X 轴标注字体颜色，支持rgb、rgba、#；默认：#fff
+						size : 12, //（可选项）数字类型；X 轴标注字体大小；默认：12
+						height : 150 / 6.0, //（可选项）数字类型；X 轴所占高度；默认：h/6.0
+						bubble : {//（可选项）JSON对象；点击结点时，在对应 X 轴上弹出的提示框样式配置
+							w : 40, //（可选项）数字类型；提示框的宽；默认：w/(6.5*2.0)
+							h : 30, //（可选项）数字类型；提示框的高；默认：h/9.0
+							bg : 'widget://image/icon7.png', //（可选项）字符串类型；提示框的背景图片设置，要求本地路径（fs://、widget://）;若不传则不显示提示框背景
+							size : 14, //（可选项）数字类型；提示框内的字体大小；默认：14
+							color : '#fff' //（可选项）字符串类型；提示框内的字体颜色；默认：#fff
+						}
+					},
+					coordinate : {//（可选项）JSON对象；坐标线的样式配置
+						horizontal : {//（可选项）JSON对象；横坐标线样式配置
+							color : '#696969', //（可选项）字符串类型；横坐标线颜色，支持 rgb、rgba、#；默认：#696969
+							width : 0.5, //（可选项）数字类型；横坐标线粗细；默认：0.5
+							style : 'dash' //（可选项）字符串类型；横坐标线类型，取值范围：dash（虚线）、solid（实线）；默认：solid
+						},
+						vertical : {//（可选项）JSON对象；竖坐标线样式配置
+							color : 'rgba(0,0,0,0)', //（可选项）字符串类型；竖坐标线颜色，支持 rgb、rgba、#；默认：rgba(0,0,0,0)
+							width : 0.5, //（可选项）数字类型；竖坐标线粗细；默认：0.5
+							style : 'solid' //（可选项）字符串类型；竖坐标线类型，取值范围：dash（虚线）、solid（实线）；默认：solid
+						}
+					},
+					line : {//（可选项）JSON 对象；折线的样式配置
+						color : '#fff', //（可选项）字符串类型；折线颜色设置，支持 rgb、rgba、#；默认：#fff
+						width : 1 //（可选项）数字类型；折线粗细；默认：1.0
+					},
+					node : {//（可选项）JSON 对象；结点的样式配置
+						size : 3, //（可选项）数字类型；结点大小；默认：3.0
+						color : '#fff', //（可选项）数字类型；结点颜色设置，支持 rgb、rgba、#；默认：#fff
+						hollow : false //（可选项）布尔类型；是否为空心圆；默认：false
+					},
+					icon : {//（可选项）JSON对象；结点上示意图标的大小配置
+						width : 30, //（可选项）数字类型；结点上示意图标的宽；默认：60
+						height : 30 //（可选项）数字类型；结点上示意图标的高；默认：60
+					}
+				},
+				fixedOn : api.frameName, //模块视图添加到指定 frame 的名字
+				fixed : true, //是否将模块视图固定到窗口上，不跟随窗口上下滚动，可为空
+				datas : [{
+					mark : '15:00', //字符串类型；X 轴标注
+					value : 22, //数字类型；标注对应的值，取值范围在 min 和 max 之间
+					icon : 'widget://image/icon1.png' //（可选项）字符串类型；结点提示图标的路径，要求本地路径（fs://、widget://）
+				}, {
+					mark : '16:00', //字符串类型；X 轴标注
+					value : 23, //数字类型；标注对应的值，取值范围在 min 和 max 之间
+					icon : 'widget://image/icon2.png' //（可选项）字符串类型；结点提示图标的路径，要求本地路径（fs://、widget://）
+				}, {
+					mark : '17:00', //字符串类型；X 轴标注
+					value : 26, //数字类型；标注对应的值，取值范围在 min 和 max 之间
+					icon : 'widget://image/icon3.png' //（可选项）字符串类型；结点提示图标的路径，要求本地路径（fs://、widget://）
+				}, {
+					mark : '18:00', //字符串类型；X 轴标注
+					value : 25, //数字类型；标注对应的值，取值范围在 min 和 max 之间
+					icon : 'widget://image/icon4.png' //（可选项）字符串类型；结点提示图标的路径，要求本地路径（fs://、widget://）
+				}]
+	    	},function(ret){
+	    		alert(JSON.stringify(ret));
+	    	});
+	    }
+	    
+	    
+	    function reloadData(){
+	    	var v = api.require('UIVividLine');
+	    	v.reloadData({
+	    		id: 1 ,
+	    		datas: [{mark:'a',value:5,icon:'widget://image/refresh.png'},
+						{mark:'b',value:4.2,icon:'widget://image/refresh.png'},
+						{mark:'c',value:3.3,icon:'widget://image/refresh.png'},
+						{mark:'d',value:2,icon:'widget://image/refresh.png'},
+						{mark:'e',value:1,icon:'widget://image/refresh.png'},
+						{mark:'f',value:3,icon:'widget://image/refresh.png'}]
+	    	},function(ret){
+	    		alert(JSON.stringify(ret));
+	    	});
+	    }
+	    
+	    function appendData(){
+	    	var v = api.require('UIVividLine');
+	    	v.appendData({
+	    		id: 1 ,
+	    		datas: [{mark:'a',value:5,icon:'widget://image/refresh.png'},
+						{mark:'b',value:4.2,icon:'widget://image/refresh.png'},
+						{mark:'c',value:3.3,icon:'widget://image/refresh.png'},
+						{mark:'d',value:2,icon:'widget://image/refresh.png'},
+						{mark:'e',value:1,icon:'widget://image/refresh.png'},
+						{mark:'f',value:3,icon:'widget://image/refresh.png'}]
+	    	},function(ret){
+	    		alert(JSON.stringify(ret));
+	    	});
+	    }
+	</script>
+</head>
+<body>
+    <div id="wrap">
+        <div id="main">
+        	<br>
+				<div class='itemtitle'>1.openView</div>
+				<div class="clickbtn" tapmode="active" onclick="openView()" >openView</div> 
+				
+				<div class='itemtitle'>2.reloadData</div>
+				<div class="clickbtn" tapmode="active" onclick="reloadData()" >reloadData</div>
+				
+				<div class='itemtitle'>3.appendData</div>
+				<div class="clickbtn" tapmode="active" onclick="appendData()" >appendData</div> 
+			<br>
+		</div>
+	</div>
+</body>
+</html>
