@@ -1,0 +1,303 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		030A5E951946B2E200D59AA2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 030A5E941946B2E200D59AA2 /* Foundation.framework */; };
+		030A5ECA1946B32100D59AA2 /* DKLiveBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 030A5EBB1946B32100D59AA2 /* DKLiveBlurView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		030A5ECB1946B32100D59AA2 /* PAImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 030A5EBD1946B32100D59AA2 /* PAImageView.m */; };
+		030A5ECC1946B32100D59AA2 /* UIImageView+LBBlurredImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 030A5EC71946B32100D59AA2 /* UIImageView+LBBlurredImage.m */; };
+		030A5ECD1946B32100D59AA2 /* UZPersonalCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 030A5EC91946B32100D59AA2 /* UZPersonalCenter.m */; };
+		0330894A198A3D8500D87839 /* ZASyncURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 03308949198A3D8500D87839 /* ZASyncURLConnection.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		030A5E8F1946B2E200D59AA2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0307A9E41A273DFD009B4FA2 /* UZModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZModule.h; sourceTree = "<group>"; };
+		030A5E911946B2E200D59AA2 /* libPersonalCenter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPersonalCenter.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		030A5E941946B2E200D59AA2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		030A5E981946B2E200D59AA2 /* PersonalCenter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PersonalCenter-Prefix.pch"; sourceTree = "<group>"; };
+		030A5EBA1946B32100D59AA2 /* DKLiveBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKLiveBlurView.h; sourceTree = "<group>"; };
+		030A5EBB1946B32100D59AA2 /* DKLiveBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DKLiveBlurView.m; sourceTree = "<group>"; };
+		030A5EBC1946B32100D59AA2 /* PAImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PAImageView.h; sourceTree = "<group>"; };
+		030A5EBD1946B32100D59AA2 /* PAImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAImageView.m; sourceTree = "<group>"; };
+		030A5EC61946B32100D59AA2 /* UIImageView+LBBlurredImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+LBBlurredImage.h"; sourceTree = "<group>"; };
+		030A5EC71946B32100D59AA2 /* UIImageView+LBBlurredImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+LBBlurredImage.m"; sourceTree = "<group>"; };
+		030A5EC81946B32100D59AA2 /* UZPersonalCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZPersonalCenter.h; sourceTree = "<group>"; };
+		030A5EC91946B32100D59AA2 /* UZPersonalCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZPersonalCenter.m; sourceTree = "<group>"; };
+		030A5ECF1946B34500D59AA2 /* UZAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZAppUtils.h; sourceTree = "<group>"; };
+		03308948198A3D8500D87839 /* ZASyncURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZASyncURLConnection.h; sourceTree = "<group>"; };
+		03308949198A3D8500D87839 /* ZASyncURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZASyncURLConnection.m; sourceTree = "<group>"; };
+		038A6BE21977D9490024FE7D /* NSDictionaryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionaryUtils.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		030A5E8E1946B2E200D59AA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				030A5E951946B2E200D59AA2 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		030A5E881946B2E200D59AA2 = {
+			isa = PBXGroup;
+			children = (
+				030A5ECF1946B34500D59AA2 /* UZAppUtils.h */,
+				038A6BE21977D9490024FE7D /* NSDictionaryUtils.h */,
+				0307A9E41A273DFD009B4FA2 /* UZModule.h */,
+				030A5E961946B2E200D59AA2 /* PersonalCenter */,
+				030A5E931946B2E200D59AA2 /* Frameworks */,
+				030A5E921946B2E200D59AA2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		030A5E921946B2E200D59AA2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				030A5E911946B2E200D59AA2 /* libPersonalCenter.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		030A5E931946B2E200D59AA2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				030A5E941946B2E200D59AA2 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		030A5E961946B2E200D59AA2 /* PersonalCenter */ = {
+			isa = PBXGroup;
+			children = (
+				030A5EBA1946B32100D59AA2 /* DKLiveBlurView.h */,
+				030A5EBB1946B32100D59AA2 /* DKLiveBlurView.m */,
+				030A5EBC1946B32100D59AA2 /* PAImageView.h */,
+				030A5EBD1946B32100D59AA2 /* PAImageView.m */,
+				030A5EC61946B32100D59AA2 /* UIImageView+LBBlurredImage.h */,
+				030A5EC71946B32100D59AA2 /* UIImageView+LBBlurredImage.m */,
+				030A5EC81946B32100D59AA2 /* UZPersonalCenter.h */,
+				030A5EC91946B32100D59AA2 /* UZPersonalCenter.m */,
+				03308948198A3D8500D87839 /* ZASyncURLConnection.h */,
+				03308949198A3D8500D87839 /* ZASyncURLConnection.m */,
+				030A5E971946B2E200D59AA2 /* Supporting Files */,
+			);
+			path = PersonalCenter;
+			sourceTree = "<group>";
+		};
+		030A5E971946B2E200D59AA2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				030A5E981946B2E200D59AA2 /* PersonalCenter-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		030A5E901946B2E200D59AA2 /* PersonalCenter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 030A5EB41946B2E200D59AA2 /* Build configuration list for PBXNativeTarget "PersonalCenter" */;
+			buildPhases = (
+				030A5E8D1946B2E200D59AA2 /* Sources */,
+				030A5E8E1946B2E200D59AA2 /* Frameworks */,
+				030A5E8F1946B2E200D59AA2 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PersonalCenter;
+			productName = PersonalCenter;
+			productReference = 030A5E911946B2E200D59AA2 /* libPersonalCenter.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		030A5E891946B2E200D59AA2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "___sunzhengcuan___";
+			};
+			buildConfigurationList = 030A5E8C1946B2E200D59AA2 /* Build configuration list for PBXProject "PersonalCenter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 030A5E881946B2E200D59AA2;
+			productRefGroup = 030A5E921946B2E200D59AA2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				030A5E901946B2E200D59AA2 /* PersonalCenter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		030A5E8D1946B2E200D59AA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				030A5ECC1946B32100D59AA2 /* UIImageView+LBBlurredImage.m in Sources */,
+				030A5ECD1946B32100D59AA2 /* UZPersonalCenter.m in Sources */,
+				030A5ECA1946B32100D59AA2 /* DKLiveBlurView.m in Sources */,
+				030A5ECB1946B32100D59AA2 /* PAImageView.m in Sources */,
+				0330894A198A3D8500D87839 /* ZASyncURLConnection.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		030A5EB21946B2E200D59AA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		030A5EB31946B2E200D59AA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		030A5EB51946B2E200D59AA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/PersonalCenter.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PersonalCenter/PersonalCenter-Prefix.pch";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		030A5EB61946B2E200D59AA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/PersonalCenter.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PersonalCenter/PersonalCenter-Prefix.pch";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		030A5E8C1946B2E200D59AA2 /* Build configuration list for PBXProject "PersonalCenter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				030A5EB21946B2E200D59AA2 /* Debug */,
+				030A5EB31946B2E200D59AA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		030A5EB41946B2E200D59AA2 /* Build configuration list for PBXNativeTarget "PersonalCenter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				030A5EB51946B2E200D59AA2 /* Debug */,
+				030A5EB61946B2E200D59AA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 030A5E891946B2E200D59AA2 /* Project object */;
+}

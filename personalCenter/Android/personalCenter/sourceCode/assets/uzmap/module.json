@@ -1,0 +1,9 @@
+{
+	modules:[
+		{
+			name:'personalCenter',
+			class:'com.uzmap.pkg.uzmodules.uzPersonCenter.UzPersonCenter'
+		}
+		
+	]
+}

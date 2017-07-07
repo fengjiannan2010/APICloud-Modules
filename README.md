@@ -13,6 +13,7 @@
 - [UICalendar](https://github.com/apicloudcom/UICalendar)  (日历模块)
 - [UIPullRefresh](https://github.com/apicloudcom/UIPullRefresh)  (下拉刷新模块源码)
 - [UIVividLine](https://github.com/apicloudcom/APICloud-Modules/tree/master/UIVividLine)  (折线图模块源码)
+- [personalCenter](https://github.com/apicloudcom/APICloud-Modules/tree/master/personalCenter)  (个人中心模块源码)
 
 ## 导航菜单类
 - [NVTabBar](https://github.com/apicloudcom/APICloud-Modules/tree/master/NVTabBar)  (底部导航条模块源码)

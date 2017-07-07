@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>WinA</title>
+    <link rel="stylesheet" type="text/css" href="css/api.css" />
+    <link rel="stylesheet" type="text/css" href="css/box.css" />
+    <script type="text/javascript" src="script/public.js"></script>
+    <style>
+    	p{
+    		color:#999;
+    		padding:5px;
+    	}
+    </style>
+		
+    </head>
+    <body>
+    </body>
+    <script type='text/javascript'>
+  
+	
+	function showPersonCenter(){
+		var personalCenter = api.require('personalCenter');
+			personalCenter.show();
+	}
+    function openPersonCenter(){
+		var personalCenter = api.require('personalCenter');
+
+		var btnArray = [{
+			'bgImg': 'widget://image/info03.png',
+			'selectedImg': 'widget://image/info03.png',
+			'lightImg': 'widget://image/info03.png',
+			'title': '好友',
+			'count': '5'
+		}, {
+			'bgImg': 'widget://image/info03.png',
+			'selectedImg': 'widget://image/info03.png',
+			'lightImg': 'widget://image/info03.png',
+			'title': '回贴',
+			'count': '240'
+		}, {
+			'bgImg': 'widget://image/info03.png',
+			'selectedImg': 'widget://image/info03.png',
+			'lightImg': 'widget://image/info03.png',
+			'title': '主题',
+			'count': '27'
+		}];
+
+		var count = 382;
+
+		var y = 44;
+
+
+		personalCenter.open({
+			'y': y,
+			'imgPath': 'widget://image/info03.png',
+			'placeholderImg': 'widget://image/info03.png',
+			'userName': 'APICloud',
+			'count': count,
+			'modButton': {
+				'bgImg': 'widget://image/info03.png',
+				'lightImg': 'widget://image/info03.png'
+			},
+			fixedOn: api.frameName,
+			'btnArray': btnArray
+		}, function(ret, err) {
+			/* 头像修改按钮. */
+			if (btnArray.length === ret.click) {
+				api.confirm({
+					title: '聊天盒子',
+					msg: '您想要从哪里选取图片 ?',
+					buttons: ['优雅自拍', '相册收藏', '取消']
+				}, function(ret, err) {
+					var sourceType = 'album';
+
+					if (3 == ret.buttonIndex) { // 取消
+						return;
+					}
+
+					if (1 == ret.buttonIndex) { // 打开相机
+						sourceType = 'camera';
+					}
+
+					api.getPicture({
+						sourceType: sourceType,
+						encodingType: 'png',
+						mediaValue: 'pic'
+					}, function(ret, err) {
+						if (ret) {
+							personalCenter.updateValue({
+								imgPath: ret.data,
+								count: count
+							});
+
+						}
+					});
+
+				});
+
+				return;
+			}
+
+			var msg;
+
+			/* 修改按钮. */
+			if (btnArray.length + 1 == ret.click) {
+				msg = '您没有修改权限!';
+			}
+
+			if (btnArray.length + 2 == ret.click) {
+				msg = '您没有设置权限!'
+			}
+
+			if (btnArray.length == ret.click) {
+				btn = btnArray[ret.click];
+				msg = btn.title + ' 数量为 ' + btn.count
+			}
+
+			api.toast({
+				msg: msg,
+				duration: 1000,
+				location: 'top'
+			});
+		});
+	}
+    
+    </script>
+    
+   <body>
+    <div id="wrap">
+        <div id="main">
+        	<br>
+			
+			<div class="clickbtn" tapmode="active" onclick="openPersonCenter()" >打开个人中心界面</div>
+			
+			<div class="clickbtn" tapmode="active" onclick="showPersonCenter()" >show个人中心界面</div>
+			
+			
+		</div>
+	</div>
+</body>
+</html>
