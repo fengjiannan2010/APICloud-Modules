@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>WinA</title>
+    <link rel="stylesheet" type="text/css" href="css/api.css" />
+    <link rel="stylesheet" type="text/css" href="css/box.css" />
+    <script type="text/javascript" src="script/public.js"></script>
+    <style>
+    	p{
+    		color:#999;
+    		padding:5px;
+    	}
+    </style>
+	<script type="text/javascript">
+	
+		
+	    
+		var signature = null;
+		
+		function des(){
+	    	signature = api.require('signature');
+			 signature.desECB({
+			 	key : '12345678',
+			 	data : '1PAL\nMPAY'
+			 },function(ret,err){
+			 	alert(JSON.stringify(ret));
+				 signature.desDecodeECB({
+				 	key : '12345678',
+				 	data : '1d3a1dc6e544f023ccd260870ea9a2f152c6947778b15a224a61d0aac7d37418550b2d68542ada8d8eac5796556ed0f107a3229216feba3c91a8229d32ec9949d1ce657e51fcb1133feb4e52ead9a2d628918e78f417cba5446e726dc3a9fde0ad1435a3e77e9dd97cae3a6234adb418ab165db0f790f982e6b6bc26a9e9537fb34f7faff5aa7d36acbcb7c44a0021685a182c9a3252142c45feca4e7abf782809e9548789a2c5fe63fc22befdafe77aa5bab6c47d7ce281da40e8bd7cfc3e826ed635638b47e883a4f6a9b759c323b803488b4df71ee9333f7198e43dede40947eb4f639cfa31325bdc1f58cb852a9c870089f24a02e7030eb009e9ff5407232990796a80efb08c3212896c6ea69f0748c88f04f3535465acfaf3676f9815ea4254c6b89b9a6aaa7e55a9ca856ccefea5a2e3f036edab5621c909c03997614321bbe496923ab338f00b76e563d0e227a5a2e3f036edab567f4e5181ccb57d82d26cfc19cd6afc755cd03f48f19813ac029ad1d93d82a86a3420dc176ae26aa8d23bc6cc7772299f388162f27a2a42b5c9a59011267be1dc1723cb1c0570b38185bc8010e132995a72885ff6e3f3d662a5a2e3f036edab5636f835dc88b9c69cec46d038d4eb919714e78510f199f81a295d94783965337bc08f76e6115d9e09b3e9f2a5e1b452bcfacc092cae8dbe26950e317ca2ec62993d7bb48499c5ffdebacf2844f97dfeecf6e48cebf9414be53ddb9361121eec88b27494a51d66d266e307840530531c32eecbe058919229f92cd9b6c57e145fb17ea7122e4581d6f5c4945e9b4e59df7cc52992f7b59737a3e64eb78b8413cbf8f5e85b7159fb73096d49704ab6f39c6189a053468a46c5a9cf1d81263f2cf29f8166f3423733cb4f4473b8dc9c378783d97cd369be597fe2d9a2f768d06b825843fdae9c8740657231ffb52e057e1ed5c840315617f603a1dc683f1fdfbc1f8c0e58a95e11aa9e6631a41e8708c73cf5abf5003c7d6ae046e3a19b005e2b11220134c5dadb0d95e9a48ae940e8e8f367e0cc5cc831e98a5b93f0c76d61a0ef8f77f339088c224d1cff6e1f9f0a83df071d745234dc518c6b2d26dfdda9eeedead727679474fa7e6e30e262d9266a9bf8c152504d0d99993fa7910bab7badd142dab14bbe2d1bf2e790b02f96b9d6b97f8b65d95bd38c61827a1ced696105af3d952d3ff17cba93a02c4a4199992a29940828187e7e1f0be0780ad6796bebdc13c891abd824cdb61dd37c4c9293e6101a0a25300a1afe55fc1409b4e759f5c105c189ede5a4290480d1366634da089a22c8a5af2a0165f2fb9f95881abecd41f755b2cb30db4a58c3fb5639370ed88eb94d618a5b0924699bd000b48614c9e75d2510546554fbc5442372d59b9b6b56eb18ec330f32b88bc6304b2ba8f47918eff490ed5e3e9159fbce91ac0ecc67ff67df8fd274dde4ec224bbdf590f20baca0626b80d6cf9a617b57349f637f5bbcfb2dbc2a6fafac57fe0f37d39669d5e14642eb5f1e06d4cd19ebb7f128cc22d239cf47c4b651d33227feb959b7d4642fcb'
+				 },function(ret,err){
+				 	alert(JSON.stringify(ret));
+				 	signature.desECB({
+					 	key : '12345678',
+					 	data : ret.value
+					 },function(ret,err){
+					 	alert(JSON.stringify(ret));
+					 });
+				 });
+			 });
+	    }
+		
+		
+		 function md5(){
+	    	signature = api.require('signature');
+			 signature.md5({
+			 	data : '869904013291656-1441248095'
+			 },function(ret,err){
+			 	alert(JSON.stringify(ret));
+			 });
+	    }
+	    
+	     function md5Sync(){
+	    	signature = api.require('signature');
+			 var value = signature.md5Sync({
+			 	data : '你说什么'
+			 });
+			 alert(value);
+	    }
+	    
+	    function sha1(){
+	    	signature = api.require('signature');
+			 signature.sha1({
+			 	data : '你说什么'
+			 },function(ret,err){
+			 	alert(JSON.stringify(ret));
+			 });
+	    }
+	    
+	    function aes(){
+	    	signature = api.require('signature');
+			 signature.aes({
+			 	//key : 'a',
+			 	data : 'APICloud'
+			 },function(ret,err){
+			 	alert(JSON.stringify(ret));
+				 signature.aesDecode({
+				 	//key : 'a',
+				 	data : ret.value
+				 },function(ret,err){
+				 	alert(JSON.stringify(ret));
+				 });
+			 });
+	    }
+	    
+	    function aesECB(){
+	    	signature = api.require('signature');
+			 signature.aesECB({
+			 	key : '1573858399294623',
+			 	data : 'APICloud'
+			 },function(ret,err){
+			 	alert(JSON.stringify(ret));
+				 signature.aesDecodeECB({
+				 	key : '1573858399294623',
+				 	data : ret.value
+				 },function(ret,err){
+				 	alert(JSON.stringify(ret));
+				 });
+			 });
+	    }
+	    
+	    function base64(){
+	    	signature = api.require('signature');
+			 signature.base64({
+			 	data : 'apicloud'
+			 },function(ret,err){
+			 	alert(JSON.stringify(ret));
+			 	 signature.base64Decode({
+				 	data : ret.value
+				 },function(ret,err){
+				 	alert(JSON.stringify(ret));
+				 });
+			 });
+	    }
+	    
+	    function syncBase64(){
+	    	signature = api.require('signature');
+	    	var value = signature.base64Sync({data: 'APICloud'});
+	    	alert(value);
+			var value1 = signature.base64DecodeSync({data:value});
+			alert(value1);
+	    }
+	    
+	    function rsa(){
+	    	signature = api.require('signature');
+	    	var privateKey  = null;
+			 signature.rsaKeyPair(function(ret,err){
+			 	alert(JSON.stringify(ret));
+			 	privateKey = ret.privateKey.encoded;
+			 	signature.rsa({
+			 		data : 'APICloudd',
+			 		publicKey  : ret.publicKey.encoded
+			 	},function(ret,err){
+			 		alert(JSON.stringify(ret));
+			 		signature.rsaDecode({
+			 			data : ret.value,
+			 			privateKey : privateKey
+			 		},function(ret){
+			 			alert(JSON.stringify(ret));
+			 		});
+			 	});
+			 });
+	    }
+	    
+	    function rsaSync(){
+	    	signature = api.require('signature');
+	    	var value = signature.rsaKeyPairSync();
+			alert(JSON.stringify(value));
+	    }
+	    
+	     function hmacSha1(){
+	    	signature = api.require('signature');
+			 signature.hmacSha1({
+			 	 data: 'APICloud',
+                 key: 'key'
+			 },function(ret,err){
+			 	alert(JSON.stringify(ret));
+			 });
+	    }
+	    
+	     function hmacSha1Sync(){
+	    	signature = api.require('signature');
+			 var value = signature.hmacSha1Sync({
+			 	data : '你说什么',
+			 	key:'123'
+			 });
+			 alert(value);
+	    }
+	</script>
+</head>
+<body>
+    <div id="wrap">
+        <div id="main">
+        	<br>
+        		<div class='itemtitle'>1.des</div>
+				<div class="clickbtn" tapmode="active" onclick="des()" >des</div> 
+				<div class='itemtitle'>1.md5</div>
+				<div class="clickbtn" tapmode="active" onclick="md5()" >md5</div> 
+				<div class='itemtitle'>1.md5Sync</div>
+				<div class="clickbtn" tapmode="active" onclick="md5Sync()" >md5Sync</div>   
+				<div class='itemtitle'>1.sha1</div>
+				<div class="clickbtn" tapmode="active" onclick="sha1()" >sha1</div>
+				<div class='itemtitle'>1.aes</div>
+				<div class="clickbtn" tapmode="active" onclick="aes()" >aes</div>  
+				<div class='itemtitle'>1.aesECB</div>
+				<div class="clickbtn" tapmode="active" onclick="aesECB()" >aesECB</div>  
+				<div class='itemtitle'>1.syncBase64</div>
+				<div class="clickbtn" tapmode="active" onclick="syncBase64()" >syncBase64</div>
+				
+				<div class='itemtitle'>1.base64</div>
+				<div class="clickbtn" tapmode="active" onclick="base64()" >base64</div>
+				
+				<div class='itemtitle'>1.rsa</div>
+				<div class="clickbtn" tapmode="active" onclick="rsa()" >rsa</div>
+				<div class='itemtitle'>1.rsaSync</div>
+				<div class="clickbtn" tapmode="active" onclick="rsaSync()" >rsaSync</div>  
+				
+				<div class='itemtitle'>1.hmacSha1</div>
+				<div class="clickbtn" tapmode="active" onclick="hmacSha1()" >hmacSha1</div>
+				<div class='itemtitle'>1.hmacSha1Sync</div>
+				<div class="clickbtn" tapmode="active" onclick="hmacSha1Sync()" >hmacSha1Sync</div>   
+			<br>
+		</div>
+	</div>
+</body>
+</html>

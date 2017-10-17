@@ -1,0 +1,352 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		035A57781D7A867B00D442D3 /* UZConvertUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 035A57751D7A867B00D442D3 /* UZConvertUtil.m */; };
+		035A57791D7A867B00D442D3 /* UZEncryptionTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 035A57771D7A867B00D442D3 /* UZEncryptionTools.m */; };
+		03E96A711D6C6216002A93DD /* AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E96A6A1D6C6216002A93DD /* AESCrypt.m */; };
+		03E96A721D6C6216002A93DD /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E96A6C1D6C6216002A93DD /* NSData+Base64.m */; };
+		03E96A731D6C6216002A93DD /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E96A6E1D6C6216002A93DD /* NSData+CommonCrypto.m */; };
+		03E96A741D6C6216002A93DD /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E96A701D6C6216002A93DD /* NSString+Base64.m */; };
+		2B271CEA1D13F9CF009C1D64 /* NSData+AES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B271CE91D13F9CF009C1D64 /* NSData+AES256.m */; };
+		2B3ACFE51D1106B900B1D339 /* UZSignature.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2B3ACFE41D1106B900B1D339 /* UZSignature.h */; };
+		2B3ACFE71D1106B900B1D339 /* UZSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3ACFE61D1106B900B1D339 /* UZSignature.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2B3ACFDF1D1106B900B1D339 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				2B3ACFE51D1106B900B1D339 /* UZSignature.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		035A57741D7A867B00D442D3 /* UZConvertUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZConvertUtil.h; sourceTree = "<group>"; };
+		035A57751D7A867B00D442D3 /* UZConvertUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZConvertUtil.m; sourceTree = "<group>"; };
+		035A57761D7A867B00D442D3 /* UZEncryptionTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZEncryptionTools.h; sourceTree = "<group>"; };
+		035A57771D7A867B00D442D3 /* UZEncryptionTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZEncryptionTools.m; sourceTree = "<group>"; };
+		03E96A681D6C6216002A93DD /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		03E96A691D6C6216002A93DD /* AESCrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESCrypt.h; sourceTree = "<group>"; };
+		03E96A6A1D6C6216002A93DD /* AESCrypt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AESCrypt.m; sourceTree = "<group>"; };
+		03E96A6B1D6C6216002A93DD /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		03E96A6C1D6C6216002A93DD /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		03E96A6D1D6C6216002A93DD /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+CommonCrypto.h"; sourceTree = "<group>"; };
+		03E96A6E1D6C6216002A93DD /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCrypto.m"; sourceTree = "<group>"; };
+		03E96A6F1D6C6216002A93DD /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
+		03E96A701D6C6216002A93DD /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
+		2B271CE81D13F9CF009C1D64 /* NSData+AES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+AES256.h"; sourceTree = "<group>"; };
+		2B271CE91D13F9CF009C1D64 /* NSData+AES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+AES256.m"; sourceTree = "<group>"; };
+		2B3ACFE11D1106B900B1D339 /* libsignature.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsignature.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B3ACFE41D1106B900B1D339 /* UZSignature.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UZSignature.h; sourceTree = "<group>"; };
+		2B3ACFE61D1106B900B1D339 /* UZSignature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UZSignature.m; sourceTree = "<group>"; };
+		2B3ACFEE1D1106F300B1D339 /* NSDictionaryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionaryUtils.h; sourceTree = "<group>"; };
+		2B3ACFEF1D1106F300B1D339 /* UZAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZAppUtils.h; sourceTree = "<group>"; };
+		2B3ACFF01D1106F300B1D339 /* UZModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZModule.h; sourceTree = "<group>"; };
+		B5F766E81E13DEC800F96869 /* GTMBaseSignature64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMBaseSignature64.h; path = GTMBase64/GTMBase64/GTMBase64/GTMBase64/GTMBaseSignature64.h; sourceTree = "<group>"; };
+		B5F766E91E13DEC800F96869 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMDefines.h; path = GTMBase64/GTMBase64/GTMBase64/GTMBase64/GTMDefines.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B3ACFDE1D1106B900B1D339 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		035A57731D7A867400D442D3 /* DES */ = {
+			isa = PBXGroup;
+			children = (
+				035A57741D7A867B00D442D3 /* UZConvertUtil.h */,
+				035A57751D7A867B00D442D3 /* UZConvertUtil.m */,
+				035A57761D7A867B00D442D3 /* UZEncryptionTools.h */,
+				035A57771D7A867B00D442D3 /* UZEncryptionTools.m */,
+			);
+			path = DES;
+			sourceTree = "<group>";
+		};
+		03E96A671D6C6216002A93DD /* AESCrypt-ObjC-master */ = {
+			isa = PBXGroup;
+			children = (
+				03E96A681D6C6216002A93DD /* .gitignore */,
+				03E96A691D6C6216002A93DD /* AESCrypt.h */,
+				03E96A6A1D6C6216002A93DD /* AESCrypt.m */,
+				03E96A6B1D6C6216002A93DD /* NSData+Base64.h */,
+				03E96A6C1D6C6216002A93DD /* NSData+Base64.m */,
+				03E96A6D1D6C6216002A93DD /* NSData+CommonCrypto.h */,
+				03E96A6E1D6C6216002A93DD /* NSData+CommonCrypto.m */,
+				03E96A6F1D6C6216002A93DD /* NSString+Base64.h */,
+				03E96A701D6C6216002A93DD /* NSString+Base64.m */,
+			);
+			path = "AESCrypt-ObjC-master";
+			sourceTree = "<group>";
+		};
+		2B3ACFD81D1106B900B1D339 = {
+			isa = PBXGroup;
+			children = (
+				2B3ACFE31D1106B900B1D339 /* signature */,
+				2B3ACFE21D1106B900B1D339 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B3ACFE21D1106B900B1D339 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B3ACFE11D1106B900B1D339 /* libsignature.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B3ACFE31D1106B900B1D339 /* signature */ = {
+			isa = PBXGroup;
+			children = (
+				2B3ACFED1D1106F300B1D339 /* headFile */,
+				2B271CE81D13F9CF009C1D64 /* NSData+AES256.h */,
+				2B271CE91D13F9CF009C1D64 /* NSData+AES256.m */,
+				2B3ACFE41D1106B900B1D339 /* UZSignature.h */,
+				2B3ACFE61D1106B900B1D339 /* UZSignature.m */,
+				B5F766E81E13DEC800F96869 /* GTMBaseSignature64.h */,
+				B5F766E91E13DEC800F96869 /* GTMDefines.h */,
+				035A57731D7A867400D442D3 /* DES */,
+				03E96A671D6C6216002A93DD /* AESCrypt-ObjC-master */,
+			);
+			path = signature;
+			sourceTree = "<group>";
+		};
+		2B3ACFED1D1106F300B1D339 /* headFile */ = {
+			isa = PBXGroup;
+			children = (
+				2B3ACFEE1D1106F300B1D339 /* NSDictionaryUtils.h */,
+				2B3ACFEF1D1106F300B1D339 /* UZAppUtils.h */,
+				2B3ACFF01D1106F300B1D339 /* UZModule.h */,
+			);
+			path = headFile;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B3ACFE01D1106B900B1D339 /* signature */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B3ACFEA1D1106B900B1D339 /* Build configuration list for PBXNativeTarget "signature" */;
+			buildPhases = (
+				2B3ACFDD1D1106B900B1D339 /* Sources */,
+				2B3ACFDE1D1106B900B1D339 /* Frameworks */,
+				2B3ACFDF1D1106B900B1D339 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = signature;
+			productName = signature;
+			productReference = 2B3ACFE11D1106B900B1D339 /* libsignature.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B3ACFD91D1106B900B1D339 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = APICloud;
+				TargetAttributes = {
+					2B3ACFE01D1106B900B1D339 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 2B3ACFDC1D1106B900B1D339 /* Build configuration list for PBXProject "signature" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2B3ACFD81D1106B900B1D339;
+			productRefGroup = 2B3ACFE21D1106B900B1D339 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B3ACFE01D1106B900B1D339 /* signature */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B3ACFDD1D1106B900B1D339 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03E96A741D6C6216002A93DD /* NSString+Base64.m in Sources */,
+				035A57791D7A867B00D442D3 /* UZEncryptionTools.m in Sources */,
+				2B3ACFE71D1106B900B1D339 /* UZSignature.m in Sources */,
+				035A57781D7A867B00D442D3 /* UZConvertUtil.m in Sources */,
+				03E96A721D6C6216002A93DD /* NSData+Base64.m in Sources */,
+				03E96A731D6C6216002A93DD /* NSData+CommonCrypto.m in Sources */,
+				03E96A711D6C6216002A93DD /* AESCrypt.m in Sources */,
+				2B271CEA1D13F9CF009C1D64 /* NSData+AES256.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2B3ACFE81D1106B900B1D339 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		2B3ACFE91D1106B900B1D339 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2B3ACFEB1D1106B900B1D339 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/signature",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		2B3ACFEC1D1106B900B1D339 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/signature",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B3ACFDC1D1106B900B1D339 /* Build configuration list for PBXProject "signature" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B3ACFE81D1106B900B1D339 /* Debug */,
+				2B3ACFE91D1106B900B1D339 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B3ACFEA1D1106B900B1D339 /* Build configuration list for PBXNativeTarget "signature" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B3ACFEB1D1106B900B1D339 /* Debug */,
+				2B3ACFEC1D1106B900B1D339 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B3ACFD91D1106B900B1D339 /* Project object */;
+}

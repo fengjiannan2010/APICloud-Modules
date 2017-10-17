@@ -1,0 +1,8 @@
+{
+	modules:[
+		{
+		    name:'signature',
+		    class:'com.apicloud.signature.UzSignature'
+		}
+	]
+}

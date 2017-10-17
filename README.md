@@ -22,6 +22,7 @@
 - [FNScanner](https://github.com/apicloudcom/FNScanner)  (二维码/条码扫描模块)
 - [imageFilter](https://github.com/apicloudcom/imageFilter)  (图片过滤、压缩和信息获取模块)
 - [photoBrowser](https://github.com/apicloudcom/photoBrowser)  (可左右拖动查看的图片浏览器模块)
+- [signature](https://github.com/apicloudcom/APICloud-Modules/tree/master/signature)  (加密签名模块)
 
 ## 设备访问类
 - [ble](https://github.com/apicloudcom/pedometer) (蓝牙4.0模块源码)
