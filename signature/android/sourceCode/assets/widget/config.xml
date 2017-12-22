@@ -7,5 +7,6 @@
     <content src="index.html" />
     <access origin="*" />
     <preference name="bounces" value="true" />
-    <preference name="customRefreshHeader" value="cusHeader" />
+	<preference name="debug" value="true" />
+	<preference name="customRefreshHeader" value="UIPullRefresh" />
 </widget>

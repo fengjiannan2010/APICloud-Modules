@@ -66,6 +66,7 @@ package com.apicloud.signature;
 // the salt, the IV, the human-friendly passphrase, all the algorithms and parameters to those algorithms.
 // Peter van der Linden, April 15 2012
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -141,7 +142,28 @@ public class AES {
 		IV = new IvParameterSpec(iv);
 	}
 
-	@SuppressLint("TrulyRandom") 
+	// public String aesEncryptECB(String password, byte[] plaintext) {
+	// byte[] result = null;
+	// try {
+	// byte[] enCodeFormat = password.getBytes();
+	// SecretKeySpec key = new SecretKeySpec(enCodeFormat, ECB);
+	// Cipher cipher = Cipher.getInstance(ECB);
+	// cipher.init(Cipher.ENCRYPT_MODE, key);
+	// result = cipher.doFinal(plaintext);
+	// } catch (InvalidKeyException e) {
+	// e.printStackTrace();
+	// } catch (NoSuchAlgorithmException e) {
+	// e.printStackTrace();
+	// } catch (NoSuchPaddingException e) {
+	// e.printStackTrace();
+	// } catch (IllegalBlockSizeException e) {
+	// e.printStackTrace();
+	// } catch (BadPaddingException e) {
+	// e.printStackTrace();
+	// }
+	// return Base64Encoder.encode(result);
+	// }
+
 	public String aesEncryptECB(String password, byte[] plaintext) {
 		byte[] result = null;
 		try {
@@ -192,6 +214,32 @@ public class AES {
 		return decrypted;
 	}
 
+	// public String aesDecryptECB(String password, String ciphertext_base64) {
+	// byte[] enCodeFormat = password.getBytes();
+	// SecretKeySpec key = new SecretKeySpec(enCodeFormat, ECB);
+	// Cipher cipher;
+	// try {
+	// cipher = Cipher.getInstance(ECB);
+	// cipher.init(Cipher.DECRYPT_MODE, key);
+	// byte[] result = cipher.doFinal(Base64Decoder
+	// .decodeToBytes(ciphertext_base64));
+	// return new String(result, "UTF-8");
+	// } catch (NoSuchAlgorithmException e) {
+	// e.printStackTrace();
+	// } catch (NoSuchPaddingException e) {
+	// e.printStackTrace();
+	// } catch (IllegalBlockSizeException e) {
+	// e.printStackTrace();
+	// } catch (BadPaddingException e) {
+	// e.printStackTrace();
+	// } catch (InvalidKeyException e) {
+	// e.printStackTrace();
+	// } catch (UnsupportedEncodingException e) {
+	// e.printStackTrace();
+	// }
+	// return null;
+	// }
+
 	public String aesDecryptECB(String password, String ciphertext_base64) {
 		try {
 			SecretKeyFactory factory = SecretKeyFactory
@@ -229,7 +277,7 @@ public class AES {
 	// so that the entire message is a multiple of 16 bytes.
 	// the padding is a series of bytes, each set to the total bytes added (a
 	// number in range 1..16).
-	public byte[] addPadding(byte[] plain) {
+	private byte[] addPadding(byte[] plain) {
 		byte plainpad[] = null;
 		int shortage = 16 - (plain.length % 16);
 		// if already an exact multiple of 16, need to add another block of 16
@@ -250,7 +298,7 @@ public class AES {
 
 	// Use this method if you want to remove the padding manually
 	// This method removes the padding bytes
-	public byte[] dropPadding(byte[] plainpad) {
+	private byte[] dropPadding(byte[] plainpad) {
 		byte plain[] = null;
 		int drop = plainpad[plainpad.length - 1]; // last byte gives number of
 													// bytes to drop
@@ -286,7 +334,7 @@ public class AES {
 		return null;
 	}
 
-	public  byte[] encryptECB(String cmp, SecretKey sk, byte[] msg) {
+	private byte[] encryptECB(String cmp, SecretKey sk, byte[] msg) {
 		try {
 			Cipher c = Cipher.getInstance(cmp);
 			c.init(Cipher.ENCRYPT_MODE, sk);
@@ -328,7 +376,7 @@ public class AES {
 		return null;
 	}
 
-	public byte[] decryptECB(String cmp, SecretKey sk, byte[] ciphertext) {
+	private byte[] decryptECB(String cmp, SecretKey sk, byte[] ciphertext) {
 		try {
 			Cipher c = Cipher.getInstance(cmp);
 			c.init(Cipher.DECRYPT_MODE, sk);

@@ -54,8 +54,9 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
         //err:1
         [self sendResultEventWithCallbackId:sha1EncCbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:@{@"code":@(1)} doDelete:NO];
     } else {
-        const char *cstr = [inString cStringUsingEncoding:NSUTF8StringEncoding];
-        NSData *inData = [NSData dataWithBytes:cstr length:inString.length];
+//        const char *cstr = [inString cStringUsingEncoding:NSUTF8StringEncoding];
+//        NSData *inData = [NSData dataWithBytes:cstr length:inString.length];
+        NSData *inData = [inString dataUsingEncoding:NSUTF8StringEncoding];
         uint8_t digest[CC_SHA1_DIGEST_LENGTH];
         CC_SHA1(inData.bytes, inData.length, digest);
         
