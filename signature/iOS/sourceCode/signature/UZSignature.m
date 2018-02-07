@@ -13,12 +13,64 @@
 #import "NSData+AES256.h"
 #import "AESCrypt.h"
 #import "UZEncryptionTools.h"
+#import "UZConvertUtil.h"
 
 static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
 
 @implementation UZSignature
-
+//sha256加密方式
+- (NSString *)getSha256String:(NSString *)srcString {
+//    const char *s = [srcString cStringUsingEncoding:NSASCIIStringEncoding];
+//    NSData *keyData = [NSData dataWithBytes:s length:strlen(s)];
+//
+//    uint8_t digest[CC_SHA256_DIGEST_LENGTH] = {0};
+//    CC_SHA256(keyData.bytes, (CC_LONG)keyData.length, digest);
+//    NSData *out = [NSData dataWithBytes:digest length:CC_SHA256_DIGEST_LENGTH];
+//    NSString *hash = [out description];
+//    hash = [hash stringByReplacingOccurrencesOfString:@" " withString:@""];
+//    hash = [hash stringByReplacingOccurrencesOfString:@"<" withString:@""];
+//    hash = [hash stringByReplacingOccurrencesOfString:@">" withString:@""];
+//    return hash;
+    
+    const char *cstr = [srcString cStringUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [NSData dataWithBytes:cstr length:srcString.length];
+    unsigned int length = (unsigned int)data.length;
+    uint8_t digest[CC_SHA256_DIGEST_LENGTH];
+    CC_SHA256(data.bytes, length, digest);
+    NSMutableString* result = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH * 2];
+    for(int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) {
+        [result appendFormat:@"%02x", digest[i]];
+    }
+    return result;
+}
 #pragma mark - async -
+- (void)sha256:(NSDictionary *)paramsDict {
+    NSInteger sha1EncCbId = [paramsDict integerValueForKey:@"cbId" defaultValue:-1];
+    NSString *inString = [paramsDict stringValueForKey:@"data" defaultValue:@""];
+    if (inString.length <= 0) {
+        //err:1
+        [self sendResultEventWithCallbackId:sha1EncCbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:@{@"code":@(1)} doDelete:NO];
+    } else {
+        NSString *outString = [self getSha256String:inString];
+        if (outString.length <= 0) {
+            //err:-1
+            [self sendResultEventWithCallbackId:sha1EncCbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:@{@"code":@(-1)} doDelete:NO];
+        } else {
+            //true
+            [self sendResultEventWithCallbackId:sha1EncCbId dataDict:@{@"status":[NSNumber numberWithBool:true],@"value":outString} errDict:nil doDelete:NO];
+        }
+    }
+}
+
+- (NSString *)sha256Sync:(NSDictionary *)paramsDict {
+    NSString *inString = [paramsDict stringValueForKey:@"data" defaultValue:@""];
+    if (inString.length <= 0) {
+        return @"";
+    } else {
+        NSString *outString = [self getSha256String:inString];
+        return outString;
+    }
+}
 
 - (void)md5:(NSDictionary *)paramsDict {
     NSInteger md5EncCbId = [paramsDict integerValueForKey:@"cbId" defaultValue:-1];
@@ -157,6 +209,47 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
             free(buffer);
             //err:-1
             [self sendResultEventWithCallbackId:aesDecCbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:@{@"code":@(-1)} doDelete:NO];
+        }
+    }
+}
+
+- (void)aesCBC:(NSDictionary *)paramsDict {
+    NSInteger aescbcCbId = [paramsDict integerValueForKey:@"cbId" defaultValue:-1];
+    NSString *inString = [paramsDict stringValueForKey:@"data" defaultValue:@""];
+    if (inString.length <= 0) {
+        //err:1
+        [self sendResultEventWithCallbackId:aescbcCbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:@{@"code":@(1)} doDelete:NO];
+    } else {
+        NSString *AESkey = [paramsDict stringValueForKey:@"key" defaultValue:@""];
+        NSString *offset = [paramsDict stringValueForKey:@"iv" defaultValue:@""];
+        NSString *klength = [paramsDict stringValueForKey:@"keyLength" defaultValue:@""];
+        NSData *plainText = [inString dataUsingEncoding:NSUTF8StringEncoding];
+        NSString *encode = [self AES128operation:kCCEncrypt data:plainText key:AESkey iv:offset length:klength];
+        if (encode) {
+            encode = [encode uppercaseString];
+            [self sendResultEventWithCallbackId:aescbcCbId dataDict:@{@"status":@(YES),@"value":encode} errDict:nil doDelete:NO];
+        } else {
+            [self sendResultEventWithCallbackId:aescbcCbId dataDict:@{@"status":@(NO)} errDict:@{@"code":@(-1)} doDelete:NO];
+        }
+    }
+}
+- (void)aesDecodeCBC:(NSDictionary *)paramsDict {
+    NSInteger aescbcCbId = [paramsDict integerValueForKey:@"cbId" defaultValue:-1];
+    NSString *inString = [paramsDict stringValueForKey:@"data" defaultValue:@""];
+    if (inString.length <= 0) {
+        //err:1
+        [self sendResultEventWithCallbackId:aescbcCbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:@{@"code":@(1)} doDelete:NO];
+    } else {
+        inString = [inString lowercaseString];
+        NSString *AESkey = [paramsDict stringValueForKey:@"key" defaultValue:@""];
+        NSString *offset = [paramsDict stringValueForKey:@"iv" defaultValue:@""];
+        NSString *klength = [paramsDict stringValueForKey:@"keyLength" defaultValue:@""];
+        NSData *plainText = [self hex2data:inString];//[inString dataUsingEncoding:NSUTF8StringEncoding];
+        NSString *encode = [self AES128operation:kCCDecrypt data:plainText key:AESkey iv:offset length:klength];
+        if (encode) {
+            [self sendResultEventWithCallbackId:aescbcCbId dataDict:@{@"status":@(YES),@"value":encode} errDict:nil doDelete:NO];
+        } else {
+            [self sendResultEventWithCallbackId:aescbcCbId dataDict:@{@"status":@(NO)} errDict:@{@"code":@(-1)} doDelete:NO];
         }
     }
 }
@@ -777,6 +870,99 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
             return @"";
         }
     }
+}
+
+- (NSString *)aesCBCSync:(NSDictionary *)paramsDict {
+    NSString *inString = [paramsDict stringValueForKey:@"data" defaultValue:@""];
+    if (inString.length <= 0) {
+        //err:1
+        return @"";
+    } else {
+        NSString *AESkey = [paramsDict stringValueForKey:@"key" defaultValue:@""];
+        NSString *offset = [paramsDict stringValueForKey:@"iv" defaultValue:@""];
+        NSString *klength = [paramsDict stringValueForKey:@"keyLength" defaultValue:@""];
+        NSData *plainText = [inString dataUsingEncoding:NSUTF8StringEncoding];
+        NSString *encode = [self AES128operation:kCCEncrypt data:plainText key:AESkey iv:offset length:klength];
+        if (encode) {
+            encode = [encode uppercaseString];
+            return encode;
+        } else {
+            return @"";
+        }
+    }
+}
+- (NSString *)aesDecodeCBCSync:(NSDictionary *)paramsDict {
+    NSString *inString = [paramsDict stringValueForKey:@"data" defaultValue:@""];
+    if (inString.length <= 0) {
+        //err:1
+        return @"";
+    } else {
+        inString = [inString lowercaseString];
+        NSString *AESkey = [paramsDict stringValueForKey:@"key" defaultValue:@""];
+        NSString *offset = [paramsDict stringValueForKey:@"iv" defaultValue:@""];
+        NSString *klength = [paramsDict stringValueForKey:@"keyLength" defaultValue:@""];
+        NSData *plainText = [self hex2data:inString];//[inString dataUsingEncoding:NSUTF8StringEncoding];
+        NSString *encode = [self AES128operation:kCCDecrypt data:plainText key:AESkey iv:offset length:klength];
+        if (encode) {
+            return encode;
+        } else {
+            return @"";
+        }
+    }
+}
+# pragma mark - utility
+- (NSString *)AES128operation:(CCOperation)operation data:(NSData *)data key:(NSString *)key iv:(NSString *)iv length:(NSString *)keyLenth {
+    char keyPtr[kCCKeySizeAES128 + 1];
+    bzero(keyPtr, sizeof(keyPtr));
+    [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
+    
+    // IV
+    char ivPtr[kCCBlockSizeAES128 + 1];
+    bzero(ivPtr, sizeof(ivPtr));
+    [iv getCString:ivPtr maxLength:sizeof(ivPtr) encoding:NSUTF8StringEncoding];
+    
+    size_t bufferSize = [data length] + kCCBlockSizeAES128;
+    void *buffer = malloc(bufferSize);
+    size_t numBytesEncrypted = 0;
+    
+    
+    CCCryptorStatus cryptorStatus = CCCrypt(operation, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
+                                            keyPtr, kCCKeySizeAES128,
+                                            ivPtr,
+                                            [data bytes], [data length],
+                                            buffer, bufferSize,
+                                            &numBytesEncrypted);
+    
+    if(cryptorStatus == kCCSuccess){
+        //NSLog(@"Success");
+        NSData *result = [NSData dataWithBytesNoCopy:buffer length:numBytesEncrypted];
+        if (operation == 0) {
+            Byte *bb = (Byte*)[result bytes];
+            NSString *ciphertext = [UZConvertUtil parseByteArray2HexString:bb andCount:numBytesEncrypted];
+            return ciphertext;
+        }
+        NSString *resultStr = [[NSString alloc]initWithData:result encoding:NSUTF8StringEncoding];
+        return resultStr;
+    }else{
+        //NSLog(@"Error");
+    }
+    
+    free(buffer);
+    return nil;
+}
+
+- (NSData *)hex2data:(NSString *)hex {
+    NSMutableData *data = [NSMutableData dataWithCapacity:hex.length / 2];
+    unsigned char whole_byte;
+    char byte_chars[3] = {'\0','\0','\0'};
+    int i;
+    for (i=0; i < hex.length / 2; i++) {
+        byte_chars[0] = [hex characterAtIndex:i*2];
+        byte_chars[1] = [hex characterAtIndex:i*2+1];
+        whole_byte = strtol(byte_chars, NULL, 16);
+        [data appendBytes:&whole_byte length:1];
+    }
+    return data;
 }
 
 - (NSString *) hmacSha1:(NSString*)key text:(NSString*)text {

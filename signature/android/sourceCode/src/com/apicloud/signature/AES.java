@@ -66,7 +66,6 @@ package com.apicloud.signature;
 // the salt, the IV, the human-friendly passphrase, all the algorithms and parameters to those algorithms.
 // Peter van der Linden, April 15 2012
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -101,20 +100,22 @@ public class AES {
 			'n', 't' };
 
 	private byte[] salt = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xB, 0xC, 0xD,
-			0xE, 0xF }; // must save this for next time we want the key
+			0xE, 0xF}; // must save this for next time we want the key
 
 	private PBEKeySpec myKeyspec = new PBEKeySpec(humanPassphrase, salt,
 			HASH_ITERATIONS, KEY_LENGTH);
+	
 	private final String CIPHERMODEPADDING = "AES/CBC/PKCS5Padding";
+	
 
 	private final String ECB = "AES/ECB/PKCS7Padding";
 
 	private SecretKeyFactory keyfactory = null;
 	private SecretKey sk = null;
 	private SecretKeySpec skforAES = null;
-	private byte[] iv = { 0xA, 1, 0xB, 5, 4, 0xF, 7, 9, 0x17, 3, 1, 6, 8, 0xC,
-			0xD, 91 };
-
+	
+	private byte[] iv = { 0xA, 1, 0xB, 5, 4, 0xF, 7, 9, 0x17, 3, 1, 6, 8, 0xC, 0xD, 91 };
+	
 	private IvParameterSpec IV;
 
 	private void initPassword(String password) {
@@ -138,8 +139,11 @@ public class AES {
 		// insecure). It could
 		// be secure if we kept it on a server accessible through https.
 		byte[] skAsByteArray = sk.getEncoded();
+		
 		skforAES = new SecretKeySpec(skAsByteArray, "AES");
+		
 		IV = new IvParameterSpec(iv);
+		
 	}
 
 	// public String aesEncryptECB(String password, byte[] plaintext) {

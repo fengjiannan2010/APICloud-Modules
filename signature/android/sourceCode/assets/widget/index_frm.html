@@ -22,7 +22,7 @@
 		function des(){
 	    	signature = api.require('signature');
 			 signature.desECB({
-			 	key : '12345678',
+			 	//key : '12345678',
 			 	data : '1PAL\nMPAY'
 			 },function(ret,err){
 			 	alert(JSON.stringify(ret));
@@ -68,16 +68,26 @@
 			 });
 	    }
 	    
+	    function sha256(){
+	    	signature = api.require('signature');
+			 signature.sha256({
+			 	data : '你说什么'
+			 },function(ret,err){
+			 	alert(JSON.stringify(ret));
+			 });
+	    }
+	    
 	    function aes(){
 	    	signature = api.require('signature');
 			 signature.aes({
-			 	//key : 'a',
+			 	key : 'a',
 			 	data : 'APICloud'
 			 },function(ret,err){
 			 	alert(JSON.stringify(ret));
+			 	console.log(JSON.stringify(ret));
 				 signature.aesDecode({
-				 	//key : 'a',
-				 	data : ret.value
+				 	key : 'PfFe',
+				 	data : 'kkeUKFrLIL3XXAFGpD9XhmqX+vnQtYlGmLeawDa8fMY='
 				 },function(ret,err){
 				 	alert(JSON.stringify(ret));
 				 });
@@ -168,6 +178,52 @@
 			 alert(value);
 	    }
 	    
+	    function testAesDecode(){
+	    		signature = api.require('signature');
+	    		var params = {
+	    			data:'D8EF53F8C5B00EA630B75C4BD20E8FC4E4184352F0516FC89F1D5C98D5A9CEC5CBBCCE6D707C62A26A29094501D570170FC644191A2C377B94C90C63871E8C67A57849109B2B45709B7CAFA1676A1F15603AFCC74350114F44FFD91878A1ACB0CFB5695E6C2FE7E779D7596757F186A4204F625814ADFCB2B061897EFD7522AEFC636271BDAAC1C85BDA6A4DE15D804DA1274D68056AB3599E574CCBCA5A5641B95B41503B377DD20ABFA7DF710A1A5134C942B9A7A922C9AEDDFB4654B9348AC1F1B0301534FA69F530A7DE407D4B95F9B2178A3F43A9E9407303A7A02627F4',
+	    			key:'CMIP.CENTIT.COM',
+	    			iv:'0102030405060708'
+	    		};
+	    		signature.aesDecodeCBC(params, function(ret, err){
+	    			if (ret.status) {
+			        alert(JSON.stringify(ret));
+			    } else {
+			        alert(JSON.stringify(err));
+			    }
+	    		});
+	    }
+	    
+	    function testAes(){
+	    		signature = api.require('signature');
+	    		var params = {
+	    			data:'APICloud',
+	    			key:'CMIP.CENTIT.COM',
+	    			iv:'0102030405060708'
+	    		};
+	    		signature.aesCBC(params, function(ret, err){
+	    			if (ret.status) {
+			        alert(JSON.stringify(ret));
+			    } else {
+			        alert(JSON.stringify(err));
+			    }
+	    		});
+	    }
+	    
+	    function testBase64Decode(){
+	    		var params = {
+	    			data:'D8EF53F8C5B00EA630B75C4BD20E8FC4E4184352F0516FC89F1D5C98D5A9CEC5CBBCCE6D707C62A26A29094501D570170FC644191A2C377B94C90C63871E8C67A57849109B2B45709B7CAFA1676A1F15603AFCC74350114F44FFD91878A1ACB0CFB5695E6C2FE7E779D7596757F186A4204F625814ADFCB2B061897EFD7522AEFC636271BDAAC1C85BDA6A4DE15D804DA1274D68056AB3599E574CCBCA5A5641B95B41503B377DD20ABFA7DF710A1A5134C942B9A7A922C9AEDDFB4654B9348AC1F1B0301534FA69F530A7DE407D4B95F9B2178A3F43A9E9407303A7A02627F4'
+	    		};
+	    		signature = api.require('signature');
+	    		signature.base64Decode(params, function(ret, err){
+	    			if (ret.status) {
+			        alert(JSON.stringify(ret));
+			    } else {
+			        alert(JSON.stringify(err));
+			    }
+	    		})
+	    }
+	    
 	</script>
 </head>
 <body>
@@ -182,6 +238,8 @@
 				<div class="clickbtn" tapmode="active" onclick="md5Sync()" >md5Sync</div>   
 				<div class='itemtitle'>1.sha1</div>
 				<div class="clickbtn" tapmode="active" onclick="sha1()" >sha1</div>
+				<div class='itemtitle'>1.5 sha256</div>
+				<div class="clickbtn" tapmode="active" onclick="sha256()" >sha1</div>
 				<div class='itemtitle'>1.aes</div>
 				<div class="clickbtn" tapmode="active" onclick="aes()" >aes</div>  
 				<div class='itemtitle'>1.aesECB</div>
@@ -200,7 +258,10 @@
 				<div class='itemtitle'>1.hmacSha1</div>
 				<div class="clickbtn" tapmode="active" onclick="hmacSha1()" >hmacSha1</div>
 				<div class='itemtitle'>1.hmacSha1Sync</div>
-				<div class="clickbtn" tapmode="active" onclick="hmacSha1Sync()" >hmacSha1Sync</div>   
+				<div class="clickbtn" tapmode="active" onclick="hmacSha1Sync()" >hmacSha1Sync</div><br/>
+				<div class="clickbtn" tapmode="active" onclick="testAes()" >testAes</div><br/>
+				<div class="clickbtn" tapmode="active" onclick="testAesDecode()" >testAesDecode</div> <br/>
+				<div class="clickbtn" tapmode="active" onclick="testBase64Decode()" >testBase64Decode</div> <br/>   
 			<br>
 		</div>
 	</div>

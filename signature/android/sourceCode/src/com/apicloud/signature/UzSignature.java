@@ -17,7 +17,11 @@ import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.annotation.SuppressLint;
+import android.telecom.TelecomManager;
+import android.text.TextUtils;
 import android.util.Base64;
+
+import com.uzmap.pkg.a.a.e;
 import com.uzmap.pkg.uzcore.UZWebView;
 import com.uzmap.pkg.uzcore.uzmodule.ModuleResult;
 import com.uzmap.pkg.uzcore.uzmodule.UZModule;
@@ -28,6 +32,7 @@ public class UzSignature extends UZModule {
 
 	public UzSignature(UZWebView webView) {
 		super(webView);
+		
 	}
 
 	public void jsmethod_md5(UZModuleContext moduleContext) {
@@ -62,12 +67,22 @@ public class UzSignature extends UZModule {
 		String data = moduleContext.optString("data");
 		boolean uppercase = moduleContext.optBoolean("uppercase", true);
 		if (data != null && !data.isEmpty()) {
-			String sha1 = sha(data);
+			String sha1 = sha(data, "SHA-1");
 			if (uppercase) {
 				sha1 = sha1.toUpperCase();
 			}
 			callBack(moduleContext, sha1, -1);
 		} else {
+			callBack(moduleContext, null, 1);
+		}
+	}
+	
+	public void jsmethod_sha256(UZModuleContext moduleContext) {
+		String data = moduleContext.optString("data");
+		if (!TextUtils.isEmpty(data)) {
+			String sha256 = sha(data, "SHA-256");
+			callBack(moduleContext, sha256, -1);
+		}else {
 			callBack(moduleContext, null, 1);
 		}
 	}
@@ -87,11 +102,21 @@ public class UzSignature extends UZModule {
 		String data = moduleContext.optString("data");
 		boolean uppercase = moduleContext.optBoolean("uppercase", true);
 		if (data != null && !data.isEmpty()) {
-			String sha1 = sha(data);
+			String sha1 = sha(data, "SHA-1");
 			if (uppercase) {
 				sha1 = sha1.toUpperCase();
 			}
 			return new ModuleResult(sha1);
+		} else {
+			return new ModuleResult();
+		}
+	}
+	
+	public ModuleResult jsmethod_sha256Sync_sync(UZModuleContext moduleContext) {
+		String data = moduleContext.optString("data");
+		if (data != null && !data.isEmpty()) {
+			String sha256 = sha(data, "SHA-256");
+			return new ModuleResult(sha256);
 		} else {
 			return new ModuleResult();
 		}
@@ -201,6 +226,7 @@ public class UzSignature extends UZModule {
 		String data = moduleContext.optString("data");
 		if (data != null && !data.isEmpty()) {
 			String aesDecode = new AES().aesDecryptECB(key, data);
+			
 			callBack(moduleContext, aesDecode, -1);
 		} else {
 			callBack(moduleContext, null, 1);
@@ -405,6 +431,126 @@ public class UzSignature extends UZModule {
 			return new ModuleResult();
 		}
 	}
+	
+	/**
+	 * 将字符串进行 AES 加密
+	 * @param moduleContext
+	 */
+	public void jsmethod_aesCBC(UZModuleContext moduleContext) {
+		try {
+			String data = moduleContext.optString("data");
+			if (TextUtils.isEmpty(data)) {
+				JSONObject result = new JSONObject();
+				result.put("code", 1);
+				moduleContext.error(null, result, false);
+				return;
+			}
+			
+			String key = moduleContext.optString("key");
+			String iv = moduleContext.optString("iv");
+			String encrypt = AESUtils.encrypt(data.getBytes(), key.getBytes(), iv.getBytes());
+			JSONObject result = new JSONObject();
+			JSONObject error = new JSONObject();
+			if (!TextUtils.isEmpty(encrypt)) {
+				result.put("status", true);
+				result.put("value", encrypt);
+				moduleContext.success(result, true);
+			}else {
+				error.put("code", -1);
+				moduleContext.error(result, error, true);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	/**
+	 * 将字符串进行 AES 加密 同步
+	 * @param moduleContext
+	 */
+	public ModuleResult jsmethod_aesCBCSync_sync(UZModuleContext moduleContext) {
+		try {
+			String data = moduleContext.optString("data");
+			if (TextUtils.isEmpty(data)) {
+				JSONObject result = new JSONObject();
+				result.put("code", 1);
+				moduleContext.error(null, result, false);
+				return new ModuleResult();
+			}
+
+			String key = moduleContext.optString("key");
+			String iv = moduleContext.optString("iv");
+			String encrypt = AESUtils.encrypt(data.getBytes(), key.getBytes(), iv.getBytes());
+			if (!TextUtils.isEmpty(encrypt)) {
+				ModuleResult result = new ModuleResult(encrypt);
+				return result;
+			}else {
+				return new ModuleResult();
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ModuleResult();
+		}
+	}
+	
+	/**
+	 * 将字符串进行 AES 解密
+	 * @param moduleContext
+	 */
+	public void jsmethod_aesDecodeCBC(UZModuleContext moduleContext) {
+		try {
+			String data = moduleContext.optString("data");
+			String key = moduleContext.optString("key");
+			String iv = moduleContext.optString("iv");
+			if (TextUtils.isEmpty(data)) {
+				JSONObject result = new JSONObject();
+				result.put("code", 1);
+				moduleContext.error(null, result, false);
+				return;
+			}
+			JSONObject result = new JSONObject();
+			JSONObject error = new JSONObject();
+			String decrypt = AESUtils.decrypt(data, key.getBytes(), iv.getBytes());
+			if (!TextUtils.isEmpty(decrypt)) {
+				result.put("status", true);
+				result.put("value", decrypt);
+				moduleContext.success(result, true);
+			}else {
+				error.put("code", -1);
+				moduleContext.error(result, error, true);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	/**
+	 * 将字符串进行 AES 解密 同步
+	 * @param moduleContext
+	 */
+	public ModuleResult jsmethod_aesDecodeCBCSync_sync(UZModuleContext moduleContext) {
+		try {
+			String data = moduleContext.optString("data");
+			String key = moduleContext.optString("key");
+			String iv = moduleContext.optString("iv");
+			if (TextUtils.isEmpty(data)) {
+				JSONObject result = new JSONObject();
+				result.put("code", 1);
+				moduleContext.error(null, result, false);
+				return new ModuleResult();
+			}
+			
+			String decrypt = AESUtils.decrypt(data, key.getBytes(), iv.getBytes());
+			if (!TextUtils.isEmpty(decrypt)) {
+				ModuleResult moduleResult = new ModuleResult(decrypt);
+				return moduleResult;
+			}else {
+				return new ModuleResult();
+			}
+		} catch (Exception e) {
+			return new ModuleResult();
+		}
+	}
 
 	private void rsaKeyCallBack(UZModuleContext moduleContext,
 			PrivateKey privateKey, PublicKey publicKey) {
@@ -521,10 +667,17 @@ public class UzSignature extends UZModule {
 		}
 	}
 
-	private String sha(String s) {
+	private String sha(String s, String algorithm) {
 		byte[] digesta = null;
 		try {
-			MessageDigest alga = MessageDigest.getInstance("SHA-1");
+			MessageDigest alga;
+			if (TextUtils.equals(algorithm, "SHA-1")) {
+				alga = MessageDigest.getInstance("SHA-1");
+			}else if (TextUtils.equals(algorithm, "SHA-256")) {
+				alga = MessageDigest.getInstance("SHA-256");
+			}else {
+				alga = MessageDigest.getInstance("SHA-1");
+			}
 			alga.update(s.getBytes());
 			digesta = alga.digest();
 		} catch (NoSuchAlgorithmException e) {
