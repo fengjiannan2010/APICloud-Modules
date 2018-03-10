@@ -1,5 +1,6 @@
 package com.apicloud.signature;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -549,6 +550,100 @@ public class UzSignature extends UZModule {
 			}
 		} catch (Exception e) {
 			return new ModuleResult();
+		}
+	}
+	
+	/**
+	 * aes文件加密
+	 * @param moduleContext
+	 */
+	public void jsmethod_aesFile(UZModuleContext moduleContext) {
+		try {
+			String key = moduleContext.optString("key");
+			String action = moduleContext.optString("action", "encode");
+			
+			String sourceFilePath = makeRealPath(moduleContext.optString("path"));
+			String iv = moduleContext.optString("iv");
+			if (!TextUtils.isEmpty(key) && new File(sourceFilePath).exists()) {
+				String destFilePath = moduleContext.optString("savePath", "fs://" + System.currentTimeMillis() + "." + sourceFilePath.substring(sourceFilePath.lastIndexOf(".") + 1));
+				File result = null;
+				if (TextUtils.equals(action, "encode")) {
+					result = AESUtils.encryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+					//result = new AES().encryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+				}else if (TextUtils.equals(action, "decode")) {
+					result = AESUtils.decryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+					//result = new AES().decryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+				}
+				JSONObject ret = new JSONObject();
+				JSONObject error = new JSONObject();
+				if (result != null) {
+					ret.put("status", true);
+					ret.put("absolutePath", result.getAbsolutePath());
+					moduleContext.success(ret, false);
+				}else {
+					error.put("code", -1);
+					moduleContext.error(ret, error, true);
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	/**
+	 * aes 加密 同步
+	 * @param moduleContext
+	 */
+	public ModuleResult jsmethod_aesFileSync_sync(UZModuleContext moduleContext) {
+		try {
+			String key = moduleContext.optString("key");
+			String action = moduleContext.optString("action", "encode");
+			
+			String sourceFilePath = makeRealPath(moduleContext.optString("path"));
+			String iv = moduleContext.optString("iv");
+			if (!TextUtils.isEmpty(key) && new File(sourceFilePath).exists()) {
+				String destFilePath = moduleContext.optString("savePath", "fs://" + System.currentTimeMillis() + "." + sourceFilePath.substring(sourceFilePath.lastIndexOf(".") + 1));
+				File result = null;
+				if (TextUtils.equals(action, "encode")) {
+					result = AESUtils.encryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+					//result = new AES().encryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+				}else if (TextUtils.equals(action, "decode")) {
+					result = AESUtils.decryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+					//result = new AES().decryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+				}
+				if (result != null) {
+					ModuleResult moRet = new ModuleResult(result.getAbsolutePath());
+					return moRet;
+				}else {
+					return new ModuleResult();
+				}
+			}
+		} catch (Exception e) {
+			
+		}
+		return new ModuleResult();
+	}
+	
+	/**
+	 * 文件解密
+	 * @param moduleContext
+	 */
+	public void jsmethod_desFile(UZModuleContext moduleContext) {
+		try {
+			String key = moduleContext.optString("key");
+			String sourceFilePath = makeRealPath(moduleContext.optString("path"));
+			String iv = moduleContext.optString("iv");
+			if (!TextUtils.isEmpty(key) && new File(sourceFilePath).exists()) {
+				String destFilePath = moduleContext.optString("destFilePath", "fs://" + System.currentTimeMillis() + "." + sourceFilePath.substring(sourceFilePath.lastIndexOf(".") + 1));
+				File result = AESUtils.decryptFile(key, iv, sourceFilePath, makeRealPath(destFilePath));
+				if (result != null) {
+					JSONObject res = new JSONObject();
+					res.put("path", result.getAbsolutePath());
+					moduleContext.success(res, false);
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 	}
 

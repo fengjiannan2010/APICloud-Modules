@@ -20,18 +20,6 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
 @implementation UZSignature
 //sha256加密方式
 - (NSString *)getSha256String:(NSString *)srcString {
-//    const char *s = [srcString cStringUsingEncoding:NSASCIIStringEncoding];
-//    NSData *keyData = [NSData dataWithBytes:s length:strlen(s)];
-//
-//    uint8_t digest[CC_SHA256_DIGEST_LENGTH] = {0};
-//    CC_SHA256(keyData.bytes, (CC_LONG)keyData.length, digest);
-//    NSData *out = [NSData dataWithBytes:digest length:CC_SHA256_DIGEST_LENGTH];
-//    NSString *hash = [out description];
-//    hash = [hash stringByReplacingOccurrencesOfString:@" " withString:@""];
-//    hash = [hash stringByReplacingOccurrencesOfString:@"<" withString:@""];
-//    hash = [hash stringByReplacingOccurrencesOfString:@">" withString:@""];
-//    return hash;
-    
     const char *cstr = [srcString cStringUsingEncoding:NSUTF8StringEncoding];
     NSData *data = [NSData dataWithBytes:cstr length:srcString.length];
     unsigned int length = (unsigned int)data.length;
@@ -128,6 +116,85 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
     }
 }
 
+- (void)aesFile:(NSDictionary *)paramsDict {
+    NSInteger aesEncFileCbId = [paramsDict integerValueForKey:@"cbId" defaultValue:-1];
+    NSString *filePath = [paramsDict stringValueForKey:@"path" defaultValue:@""];
+    if (filePath.length <= 0) {
+        //err:1
+        [self sendResultEventWithCallbackId:aesEncFileCbId dataDict:@{@"status":@(NO)} errDict:@{@"code":@(1)} doDelete:NO];
+        return;
+    }
+    NSString *savePath = [paramsDict stringValueForKey:@"savePath" defaultValue:@""];
+    NSString *ivStr = [paramsDict stringValueForKey:@"iv" defaultValue:@""];
+    const char *ivChar = [ivStr UTF8String];
+    NSString *AESkey = [paramsDict stringValueForKey:@"key" defaultValue:@""];
+    NSString *actionStr = [paramsDict stringValueForKey:@"action" defaultValue:@"encode"];
+    
+    // 输出路径
+    NSString *outPath = nil;
+    if (savePath.length > 0) {
+        outPath = [self getPathWithUZSchemeURL:savePath];
+    } else {
+        NSString *cachePath = [self getPathWithUZSchemeURL:@"cache://signature"];
+        NSString *fileName = [filePath lastPathComponent];
+        outPath = [NSString stringWithFormat:@"%@/%@",cachePath,fileName];
+    }
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:outPath]) {
+        [fileManager removeItemAtPath:outPath error:nil];
+    }
+    [fileManager createDirectoryAtPath:[outPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+    if (![fileManager createFileAtPath:outPath contents:nil attributes:nil]) {
+        [self sendResultEventWithCallbackId:aesEncFileCbId dataDict:@{@"status":@(NO)} errDict:@{@"code":@(2)} doDelete:NO];
+        return;
+    }
+    NSString *realPath = [self getPathWithUZSchemeURL:filePath];
+    __weak typeof (self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSData *data = [NSData dataWithContentsOfFile:realPath];
+        if (!data) {
+            [weakSelf sendResultEventWithCallbackId:aesEncFileCbId dataDict:@{@"status":@(NO)} errDict:@{@"code":@(3)} doDelete:NO];
+            return;
+        }
+        CCOperation action = kCCEncrypt;
+        if ([actionStr isEqualToString:@"decode"]) {
+            action = kCCDecrypt;
+        }
+        // 'key' should be 32 bytes for AES256, will be null-padded otherwise
+        char keyPtr[kCCKeySizeAES256+1];      // room for terminator (unused)
+        bzero(keyPtr, sizeof(keyPtr));      // fill with zeroes (for padding)
+        NSUInteger dataLength = [data length];
+        
+        size_t bufferSize = dataLength + kCCBlockSizeAES128;
+        void *buffer = malloc(bufferSize);
+        bzero(buffer, sizeof(buffer));
+        size_t numBytesEncrypted = 0;
+        CCCryptorStatus cryptStatus = CCCrypt(action, kCCAlgorithmAES128,
+                                              kCCOptionPKCS7Padding,
+                                              [[NSData AESKeyForPassword:AESkey] bytes],
+                                              kCCKeySizeAES256,
+                                              ivChar,   //initialization vector (optional)
+                                              [data bytes], dataLength,       //input
+                                              buffer, bufferSize,                 //output
+                                              &numBytesEncrypted);
+        if (cryptStatus == kCCSuccess) {
+            NSData *encryptData = [NSData dataWithBytesNoCopy:buffer length:numBytesEncrypted];
+            NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:outPath];
+            [fileHandle seekToEndOfFile];
+            [fileHandle writeData:encryptData];
+            [fileHandle synchronizeFile];
+            [fileHandle closeFile];
+            
+            //[encryptData writeToFile:outPath atomically: NO];
+            [weakSelf sendResultEventWithCallbackId:aesEncFileCbId dataDict:@{@"status":@(YES),@"absolutePath":outPath} errDict:nil doDelete:NO];
+        } else {
+            free(buffer);
+            //err:-1
+            [weakSelf sendResultEventWithCallbackId:aesEncFileCbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:@{@"code":@(-1)} doDelete:NO];
+        }
+    });
+}
+
 - (void)aes:(NSDictionary *)paramsDict {
     NSInteger aesEncCbId = [paramsDict integerValueForKey:@"cbId" defaultValue:-1];
     NSString *inString = [paramsDict stringValueForKey:@"data" defaultValue:@""];
@@ -136,7 +203,7 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
         [self sendResultEventWithCallbackId:aesEncCbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:@{@"code":@(1)} doDelete:NO];
     } else {
         NSString *AESkey = [paramsDict stringValueForKey:@"key" defaultValue:@""];
-        
+        [AESkey UTF8String];
         NSData *plainText = [inString dataUsingEncoding:NSUTF8StringEncoding];
         // 'key' should be 32 bytes for AES256, will be null-padded otherwise
         char keyPtr[kCCKeySizeAES256+1];      // room for terminator (unused)
@@ -908,6 +975,73 @@ static Byte ivBuff[]   = {0xA,1,0xB,5,4,0xF,7,9,0x17,3,1,6,8,0xC,0xD,91};
         } else {
             return @"";
         }
+    }
+}
+- (NSString *)aesFileSync:(NSDictionary *)paramsDict {
+    NSString *filePath = [paramsDict stringValueForKey:@"path" defaultValue:@""];
+    if (filePath.length <= 0) {
+        return @"";
+    }
+    NSString *savePath = [paramsDict stringValueForKey:@"savePath" defaultValue:@""];
+    NSString *ivStr = [paramsDict stringValueForKey:@"iv" defaultValue:@""];
+    const char *ivChar = [ivStr UTF8String];
+    NSString *AESkey = [paramsDict stringValueForKey:@"key" defaultValue:@""];
+    NSString *actionStr = [paramsDict stringValueForKey:@"action" defaultValue:@"encode"];
+    
+    // 输出路径
+    NSString *outPath = nil;
+    if (savePath.length > 0) {
+        outPath = [self getPathWithUZSchemeURL:savePath];
+    } else {
+        NSString *cachePath = [self getPathWithUZSchemeURL:@"cache://signature"];
+        NSString *fileName = [filePath lastPathComponent];
+        outPath = [NSString stringWithFormat:@"%@/%@",cachePath,fileName];
+    }
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:outPath]) {
+        [fileManager removeItemAtPath:outPath error:nil];
+    }
+    [fileManager createDirectoryAtPath:[outPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+    if (![fileManager createFileAtPath:outPath contents:nil attributes:nil]) {
+        return @"";
+    }
+    NSString *realPath = [self getPathWithUZSchemeURL:filePath];
+    NSData *data = [NSData dataWithContentsOfFile:realPath];
+    if (!data) {
+        return @"";
+    }
+    CCOperation action = kCCEncrypt;
+    if ([actionStr isEqualToString:@"decode"]) {
+        action = kCCDecrypt;
+    }
+    // 'key' should be 32 bytes for AES256, will be null-padded otherwise
+    char keyPtr[kCCKeySizeAES256+1];      // room for terminator (unused)
+    bzero(keyPtr, sizeof(keyPtr));      // fill with zeroes (for padding)
+    NSUInteger dataLength = [data length];
+    
+    size_t bufferSize = dataLength + kCCBlockSizeAES128;
+    void *buffer = malloc(bufferSize);
+    bzero(buffer, sizeof(buffer));
+    size_t numBytesEncrypted = 0;
+    CCCryptorStatus cryptStatus = CCCrypt(action, kCCAlgorithmAES128,
+                                          kCCOptionPKCS7Padding,
+                                          [[NSData AESKeyForPassword:AESkey] bytes],
+                                          kCCKeySizeAES256,
+                                          ivChar,   //initialization vector (optional)
+                                          [data bytes], dataLength,       //input
+                                          buffer, bufferSize,                 //output
+                                          &numBytesEncrypted);
+    if (cryptStatus == kCCSuccess) {
+        NSData *encryptData = [NSData dataWithBytesNoCopy:buffer length:numBytesEncrypted];
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:outPath];
+        [fileHandle seekToEndOfFile];
+        [fileHandle writeData:encryptData];
+        [fileHandle synchronizeFile];
+        [fileHandle closeFile];
+        return outPath;
+    } else {
+        free(buffer);
+        return @"";
     }
 }
 # pragma mark - utility

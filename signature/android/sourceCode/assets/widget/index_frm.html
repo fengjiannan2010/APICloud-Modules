@@ -224,12 +224,42 @@
 	    		})
 	    }
 	    
+	    function aesFile(){
+	    		signature = api.require('signature');
+	    		var params = {
+	    			action:'encode',
+	    			key:'boundary',
+	    			iv:'apicloud',
+	    			path:'/storage/emulated/0/Movies/test.txt',
+	    			savePath:'fs://123.txt'};
+	    		signature.aesFile(params, function(ret){
+	    			alert(JSON.stringify(ret));
+	    		});
+	    }
+	    
+	    function desFile(){
+	    		signature = api.require('signature');
+	    		var params = {
+	    			action:'decode',
+	    			key:'boundary',
+	    			iv:'apicloud',
+	    			path:'fs://123.txt',
+	    			savePath:'fs://456.txt'};
+	    		signature.aesFile(params, function(ret){
+	    			alert(JSON.stringify(ret));
+	    		});
+	    }
+	    
 	</script>
 </head>
 <body>
     <div id="wrap">
         <div id="main">
         	<br>
+        	<div class='itemtitle'>0.aesFile</div>
+				<div class="clickbtn" tapmode="active" onclick="aesFile()" >文件加密</div> 
+		<div class='itemtitle'>0.desFile</div>
+				<div class="clickbtn" tapmode="active" onclick="desFile()" >文件解密</div> 
         		<div class='itemtitle'>1.des</div>
 				<div class="clickbtn" tapmode="active" onclick="des()" >des</div> 
 				<div class='itemtitle'>1.md5</div>

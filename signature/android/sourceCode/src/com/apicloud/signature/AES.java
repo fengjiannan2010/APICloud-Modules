@@ -58,6 +58,14 @@
 
 package com.apicloud.signature;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 // A tutorial guide to using AES encryption in Android
 // First we generate a 256 bit secret key; then we use that secret key to AES encrypt a plaintext message.
 // Finally we decrypt the ciphertext to get our original message back.
@@ -76,6 +84,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
@@ -145,6 +154,40 @@ public class AES {
 		IV = new IvParameterSpec(iv);
 		
 	}
+	
+	/**
+	 * TODO Test
+	 * @param password
+	 * @param iv
+	 */
+	private void initPassword(String password, String iv) {
+		try {
+			if (password != null && !password.isEmpty()) {
+				myKeyspec = new PBEKeySpec(password.toCharArray(), salt,
+						HASH_ITERATIONS, KEY_LENGTH);
+			}
+			keyfactory = SecretKeyFactory.getInstance(KEY_GENERATION_ALG);
+			sk = keyfactory.generateSecret(myKeyspec);
+		} catch (NoSuchAlgorithmException nsae) {
+			Log.e("AESdemo",
+					"no key factory support for PBEWITHSHAANDTWOFISH-CBC");
+		} catch (InvalidKeySpecException ikse) {
+			Log.e("AESdemo", "invalid key spec for PBEWITHSHAANDTWOFISH-CBC");
+		}
+
+		// This is our secret key. We could just save this to a file instead of
+		// regenerating it
+		// each time it is needed. But that file cannot be on the device (too
+		// insecure). It could
+		// be secure if we kept it on a server accessible through https.
+		byte[] skAsByteArray = sk.getEncoded();
+		
+		skforAES = new SecretKeySpec(skAsByteArray, "AES");
+		
+		IV = new IvParameterSpec(iv.getBytes());
+		
+	}
+	
 
 	// public String aesEncryptECB(String password, byte[] plaintext) {
 	// byte[] result = null;
@@ -316,8 +359,7 @@ public class AES {
 		return plain;
 	}
 
-	private byte[] encrypt(String cmp, SecretKey sk, IvParameterSpec IV,
-			byte[] msg) {
+	private byte[] encrypt(String cmp, SecretKey sk, IvParameterSpec IV, byte[] msg) {
 		try {
 			Cipher c = Cipher.getInstance(cmp);
 			c.init(Cipher.ENCRYPT_MODE, sk, IV);
@@ -357,8 +399,7 @@ public class AES {
 		return null;
 	}
 
-	private byte[] decrypt(String cmp, SecretKey sk, IvParameterSpec IV,
-			byte[] ciphertext) {
+	private byte[] decrypt(String cmp, SecretKey sk, IvParameterSpec IV, byte[] ciphertext) {
 		try {
 			Cipher c = Cipher.getInstance(cmp);
 			c.init(Cipher.DECRYPT_MODE, sk, IV);
@@ -399,5 +440,151 @@ public class AES {
 		}
 		return null;
 	}
+	
+	
+	public File encryptFile(String key, String iv, String sourceFilePath, String destFilePath) {
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		File destFile = null;
+		File sourceFile = null;
+		try {
+			sourceFile = new File(sourceFilePath);
+			destFile = new File(destFilePath);
+			if (sourceFile.exists() && sourceFile.isFile()) {
+				if (!destFile.getParentFile().exists()) {
+					destFile.getParentFile().mkdirs();
+				}
+				initPassword(key, iv);
+				destFile.createNewFile();
+				in = new FileInputStream(sourceFile);
+				out = new FileOutputStream(destFile);
+				//Cipher cipher = initAESCipher(key, "", Cipher.DECRYPT_MODE);
+				
+				//CipherOutputStream cipherOutputStream = new CipherOutputStream(out, cipher);
+				byte[] buffer = new byte[1024];
+				int r;
+				StringBuilder builder = new StringBuilder();
+//				while ((r = in.read(buffer)) >= 0) {
+//					byte[] en = encrypt(CIPHERMODEPADDING, skforAES, IV, buffer);
+//					out.write(en, 0, r);
+//					
+//				}
+//				out.close();
+				
+				
+				while ((r = in.read(buffer)) >= 0) {
+					byte[] en = encrypt(CIPHERMODEPADDING, skforAES, IV, buffer);
+					String base64_ciphertext = Base64Encoder.encode(en);
+					builder.append(base64_ciphertext);
+					
+				}
+				out.write(buffer.toString().getBytes());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+			}
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+			}
+		}
+		
+		return destFile;
+	}
+	
+	/**
+	 * 解密文件
+	 * @param key
+	 * @param iv
+	 * @param sourceFilePath
+	 * @param destFilePath
+	 */
+	public File decryptFile(String key, String iv, String sourceFilePath, String destFilePath) {
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		File destFile = null;
+		File sourceFile = null;
+		try {
+			sourceFile = new File(sourceFilePath);
+			destFile = new File(destFilePath);
+			if (sourceFile.exists() && sourceFile.isFile()) {
+				if (!destFile.getParentFile().exists()) {
+					destFile.getParentFile().mkdirs();
+				}
+				initPassword(key, iv);
+				destFile.createNewFile();
+				in = new FileInputStream(sourceFile);
+				out = new FileOutputStream(destFile);
+				//Cipher cipher = initAESCipher(key, "", Cipher.DECRYPT_MODE);
+				
+				//CipherOutputStream cipherOutputStream = new CipherOutputStream(out, cipher);
+				byte[] buffer = new byte[1024];
+				int r;
+				StringBuilder builder = new StringBuilder();
+//				while ((r = in.read(buffer)) >= 0) {
+//					byte[] en = encrypt(CIPHERMODEPADDING, skforAES, IV, buffer);
+//					out.write(en, 0, r);
+//					
+//				}
+//				out.close();
+				
+				
+//				while ((r = in.read(buffer)) >= 0) {
+//					byte[] en = encrypt(CIPHERMODEPADDING, skforAES, IV, buffer);
+//					String base64_ciphertext = Base64Encoder.encode(en);
+//					builder.append(base64_ciphertext);
+//					
+//				}
+//				out.write(buffer.toString().getBytes());
+				
+				String string = getStringFromInputStream(in);
+				byte[] s = Base64Decoder.decodeToBytes(string);
+				String decrypted = new String(decrypt(CIPHERMODEPADDING, skforAES, IV, s));
+				out.write(decrypted.getBytes());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+			}
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+			}
+		}
+		
+		return destFile;
+	}
+	
+	public String getStringFromInputStream(InputStream a_is) {
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try {
+            br = new BufferedReader(new InputStreamReader(a_is));
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return sb.toString();
+    }
 
 }
