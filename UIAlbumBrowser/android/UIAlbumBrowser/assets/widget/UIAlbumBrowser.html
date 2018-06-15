@@ -1,0 +1,321 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>Hello APP</title>
+		<link rel="stylesheet" type="text/css" href="./css/api.css" />
+		<style>
+		
+			section {
+				position: relative;
+				top: 400px;
+				margin: 8px;
+				background-color: #fff;
+			}
+			
+			h2 {
+				position: relative;
+				height: 44px;
+				line-height: 44px;
+				color: #888;
+			}
+			
+			.active {
+				opacity: 0.7;
+			}
+			
+			div{
+				width:100%;
+				height:50px;
+				background-color:#00F;
+				text-align:center;
+				line-height:50px;
+				border-radius:5px;
+				color:#FFF;
+				margin:5px;
+				overflow:hidden;
+			}
+		</style>
+	</head>
+	<body>
+	
+			
+	
+			<h2>UIAlbumBrowser</h2>
+			 <img  id="img1" src="" alt="" width="100" height="100"/> 
+			 <img  id="img2" src="" alt="" width="100" height="100"/>
+			  <img  id="img3" src="" alt="" width="100" height="100"/> 
+			 <img  id="img4" src="" alt="" width="100" height="100"/> 
+			 
+			
+			<div tapmode="active" onclick="fnOpen()">
+				fnOpen()
+			</div>
+			<div tapmode="active" onclick="fnImagePicker()">
+				fnImagePicker()
+			</div>
+			<div tapmode="active" onclick="fnClose()">
+				fnClose()
+			</div>
+			<div tapmode="active" onclick="fnScan()">
+				fnScan()
+			</div>
+			<div tapmode="active" onclick="fnFetch()">
+				fnFetch()
+			</div>
+			<div tapmode="active" onclick="fnScanGroups()">
+				fnScanGroups()
+			</div>
+			<div tapmode="active" onclick="fnScanByGroupId()">
+				fnScanByGroupId()
+			</div>
+			<div tapmode="active" onclick="fnFetchGroup()">
+				fnFetchGroup()
+			</div>
+			<div tapmode="active" onclick="fnTransPath()">
+				fnTransPath()
+			</div>
+			<div tapmode="active" onclick="fnGetVideoDuration()">
+				fnGetVideoDuration()
+			</div>
+			
+			<div tapmode="active" onclick="fnOpenGroup()">
+				fnOpenGroup
+			</div>
+		
+	</body>
+	<script type="text/javascript" src="./script/public.js"></script>
+	<script type="text/javascript">
+				window.apiready = function() {
+					// createSocket();
+					// ttsRead();
+					// testUIActionSelector();
+					
+					setTimeout(function() {
+						//fnClose();
+						//alert('清除完成！');
+					}, 10000);
+				}
+				
+		
+		function appendImage(imageInfos){
+			var container = document.getElementById('imageContainer');
+			for(var i=0; i<imageInfos.length; i++){
+				 var image = document.createElement("img");
+				 image.src = imageInfos[i].path;
+				 image.width = 50;
+				 image.height = 50;
+				 container.appendChild(image);
+			}
+		}
+		
+		function fnRequestAlbumPermissions() {  //android不支持
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.requestAlbumPermissions({
+			}, function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		};
+		
+		//android目前没有实现
+		function fnOpen() {
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.open({
+				max : 9,
+				type:'all',
+				isOpenPreview:true,
+				selectedAll:false,
+				styles : {
+					bg : '#fff',
+					mark : {
+						icon : 'widget://image/refresh.png',
+						position : 'top_right',
+						size : 30
+					},
+					nav : {
+						bg : '#000',
+						titleColor : '#fff',
+						titleSize : 18,
+						cancelColor : '#fff',
+						cancelSize : 20,
+						finishColor : '#00f',
+						finishSize : 16
+					}
+				},
+				rotation : true
+			}, function(ret) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				}
+			});
+		};
+		
+		function fnImagePicker(){
+		var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.imagePicker({
+				max: 10,  //最多可选的图片
+				styles: {
+				    bg: '#909090',                   
+				    cameraImg:'widget://res/delete.png',
+				    //'widget://res/delete.png',
+			    mark: {                             
+			        icon:'', 
+			        //'widget://res/delete.png',                       
+			        position: 'bottom_right',      
+			        size: 30                        
+			    },
+			    nav: {                              
+			        bg: '#676547',                     
+			        cancelColor: '#f00',            
+			        cancelSize: 18,  
+			        nextStepColor: '#00f',
+			        nextStepSize: 15                 
+			    }
+			    },
+			    animation:true,
+			}, function(ret) {
+			
+			var img = document.getElementsByTagName('img');
+				// alert(ret.originalPath);
+				img[0].src = ret.originalPath;	
+			});
+		}
+		
+		function fnClose(){
+			console.log('关闭-----');
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.closePicker();
+		
+		}
+		function fnScan() {
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.scan({
+				type : 'image',
+				count : 30,
+				sort : {
+					key : 'time',
+					order : 'desc'
+				},
+				thumbnail : {
+					w : 100,
+					h : 100
+				}
+			}, function(ret) {
+				alert(JSON.stringify(ret));
+				appendImage(ret.list);
+			});
+		};
+		function fnFetch() {
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.fetch(function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		};
+		
+		var groupId_;
+		function fnScanGroups() {
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.scanGroups({
+				type : 'all',
+				thumbnail : {
+					w : 200,
+					h : 200
+				}
+			}, function(ret) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+					
+					for(var i=0; i<ret.list.length; i++){
+					  if(ret.list[i]['groupName'] == 'Camera'){
+					  	groupId_ = ret.list[i]["groupId"];
+					  	alert(groupId_);
+					  }
+					}
+				}
+			});
+		};
+		function fnScanByGroupId() {
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.scanByGroupId({
+				groupId : groupId_,
+				type : 'all',
+				count : 20,
+				sort : {
+					key : 'time',
+					order : 'desc'
+				},
+				thumbnail : {
+					w : 200,
+					h : 200
+				}
+			}, function(ret) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				}
+			});
+		};
+		function fnFetchGroup() {
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.fetchGroup(function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		};
+		function fnTransPath() {
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.transPath({
+				path : ''
+			}, function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		};
+		function fnGetVideoDuration() {
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.getVideoDuration({
+				path : ''
+			}, function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		};
+		
+		
+		function fnOpenGroup(){
+			var UIAlbumBrowser = api.require('UIAlbumBrowser');
+			UIAlbumBrowser.openGroup({
+			    rect:{
+			    	x:0,
+			    	y:0,
+			    	w: api.frameWidth,
+			    	h: api.frameHeight
+			    },
+			    selectedPaths:['/storage/emulated/0/DCIM/Camera/IMG_20180207_115858.jpg', '/storage/emulated/0/DCIM/Camera/IMG_20180529045503.jpg'],
+				groupId:groupId_,
+				fixedOn:api.frameName,
+				fixed:true
+			}, function(ret){
+				alert(JSON.stringify(ret));
+			});
+		}
+	</script>
+</html>

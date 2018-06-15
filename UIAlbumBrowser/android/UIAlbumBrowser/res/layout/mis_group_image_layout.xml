@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="#FFFFFFFF">
+    
+     <me.nereo.multi_image_selector.view.SquaredImageView
+        android:id="@+id/image"
+        android:scaleType="centerInside"
+        android:src="@drawable/mis_default_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        />
+     
+     
+     <me.nereo.multi_image_selector.view.SquaredImageView
+        android:id="@+id/coverImage"
+        android:scaleType="centerInside"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88FFFFFF"
+        android:src="@drawable/mis_group_selected_icon"
+        />
+    
+    
+</RelativeLayout>
