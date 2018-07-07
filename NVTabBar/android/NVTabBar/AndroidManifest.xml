@@ -44,12 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- moduleDemo模块中用到的Activity -->
-        <activity
-            android:name="com.apicloud.moduleDemo.DemoActivity"
-        	android:screenOrientation="portrait"
-			android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar"
-        	android:configChanges="orientation|locale" />
     </application>
 
 </manifest>

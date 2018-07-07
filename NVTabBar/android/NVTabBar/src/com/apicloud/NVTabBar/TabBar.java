@@ -1,3 +1,9 @@
+/**
+ * APICloud Modules
+ * Copyright (c) 2014-2015 by APICloud, Inc. All Rights Reserved.
+ * Licensed under the terms of the The MIT License (MIT).
+ * Please see the license.html included with this distribution for details.
+ */
 package com.apicloud.NVTabBar;
 
 import java.util.ArrayList;
@@ -17,6 +23,10 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +41,8 @@ import com.uzmap.pkg.uzcore.uzmodule.UZModuleContext;
 import com.uzmap.pkg.uzkit.UZUtility;
 
 public class TabBar extends UZModule {
+	
+	private boolean isShow;
 	
 	private static final String TAG = "TabBar";
 
@@ -51,6 +63,7 @@ public class TabBar extends UZModule {
 	private ArrayList<Item> items = new ArrayList<Item>();
 	
 	private int curSelectedIndex = 0;
+	private Config config;
 
 	public TabBar(UZWebView webView) {
 		super(webView);
@@ -65,13 +78,13 @@ public class TabBar extends UZModule {
 		itemViews.clear();
 		items.clear();
 		
-		Config config = new Config(mContext, uzContext);
+		config = new Config(context(), uzContext);
 		items = config.items;
 		
 		curSelectedIndex = config.selectedIndex;
 
 		int tabbarLayoutId = UZResourcesIDFinder.getResLayoutID("nv_tabbar_main_layout");
-		tabbarLayout = (RelativeLayout) View.inflate(mContext, tabbarLayoutId, null);
+		tabbarLayout = (RelativeLayout) View.inflate(context(), tabbarLayoutId, null);
 		tabbarLayout.setBackgroundColor(0x00000000);
 
 		initFakeBg(config, uzContext);
@@ -83,15 +96,20 @@ public class TabBar extends UZModule {
 
 		this.insertViewToCurWindow(tabbarLayout, params);
 		callback(uzContext, EVENT_TYPE_SHOW, -1);
-		setSelect(uzContext, curSelectedIndex, true, null);
+		setSelect(uzContext, curSelectedIndex, true, null, -1);
+		
+		isShow = true;
 		
 	}
+	
+	
+	private LinearLayout fakeLayout;
 
 	@SuppressWarnings("deprecation")
 	public void initFakeBg(Config config, UZModuleContext uzContext) {
 
 		int fakeLayoutId = UZResourcesIDFinder.getResIdID("fakeLayout");
-		LinearLayout fakeLayout = (LinearLayout) tabbarLayout.findViewById(fakeLayoutId);
+		fakeLayout = (LinearLayout) tabbarLayout.findViewById(fakeLayoutId);
 
 		RelativeLayout.LayoutParams fakeLayoutParam = (RelativeLayout.LayoutParams) fakeLayout.getLayoutParams();
 		fakeLayoutParam.height = config.height;
@@ -99,15 +117,14 @@ public class TabBar extends UZModule {
 		
 		Bitmap bgBitmap = getBitmap(uzContext, config.bg);
 		if(bgBitmap != null){
-			fakeLayout.setBackgroundDrawable(new BitmapDrawable(mContext.getResources(), bgBitmap));
+			fakeLayout.setBackgroundDrawable(new BitmapDrawable(context().getResources(), bgBitmap));
 		} else {
 			fakeLayout.setBackgroundColor(UZUtility.parseCssColor(config.bg));
 		}
-		
 	}
 
 	public void initBorderLine(Config config) {
-
+		
 		// border line
 		int borderLineId = UZResourcesIDFinder.getResIdID("borderLine");
 		View borderLine = tabbarLayout.findViewById(borderLineId);
@@ -121,19 +138,84 @@ public class TabBar extends UZModule {
 	}
 
 	public void jsmethod_close(UZModuleContext uzContext) {
+		tabbarLayout.clearAnimation();
 		this.removeViewFromCurWindow(tabbarLayout);
 		tabbarLayout = null;
+		isShow = false;
 	}
 
 	public void jsmethod_hide(UZModuleContext uzContext) {
+		if(!isShow){
+			return ;
+		}
 		if (tabbarLayout != null) {
-			tabbarLayout.setVisibility(View.GONE);
+			isShow = false;
+			if(uzContext.optBoolean("animation")){
+				
+				final AnimationSet set = new AnimationSet(true);
+
+				TranslateAnimation translate = new TranslateAnimation(
+
+				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, 
+
+				Animation.ABSOLUTE, 0, Animation.ABSOLUTE, fakeLayout.getMeasuredHeight());
+				set.addAnimation(translate);
+				
+				set.setDuration(300);
+				set.setFillAfter(true);
+				set.setAnimationListener(new AnimationListener() {
+					
+					@Override
+					public void onAnimationStart(Animation animation) {
+					}
+					
+					@Override
+					public void onAnimationRepeat(Animation animation) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onAnimationEnd(Animation animation) {
+						// TODO Auto-generated method stub
+					    tabbarLayout.setVisibility(View.GONE);
+					}
+				});
+				
+				tabbarLayout.startAnimation(set);
+				tabbarLayout.setVisibility(View.VISIBLE);
+				
+			} else {
+				tabbarLayout.setVisibility(View.GONE);
+			}
 		}
 	}
 
 	public void jsmethod_show(UZModuleContext uzContext) {
+		if(isShow){
+			return;
+		}
 		if (tabbarLayout != null) {
-			tabbarLayout.setVisibility(View.VISIBLE);
+			isShow = true;
+			if(uzContext.optBoolean("animation")){
+				
+				AnimationSet set = new AnimationSet(true);
+				TranslateAnimation translate = new TranslateAnimation(
+				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, 
+
+				Animation.ABSOLUTE, fakeLayout.getMeasuredHeight(), Animation.ABSOLUTE, 0);
+				set.addAnimation(translate);
+				
+				set.setDuration(300);
+				set.setFillAfter(true);
+				tabbarLayout.startAnimation(set);
+				
+				tabbarLayout.setVisibility(View.VISIBLE);
+				
+			} else {
+				tabbarLayout.setVisibility(View.VISIBLE);
+			}
+			
 		}
 	}
 	
@@ -197,23 +279,18 @@ public class TabBar extends UZModule {
 			for(int i=0; i<iconsArray.length(); i++){
 				String realPath = uzContext.makeRealPath(iconsArray.optString(i));
 				Bitmap gifFrame = UZUtility.getLocalImage(realPath);
-				animDrawable.addFrame(new BitmapDrawable(mContext.getResources(), gifFrame), interval);
+				animDrawable.addFrame(new BitmapDrawable(context().getResources(), gifFrame), interval);
 			}
 		}
 		resetAllItem(uzContext);
-		setSelect(uzContext, index, isSelect, animDrawable);
+		setSelect(uzContext, index, isSelect, animDrawable, uzContext.optInt("animatedRepetitions"));
 	}
 
 	@SuppressWarnings("deprecation")
 	public void resetAllItem(UZModuleContext uzContext) {
 		for (int i = 0; i < itemViews.size(); i++) {
 			
-			if(i == 1){
-				continue;
-			}
-			
 			View itemView = itemViews.get(i);
-
 			int itemImageId = UZResourcesIDFinder.getResIdID("itemImage");
 			ImageView itemImage = (ImageView) itemView.findViewById(itemImageId);
 
@@ -229,12 +306,11 @@ public class TabBar extends UZModule {
 
 			itemImage.setImageDrawable(ViewUtil.addStateDrawable(pressDrawable, normalDrawable));
 			itemText.setTextColor(UZUtility.parseCssColor(items.get(i).titleNormalTextColor));
-			
 		}
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void setSelect(UZModuleContext uzContext, int index, boolean isSelected, AnimationDrawable anim) {
+	public void setSelect(UZModuleContext uzContext, int index, boolean isSelected, AnimationDrawable anim, int animationType) {
 
 		View itemView = itemViews.get(index);
 
@@ -264,7 +340,11 @@ public class TabBar extends UZModule {
 		
 		if(anim != null){
 			itemImage.setImageDrawable(anim);
-			anim.setOneShot(false);
+			if(animationType <= 0){
+				anim.setOneShot(false);
+			} else {
+				anim.setOneShot(true);
+			}
 			anim.start();
 		}
 		
@@ -278,7 +358,7 @@ public class TabBar extends UZModule {
 			Item item = items.get(i);
 
 			int nv_tabbar_item_layout_id = UZResourcesIDFinder.getResLayoutID("nv_tabbar_item_layout");
-			View itemLayout = View.inflate(mContext, nv_tabbar_item_layout_id, null);
+			View itemLayout = View.inflate(context(), nv_tabbar_item_layout_id, null);
 			
 			itemLayout.setClickable(true);
 			itemLayout.setId(id);
@@ -291,7 +371,7 @@ public class TabBar extends UZModule {
 			int itemImage_id = UZResourcesIDFinder.getResIdID("itemImage");
 			final ImageView itemImage = (ImageView) itemLayout.findViewById(itemImage_id);
 
-			BadgeView badgeView = new BadgeView(mContext);
+			BadgeView badgeView = new BadgeView(context());
 			badgeView.setTargetView(imageRectLayout);
 			
 			badgeView.setVisibility(View.GONE);
@@ -300,14 +380,14 @@ public class TabBar extends UZModule {
 			FrameLayout.LayoutParams badgeParams = (FrameLayout.LayoutParams)badgeView.getLayoutParams();
 			badgeParams.gravity = Gravity.LEFT | Gravity.TOP;
 			if(config.badgeCenterX < 0){
-				badgeParams.leftMargin = (ViewUtil.getScreenWidth(mContext)/ items.size()) / 2 + item.iconWidth / 2;
+				badgeParams.leftMargin = (ViewUtil.getScreenWidth(context())/ items.size()) / 2 + item.iconWidth / 2;
 			} else {
-				badgeParams.leftMargin = config.badgeCenterX;
+				badgeParams.leftMargin = config.badgeCenterX + badgeParams.width / 2;
 			}
 			if(config.badgeCenterY < 0){
 				badgeParams.topMargin = 0;
 			} else {
-				badgeParams.topMargin = config.badgeCenterY;
+				badgeParams.topMargin = config.badgeCenterY + badgeParams.height / 2;
 			}
 			
 			setBadgeStyle(badgeView, config);
@@ -340,17 +420,27 @@ public class TabBar extends UZModule {
 			itemImageParams.topMargin = marginTop;
 			itemImage.setLayoutParams(itemImageParams);
 			
+			if(i == 2){
+				Log.i("debug", "marginTop : " + marginTop);
+			}
+			
 			
 			FrameLayout.LayoutParams imageRectParams = (FrameLayout.LayoutParams)imageRectLayout.getLayoutParams();
-			imageRectParams.height = config.height;
+			imageRectParams.height = config.height + item.itemMarginB;
 			imageRectParams.bottomMargin = item.itemMarginB;
+			
+			if(i == 2){
+				Log.i("debug", "bottomMargin : " + item.itemMarginB);
+			}
 			imageRectLayout.setLayoutParams(imageRectParams);
+			
 					
 			if(bgBmp != null){
 				imageRectLayout.setBackgroundDrawable(new BitmapDrawable(bgBmp));
 			} else {
 				imageRectLayout.setBackgroundColor(UZUtility.parseCssColor(item.itemBg));
 			}
+			
 						
 			
 			Drawable highlightDrawable = new BitmapDrawable(getBitmap(uzContext, item.highlight));
@@ -362,17 +452,16 @@ public class TabBar extends UZModule {
 			itemImage.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					
 					// XXX: note
 					// setSelect(uzContext, curSelectedIndex, false, null);
 					resetAllItem(uzContext);
 					curSelectedIndex = index;
-					setSelect(uzContext, index, true, null);
+					setSelect(uzContext, index, true, null, -1);
 					callback(uzContext, EVENT_TYPE_CLICK, index);
-					
 				}
 			});
 			
+			itemText.setSoundEffectsEnabled(false);
 			itemText.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -395,7 +484,7 @@ public class TabBar extends UZModule {
 					String ttfPath = uzContext.makeRealPath(item.ttf).replaceAll(".+widget", "widget");
 					Log.i(TAG, "== uzContext.makeRealPath == " + ttfPath);
 					try{
-						ttf = Typeface.createFromAsset(mContext.getAssets(), ttfPath);
+						ttf = Typeface.createFromAsset(context().getAssets(), ttfPath);
 					} catch (Exception e){
 						// make a try
 						ttf = Typeface.createFromFile(uzContext.makeRealPath(item.ttf).replaceAll("file://", ""));

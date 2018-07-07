@@ -59,6 +59,8 @@ public class ViewUtil {
 		return wm.getDefaultDisplay().getHeight();
 	}
 	
+	// 
+	
 	public static ShapeDrawable createRoundCornerShapeDrawable(float Radii, int borderColor) {
 
 		float[] outerR = new float[] { Radii, Radii, Radii, Radii, Radii,

@@ -110,6 +110,8 @@
 }
 
 - (void)didMoveToSuperview {
+    
+    
     if (self.itemsArray.count <= 0) {
         return;
     }
@@ -148,13 +150,21 @@
             NSString *name = [titleInfo stringValueForKey:@"ttf" defaultValue:@"Alkatip Basma Tom"];
             titleFont = [UIFont fontWithName:name size:titleSize];
         }
-        CGFloat titleHeight = [titleText sizeWithFont:titleFont
-                                             forWidth:itemWidth
-                                        lineBreakMode:NSLineBreakByCharWrapping].height;
+        
+        CGFloat titleHeight;
+        if ([titleInfo isEqualToDictionary:@{}]) {
+            titleHeight  = 0;
+            titleMarB = 0;
+        }else{
+            
+            titleHeight = [titleText sizeWithFont:titleFont
+                                         forWidth:itemWidth
+                                    lineBreakMode:NSLineBreakByCharWrapping].height;
+        }
+        
         CGFloat itemHeight = self.frame.size.height;
+        
         UIButton *itemBgBtn = [[UIButton alloc]initWithFrame:CGRectMake(itemBgViewX, lineWidth-marginB, itemWidth, itemHeight)];
-        //CGFloat itemHeight = iconHeigh+4+titleHeight+titleMarB;
-        //UIButton *itemBgBtn = [[UIButton alloc]initWithFrame:CGRectMake(itemBgViewX, self.frame.size.height-lineWidth-(itemHeight+marginB), itemWidth, itemHeight)];
         itemBgBtn.tag = idx;
         [self addSubview:itemBgBtn];
         if ([UZAppUtils isValidColor:bgImg]) {
@@ -166,6 +176,7 @@
         }
         [itemBgBtn addTarget:self action:@selector(iconTouchDown:) forControlEvents:UIControlEventTouchDown];
         [itemBgBtn addTarget:self action:@selector(iconTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+        [itemBgBtn addTarget:self action:@selector(iconTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
         
         float iconY = (itemBgBtn.bounds.size.height+marginB - (titleHeight+titleMarB) - iconHeigh)/2.0;
         UIImageView *iconView = [[UIImageView alloc]init];
@@ -182,7 +193,6 @@
         //title
         float titleY = itemBgBtn.bounds.size.height+marginB - titleMarB - titleHeight;
         UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, titleY, itemWidth, titleHeight)];
-        //UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, itemHeight-titleHeight-titleMarB, itemWidth, titleHeight)];
         titleLabel.text = titleText;
         titleLabel.font = titleFont;
         titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -213,7 +223,7 @@
     if (iconHighLi && (iconHighLi.length > 0)) {
         iconHighLi = [self.nvTBDelegate getRealPath:iconHighLi];
         [thisIconView setImage:[UIImage imageWithContentsOfFile:iconHighLi]];
-    }
+    } 
 }
 
 //click
@@ -246,6 +256,22 @@
         [thisIconView setImage:[UIImage imageWithContentsOfFile:iconSelect]];
     }
     [self.nvTBDelegate callBack:@{@"eventType":@"click",@"index":@(thisBtn.tag)}];
+}
+
+- (void)iconTouchUpOutside:(UIButton *)thisBtn {
+    if(thisBtn.selected){
+        return;
+    }
+    
+    NSDictionary *itemInfo = [self.itemsArray objectAtIndex:thisBtn.tag];
+    NSDictionary *iconInfo = [itemInfo dictValueForKey:@"icon" defaultValue:@{}];
+    NSString *iconNormal = [iconInfo stringValueForKey:@"normal" defaultValue:nil];
+    
+    UIImageView *thisIconView = [self.iconBtnArray objectAtIndex:thisBtn.tag];
+    if (iconNormal && (iconNormal.length > 0)) {
+        iconNormal = [self.nvTBDelegate getRealPath:iconNormal];
+        [thisIconView setImage:[UIImage imageWithContentsOfFile:iconNormal]];
+    }
 }
 
 - (void)menuItemDisSelected:(NSInteger)indexDefault {
@@ -285,7 +311,7 @@
 
 #pragma mark - 设置徽章 -
 
-- (void)setBadgeAtIndex:(NSUInteger)thisIndex title:(NSString *)title {
+- (void)setBadgeViewAtIndex:(NSUInteger)thisIndex title:(NSString *)title {
     UIButton *thisBtn = [self.iconBtnArray objectAtIndex:thisIndex];
     if (thisBtn == nil) {
         return;
@@ -302,7 +328,7 @@
 #pragma mark - 设置选中icon - 
 
 - (void)setSelectedIconOfIndex:(NSInteger)index
-                   selectState:(BOOL)state selectGifIcons:(NSMutableArray *)iconsArray selectInterval:(CGFloat)interval{
+                   selectState:(BOOL)state selectGifIcons:(NSMutableArray *)iconsArray selectInterval:(CGFloat)interval setAnimatedRepetitions:(int)animatedRepetitions{
   
  
     if (index >= self.iconBtnArray.count || index < 0) {
@@ -314,9 +340,6 @@
     }
 
     UIButton *thisBtn = (UIButton *)[thisIcon superview];
-//    if (thisBtn.selected && state) {
-//        return;
-//    }
     NSDictionary *itemInfo = [self.itemsArray objectAtIndex:index];
     NSDictionary *iconInfo = [itemInfo dictValueForKey:@"icon" defaultValue:@{}];
     NSString *iconSelect = [iconInfo stringValueForKey:@"selected" defaultValue:nil];
@@ -330,16 +353,13 @@
     if (titleSelect.length <= 0) {
         titleSelect = @"#ff0";
     }
-   
-    
-  
-    
+
     UILabel *thisTitle = [self.titlesArray objectAtIndex:index];
     thisBtn.selected = state;
     if (state ) {
         thisTitle.textColor = [UZAppUtils colorFromNSString:titleSelect];
         //index 选中
-        if (iconSelect && (iconSelect.length > 0)||iconsArray.count == 0) {
+        if ((iconSelect && (iconSelect.length > 0))||iconsArray.count == 0) {
             iconSelect = [self.nvTBDelegate getRealPath:iconSelect];
             [thisIcon setImage:[UIImage imageWithContentsOfFile:iconSelect]];
         
@@ -348,7 +368,7 @@
         [self menuItemDisSelected:thisBtn.tag];
     } else {
         thisTitle.textColor = [UZAppUtils colorFromNSString:titleNormal];
-        if (iconNormal && (iconNormal.length > 0)||iconsArray.count == 0) {
+        if ((iconNormal && (iconNormal.length > 0))||iconsArray.count == 0) {
             iconNormal = [self.nvTBDelegate getRealPath:iconNormal];
             [thisIcon setImage:[UIImage imageWithContentsOfFile:iconNormal]];
         }
@@ -359,7 +379,7 @@
     for (int i = 0; i < iconsArray.count; i ++) {
         
         NSString *icon =  [self.nvTBDelegate getRealPath:iconsArray[i]];
-        UIImage * imgItem = [UIImage imageNamed:[NSString stringWithFormat:icon]];
+        UIImage * imgItem = [UIImage imageNamed:[NSString stringWithFormat:@"%@", icon]];
         if (imgItem) {
             [arrayM addObject:imgItem];
         }
@@ -367,13 +387,48 @@
     //设置动画数组
     [thisIcon setAnimationImages:arrayM];
     //设置动画重复次数，默认为0，无限循环
-    [thisIcon setAnimationRepeatCount:0];
+    [thisIcon setAnimationRepeatCount:animatedRepetitions];
     //设置动画时长,
     
     CGFloat intervalTime = interval/1000.0;
     [thisIcon setAnimationDuration:intervalTime*iconsArray.count];
     //开始动画
     [thisIcon startAnimating];
+}
+
+-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+
+{
+    
+    UIView *view = [super hitTest:point withEvent:event];
+    
+    
+    
+    if (view == nil) {
+        
+        for (UIView *subView in self.subviews) {// 避免误触底部下一层UI的点击事件.
+            
+            CGPoint myPoint = [subView convertPoint:point fromView:self];
+            
+            if (CGRectContainsPoint(subView.bounds, myPoint)) {
+                for (UIView *subSubView in subView.subviews) {
+                    if ([subSubView isKindOfClass:[UIButton class]]) { // 优先让 UIButton 响应.
+                        return subSubView;
+                    }
+                }
+                
+                return subView;
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    
+    return view;
+    
 }
 
 @end

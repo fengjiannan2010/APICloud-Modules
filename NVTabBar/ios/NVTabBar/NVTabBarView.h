@@ -19,16 +19,18 @@
 @property (nonatomic, weak) id<NVTabBarViewDelegate> nvTBDelegate;
 @property (nonatomic, strong) NSArray *itemsArray;
 @property (nonatomic, assign) NSInteger selectedIndex;
+@property (nonatomic, assign) NSInteger animatedRepetitions;
+
 
 - (instancetype)initWithFrame:(CGRect)frame
                  withDelegate:(id<NVTabBarViewDelegate>)delegate
                     withStyle:(NSDictionary *)stylesInfo;
 
 //为指定位置的按钮设置徽章
-- (void)setBadgeAtIndex: (NSUInteger) idx
+- (void)setBadgeViewAtIndex: (NSUInteger) idx
                    title: (NSString *) title;
 
 - (void)setSelectedIconOfIndex:(NSInteger)index
-                   selectState:(BOOL)state selectGifIcons:(NSMutableArray *)iconsArray selectInterval:(CGFloat)interval;
+                   selectState:(BOOL)state selectGifIcons:(NSMutableArray *)iconsArray selectInterval:(CGFloat)interval setAnimatedRepetitions:(int)animatedRepetitions;
 
 @end

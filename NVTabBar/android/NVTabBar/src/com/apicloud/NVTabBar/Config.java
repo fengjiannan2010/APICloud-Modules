@@ -24,7 +24,7 @@ public class Config {
 	public int badgeSize = 6;
 	public int badgeCenterX = -1;
 	public int badgeCenterY = -1;
-
+	
 	public int selectedIndex;
 
 	public ArrayList<Item> items = new ArrayList<Item>();

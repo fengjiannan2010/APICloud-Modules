@@ -9,6 +9,7 @@
 #import "NSDictionaryUtils.h"
 #import "NVTabBarView.h"
 
+#define iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 @interface NVTabBar ()
 <NVTabBarViewDelegate>{
     NSInteger openCbId;
@@ -27,27 +28,37 @@
     if (self.NVTabBarView) {
         return;
     }
+    self.viewController.navigationController.interactivePopGestureRecognizer.delaysTouchesBegan = NO;
     openCbId = [paramsDict integerValueForKey:@"cbId" defaultValue:-1];
     NSDictionary *stylesInfo = [paramsDict dictValueForKey:@"styles" defaultValue:@{}];
     NSArray *barItems =  [paramsDict arrayValueForKey:@"items" defaultValue:@[]];
     CGFloat barHeight = [stylesInfo floatValueForKey:@"h" defaultValue:50.0];
     NSInteger selectedIdx = [paramsDict integerValueForKey:@"selectedIndex" defaultValue:-1];
-    //CGSize windowSize = [UIScreen mainScreen].bounds.size;
     CGSize windowSize = self.viewController.view.bounds.size;
     CGRect tabBarFrame = CGRectMake(0, windowSize.height-barHeight, windowSize.width, barHeight);
     _NVTabBarView = [[NVTabBarView alloc]initWithFrame:tabBarFrame withDelegate:self withStyle:stylesInfo];
     _NVTabBarView.selectedIndex = selectedIdx;
+    _NVTabBarView.animatedRepetitions = [paramsDict intValueForKey:@"animatedRepetitions" defaultValue:0];
     _NVTabBarView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     self.NVTabBarView.itemsArray = barItems;
     NSString * fixedOn = [paramsDict stringValueForKey:@"fixedOn" defaultValue:nil];
     BOOL fixed = [paramsDict boolValueForKey:@"fixed" defaultValue:YES];
     [self addSubview:self.NVTabBarView fixedOn:fixedOn fixed:fixed];
-    UIView *superv = _NVTabBarView.superview;
+    
+    
+    // !!!: 临时测试.
+//    UIView * centerView = [UIView alloc] initWithFrame:<#(CGRect)#>
+    
+    
     NSLog(@"%s",__func__);
     windowSize = _NVTabBarView.superview.bounds.size;
+    if (iPhoneX) {
+        barHeight = barHeight +34;
+    }else{
+        barHeight = barHeight;
+    }
     tabBarFrame = CGRectMake(0, windowSize.height-barHeight, windowSize.width, barHeight);
     _NVTabBarView.frame = tabBarFrame;
-    //    [self.viewController.view addSubview:self.NVTabBarView];
     [self sendResultEventWithCallbackId:openCbId dataDict:@{@"eventType":@"show"} errDict:nil doDelete:NO];
 }
 
@@ -55,14 +66,43 @@
     if (!self.NVTabBarView) {
         return;
     }
-    self.NVTabBarView.hidden = YES;
+ BOOL animation = [paramsDict boolValueForKey:@"animation" defaultValue:false];
+ if (animation == true) {
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^ {
+
+        self.NVTabBarView.alpha = 0.0;
+        NSLog(@"in animate start");
+    } completion:^(BOOL finished) {
+        NSLog(@"in animate completion");
+        self.NVTabBarView.hidden = YES;
+
+    }];
+ }else{
+     self.NVTabBarView.hidden = YES;
+
+ }
 }
 
 - (void)show:(NSDictionary *)paramsDict {
     if (!self.NVTabBarView) {
         return;
     }
-    self.NVTabBarView.hidden = NO;
+    
+    BOOL animation = [paramsDict boolValueForKey:@"animation" defaultValue:false];
+    if (animation == true) {
+        self.NVTabBarView.hidden = NO;
+        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^ {
+            self.NVTabBarView.alpha = 1.0;
+            NSLog(@"in animate start");
+        } completion:^(BOOL finished) {
+            NSLog(@"in animate completion");
+            
+        }];
+    }else{
+        self.NVTabBarView.hidden = NO;
+
+    }
+
 }
 
 - (void)close:(NSDictionary *)paramsDict {
@@ -76,16 +116,16 @@
 - (void)setBadge:(NSDictionary *)paramsDict {
     NSUInteger badgeIndex = [paramsDict integerValueForKey:@"index" defaultValue:0];
     NSString *badgeTitle = [paramsDict stringValueForKey:@"badge" defaultValue:nil];
-    [self.NVTabBarView setBadgeAtIndex:badgeIndex title:badgeTitle];
+    [self.NVTabBarView setBadgeViewAtIndex:badgeIndex title:badgeTitle];
 }
 
 - (void)setSelect:(NSDictionary *)paramsDict {
     NSInteger curIndex = [paramsDict integerValueForKey:@"index" defaultValue:0];
     BOOL selectState = [paramsDict boolValueForKey:@"selected" defaultValue:true];
-    NSMutableArray *iconsArray = [paramsDict arrayValueForKey:@"icons" defaultValue:nil];
+    NSArray *iconsArray = [paramsDict arrayValueForKey:@"icons" defaultValue:@[]];
     CGFloat interval = [paramsDict floatValueForKey:@"interval" defaultValue:300];
-
-    [self.NVTabBarView setSelectedIconOfIndex:curIndex selectState:selectState selectGifIcons:iconsArray selectInterval:interval];
+    int animatedRepetitions = [paramsDict intValueForKey:@"animatedRepetitions" defaultValue:0];
+    [self.NVTabBarView setSelectedIconOfIndex:curIndex selectState:selectState selectGifIcons:iconsArray selectInterval:interval setAnimatedRepetitions:animatedRepetitions];
 }
 
 - (void)bringToFront:(NSDictionary *)paramsDict {

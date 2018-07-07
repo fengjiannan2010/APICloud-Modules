@@ -48,12 +48,17 @@
     //填充颜色
     CGContextSetFillColorWithColor(context, bgColor.CGColor);
     // 徽章为空时,只保留一个标准 badgeSize*badgeSize 圆点 即可.
+    
+    if ([self.title isEqualToString:@"0"] || self.title == nil) {
+        return;
+    }
     if([self.title isEqualToString: @""]){
         //画圆
         CGContextAddArc(context, height/2.0, height/2.0, height/2.0, 0, 2*M_PI, 0);
         //绘制填充
         CGContextDrawPath(context, kCGPathFill);
     } else {
+        
         //画左半圆
         CGContextAddArc(context, height/2.0, height/2.0, height/2.0, M_PI/2.0, M_PI/2.0+M_PI, 0);
         CGContextDrawPath(context, kCGPathFill);
