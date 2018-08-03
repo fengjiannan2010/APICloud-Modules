@@ -205,7 +205,11 @@ public class UzSignature extends UZModule {
 		String data = moduleContext.optString("data");
 		if (data != null && !data.isEmpty()) {
 			String aesDecode = new AES().decrypt(key, data);
-			callBack(moduleContext, aesDecode, -1);
+			if (!TextUtils.isEmpty(aesDecode)) {
+				callBack(moduleContext, aesDecode, -1);
+			}else {
+				callBack(moduleContext, null, -1);
+			}
 		} else {
 			callBack(moduleContext, null, 1);
 		}

@@ -256,8 +256,11 @@ public class AES {
 	public String decrypt(String password, String ciphertext_base64) {
 		initPassword(password);
 		byte[] s = Base64Decoder.decodeToBytes(ciphertext_base64);
-		String decrypted = new String(decrypt(CIPHERMODEPADDING, skforAES, IV,
-				s));
+		byte[] bys = decrypt(CIPHERMODEPADDING, skforAES, IV, s);
+		String decrypted = null;
+		if (bys != null) {
+			decrypted = new String(bys);
+		}
 		return decrypted;
 	}
 
