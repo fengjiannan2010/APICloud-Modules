@@ -1,0 +1,341 @@
+<!DOCTYPE HTML>
+
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>Hello APP</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css" />
+		<style>
+			section {
+				position: relative;
+				top: 400px;
+				margin: 8px;
+				background-color: #fff;
+			}
+			h2 {
+				position: relative;
+				height: 44px;
+				line-height: 44px;
+				color: #888;
+			}
+			div {
+				position: relative;
+				height: 56px;
+				margin: 8px;
+				text-align: center;
+				font-size: 12px;
+				line-height: 56px;
+				color: #fff;
+				background-color: #354399;
+				background-clip: padding;
+				box-shadow: 0 0 1px 1px #ccc;
+				border-radius: 2px;
+			}
+			.active {
+				opacity: 0.7;
+			}
+		</style>
+	</head>
+	<body>
+			<h2>UIChatTools</h2>
+			<div tapmode="active" onclick="fnOpen()">
+				打开聊天输入框
+			</div>
+			<div tapmode="active" onclick="fnSetAppendButton()">
+				设置附加功能按钮
+			</div>
+			<div tapmode="active" onclick="fnFaceListener()">
+				表情面板相关功能事件的监听
+			</div>
+			<div tapmode="active" onclick="fnAddFace()">
+				添加表情包
+			</div>
+			<div tapmode="active" onclick="fnImageListener()">
+				选择图片相关功能事件的监听
+			</div>
+			<div tapmode="active" onclick="fnToolsListener()">
+				用户点击工具栏内某个按钮事件的监听
+			</div>
+			<div tapmode="active" onclick="fnRecorderListener()">
+				录音相关功能事件的监听
+			</div>
+			<div tapmode="active" onclick="fnStartTimer()">
+				开始录音后开启录音计时器，使录音页面计时器开始计时。
+			</div>
+			<div tapmode="active" onclick="fnClose()">
+				关闭聊天输入框
+			</div>
+			<div tapmode="active" onclick="fnShow()">
+				显示聊天输入框
+			</div>
+			<div tapmode="active" onclick="fnHide()">
+				隐藏聊天输入框
+			</div>
+			<div tapmode="active" onclick="fnPopupKeyboard()">
+				弹出键盘
+			</div>
+			<div tapmode="active" onclick="fnCloseKeyboard()">
+				收起键盘
+			</div>
+			<div tapmode="active" onclick="fnPopupBoard()">
+				弹出表情、附加功能面板
+			</div>
+			<div tapmode="active" onclick="fnCloseBoard()">
+				收起表情、附加功能面板
+			</div>
+			<div tapmode="active" onclick="fnValue()">
+				获取或设置聊天输入框的内容
+			</div>
+			<div tapmode="active" onclick="fnInsertValue()">
+				向聊天输入框的指定位置插入内容
+			</div>
+			<div tapmode="active" onclick="fnAddEventListener()">
+				添加输入框相关事件的监听
+			</div>
+			<div tapmode="active" onclick="fnSetPlaceholder()">
+				重设聊天输入框的占位提示文本
+			</div>
+			
+			<div tapmode="active" onclick="fnValue1()">
+				fnValue1
+			</div>
+			
+			
+			<div tapmode="active" onclick="fnAddFace()">
+				fnAddFace
+			</div>
+			
+			
+			<div tapmode="active" onclick="fnSetPlaceholder()"></div>
+			<div tapmode="active" onclick="fnSetPlaceholder()"></div>
+			<div tapmode="active" onclick="fnSetPlaceholder()"></div>
+			<div tapmode="active" onclick="fnSetPlaceholder()"></div>
+			<div tapmode="active" onclick="fnSetPlaceholder()"></div>
+			
+			</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript">
+		function fnOpen() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.open({
+				useFacePath:false,
+				chatBox : {
+					placeholder : '请输入姓名', //（可选项）字符串类型；占位提示文本，不传则无占位符
+					autoFocus : true, //（可选项）布尔类型；是否在打开时自动获取焦点，并弹出键盘；默认：false
+					maxRows : 3 //（可选项）数字类型；显示的最大行数（高度自适应），超过最大行数则可上下滚动查看；默认：6
+				},
+				styles : {
+					bgColor : '#D1D1D1', //（可选项）字符串类型；模块背景色配置，支持rgb、rgba、#；默认：#D1D1D1
+					margin : 10,//（可选项）数字类型；输入框左右边距；默认：10
+				},
+				tools : {
+					h : 44, //（可选项）数字类型；工具栏高度；默认：44
+					iconSize : 30, //（可选项）数字类型；工具栏每个按钮的图标大小；默认：30
+					recorder : {//（可选项）JSON 对象；录音按钮配置，若不传则工具栏无录音按钮，本功能需配合recorderListener 接口使用
+						normal : 'widget://image/recorder.png', //字符串类型；常态下的图标，要求本地路径（fs、widget）
+						selected : 'widget://image/recorder.png1' //字符串类型；选中后的图标，要求本地路径（fs、widget），同按下时高亮状态公用同一个图标
+					},
+					image : {//（可选项）JSON 对象；选图片按钮配置，若不传则工具栏无选图按钮，本功能需配合imageListener 接口使用
+						normal : 'widget://image/image.png', //字符串类型；常态下的图标，要求本地路径（fs、widget）
+						selected : 'widget://image/image1.png' //字符串类型；选中后的图标，要求本地路径（fs、widget），同按下时高亮状态公用同一个图标
+					},
+					video : {//（可选项）JSON 对象；录像按钮配置，若不传则工具栏无录像按钮，本功能需配合toolsListener 接口使用
+						normal : 'widget://image/video.png', //字符串类型；常态下的图标，要求本地路径（fs、widget）
+						selected : 'widget://image/video1.png' //字符串类型；选中后的图标，要求本地路径（fs、widget），同按下时高亮状态公用同一个图标
+					},
+					packet : {//（可选项）JSON 对象；红包按钮配置，若不传则工具栏无红包按钮，本功能需配合toolsListener 接口使用
+						normal : 'widget://image/packet.png', //字符串类型；常态下的图标，要求本地路径（fs、widget）
+						selected : 'widget://image/packet1.png' //字符串类型；选中后的图标，要求本地路径（fs、widget），同按下时高亮状态公用同一个图标
+					},
+					face : {//（可选项）JSON 对象；表情按钮配置，若不传则工具栏无表情按钮，本功能需配合 faceListener、addFace 接口以及 emoticons 参数使用
+						normal : 'widget://image/face.png', //字符串类型；常态下的图标，要求本地路径（fs、widget）
+						selected : 'widget://image/face1.png' //字符串类型；选中后的图标，要求本地路径（fs、widget），同按下时高亮状态公用同一个图标
+					},
+					append : {//（可选项）JSON 对象；附加按钮配置，若不传则工具栏无附加按钮，本功能需配合 setAppendButton 接口使用
+						normal : 'widget://image/append.png', //字符串类型；常态下的图标，要求本地路径（fs、widget）
+						selected : 'widget://image/append1.png' //字符串类型；选中后的图标，要求本地路径（fs、widget），同按下时高亮状态公用同一个图标
+					}
+				},
+				emotions : ['widget://res/emoticons/emotion', 'widget://res/emoticons/append1', 'widget://res/emoticons/append2']
+			}, function(ret) {
+				
+			});
+		};
+		
+		function fnSetAppendButton() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.setAppendButton({
+				styles : {
+					row : 2, //（可选项）数字类型；每页显示按钮行数；默认：2
+					column : 4, //（可选项）数字类型；每页显示按钮的列数；默认：4
+					iconSize : 30, //（可选项）数字类型；按钮图标大小；默认：30
+					titleSize : 13, //（可选项）数字类型；按钮下标题文字大小；默认：13
+					titleColor : '#D7BCE4' //（可选项）字符串类型；按钮下标题文字颜色；默认：#000
+				},
+				buttons : [{
+					normal : 'widget://image/CZ.png', //字符串类型；按钮常态下的背景图标路径，要求本地路径（fs、widget）
+					highlight : 'widget://image/CZ1.png', //字符串类型；按钮被点击时高亮状态的背景图标路径，要求本地路径（fs、widget）
+					title : '充值' //字符串类型；按钮下边的标题文字
+				}, {
+					normal : 'widget://image/XC.png', //字符串类型；按钮常态下的背景图标路径，要求本地路径（fs、widget）
+					highlight : 'widget://image/XC1.png', //字符串类型；按钮被点击时高亮状态的背景图标路径，要求本地路径（fs、widget）
+					title : '携程' //字符串类型；按钮下边的标题文字
+				}, {
+					normal : 'widget://image/SM.png', //字符串类型；按钮常态下的背景图标路径，要求本地路径（fs、widget）
+					highlight : 'widget://image/SM1.png', //字符串类型；按钮被点击时高亮状态的背景图标路径，要求本地路径（fs、widget）
+					title : '扫码' //字符串类型；按钮下边的标题文字
+				}, {
+					normal : 'widget://image/KC.png', //字符串类型；按钮常态下的背景图标路径，要求本地路径（fs、widget）
+					highlight : 'widget://image/KC1.png', //字符串类型；按钮被点击时高亮状态的背景图标路径，要求本地路径（fs、widget）
+					title : '面对面快传' //字符串类型；按钮下边的标题文字
+				}]
+			}, function(ret) {
+				api.alert({
+					msg : '点击了第' + ret.index + '个按钮'
+				});
+			});
+		};
+		function fnFaceListener() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.faceListener({
+				name : 'face'
+			}, function(ret) {
+				api.alert({
+					msg : JSON.stringify(ret)
+				});
+			});
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.faceListener({
+				name : 'appendFace'
+			}, function(ret) {
+			});
+		};
+		function fnAddFace() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.addFace({
+				path : 'widget://res/emoticons/append1'
+			}, function(ret) {
+				api.alert({
+					msg : JSON.stringify(ret)
+				});
+			});
+		};
+		function fnImageListener() {
+			//监听相册按钮点击事件
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.imageListener({
+				name : 'send'
+			}, function(ret) {
+				alert(JSON.stringify(ret));
+			});
+		};
+		function fnToolsListener() {
+			//监听 talkback 按钮
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.toolsListener(function(ret) {
+				if (ret.eventType == 'packet') {
+					api.openWin({
+						name : 'packet',
+						url : './packet.html',
+						pageParam : {
+							name : '发红包'
+						}
+					});
+				}
+			});
+		};
+		function fnRecorderListener() {
+		
+			console.log("recorderListener");
+		
+			//监听 talkback 按钮
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.recorderListener({
+			}, function(ret) {
+				alert(JSON.stringify(ret));
+			});
+		};
+		function fnStartTimer() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.startTimer();
+		};
+		function fnClose() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.close();
+		};
+		function fnShow() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.show();
+		};
+		function fnHide() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.hide();
+		};
+		function fnPopupKeyboard() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.popupKeyboard();
+		};
+		function fnCloseKeyboard() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.closeKeyboard();
+		};
+		function fnPopupBoard() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.popupBoard({
+				target : 'extras'
+			});
+		};
+		function fnCloseBoard() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.closeBoard();
+		};
+		function fnValue() {
+			var UIChatTools = api.require('UIChatTools');
+			//设置输入框的值
+			UIChatTools.value({
+				msg : '设置输入框的值'
+			});
+		};
+		
+		function fnValue1() {
+		var UIChatTools = api.require('UIChatTools');
+			UIChatTools.value(function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		};
+		
+		
+		
+		function fnInsertValue() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.insertValue({
+				index : 10,
+				msg : '这里是插入的字符串'
+			});
+		};
+		function fnAddEventListener() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.addEventListener({
+				name : 'move'
+			}, function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+				}
+			});
+		};
+		function fnSetPlaceholder() {
+			var UIChatTools = api.require('UIChatTools');
+			UIChatTools.setPlaceholder({
+				placeholder : '修改了占位提示内容'
+			});
+		};
+	</script>
+</html>

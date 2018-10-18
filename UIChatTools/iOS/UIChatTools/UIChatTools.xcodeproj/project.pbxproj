@@ -1,0 +1,407 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7557C6F31EEFF56A0008D2C8 /* UIChatToolsSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7557C6F21EEFF56A0008D2C8 /* UIChatToolsSingleton.m */; };
+		A24E60011E5455AB0097029E /* UZUIChatTools.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E5FF81E5455AB0097029E /* UZUIChatTools.m */; };
+		A24E60021E5455AB0097029E /* UZUIChatToolsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E5FFA1E5455AB0097029E /* UZUIChatToolsView.m */; };
+		A24E60031E5455AB0097029E /* UZUIChatToolsInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E5FFC1E5455AB0097029E /* UZUIChatToolsInputView.m */; };
+		A24E60041E5455AB0097029E /* UZUIChatToolsBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E5FFE1E5455AB0097029E /* UZUIChatToolsBoard.m */; };
+		A24E60051E5455AB0097029E /* UIView+UIChatTools.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E60001E5455AB0097029E /* UIView+UIChatTools.m */; };
+		A24E60161E5455BF0097029E /* UZUIChatToolsImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E600A1E5455BF0097029E /* UZUIChatToolsImageCell.m */; };
+		A24E60171E5455BF0097029E /* UZUIChatToolsImageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E600C1E5455BF0097029E /* UZUIChatToolsImageModel.m */; };
+		A24E60181E5455BF0097029E /* UZUIChatToolsImagePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E600E1E5455BF0097029E /* UZUIChatToolsImagePickerView.m */; };
+		A24E60191E5455BF0097029E /* UZUIChatToolsImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E60101E5455BF0097029E /* UZUIChatToolsImageUtils.m */; };
+		A24E601B1E5455BF0097029E /* UZUIChatToolsRecorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E60151E5455BF0097029E /* UZUIChatToolsRecorderView.m */; };
+		A24E603F1E5456E20097029E /* UZUIChatToolsAppendButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E60371E5456E20097029E /* UZUIChatToolsAppendButton.m */; };
+		A24E60401E5456E20097029E /* UZUIChatToolsAppendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E603A1E5456E20097029E /* UZUIChatToolsAppendCell.m */; };
+		A24E60411E5456E20097029E /* UZUIChatToolsAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E603C1E5456E20097029E /* UZUIChatToolsAttachment.m */; };
+		A24E60421E5456E20097029E /* UZUIChatToolsBasicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24E603E1E5456E20097029E /* UZUIChatToolsBasicCell.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A24E5FE91E54557E0097029E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		7557C6F11EEFF56A0008D2C8 /* UIChatToolsSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIChatToolsSingleton.h; sourceTree = "<group>"; };
+		7557C6F21EEFF56A0008D2C8 /* UIChatToolsSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIChatToolsSingleton.m; sourceTree = "<group>"; };
+		A24E5FEB1E54557E0097029E /* libUIChatTools.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libUIChatTools.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A24E5FF71E5455AB0097029E /* UZUIChatTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatTools.h; sourceTree = "<group>"; };
+		A24E5FF81E5455AB0097029E /* UZUIChatTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatTools.m; sourceTree = "<group>"; };
+		A24E5FF91E5455AB0097029E /* UZUIChatToolsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsView.h; sourceTree = "<group>"; };
+		A24E5FFA1E5455AB0097029E /* UZUIChatToolsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsView.m; sourceTree = "<group>"; };
+		A24E5FFB1E5455AB0097029E /* UZUIChatToolsInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsInputView.h; sourceTree = "<group>"; };
+		A24E5FFC1E5455AB0097029E /* UZUIChatToolsInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsInputView.m; sourceTree = "<group>"; };
+		A24E5FFD1E5455AB0097029E /* UZUIChatToolsBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsBoard.h; sourceTree = "<group>"; };
+		A24E5FFE1E5455AB0097029E /* UZUIChatToolsBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsBoard.m; sourceTree = "<group>"; };
+		A24E5FFF1E5455AB0097029E /* UIView+UIChatTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+UIChatTools.h"; sourceTree = "<group>"; };
+		A24E60001E5455AB0097029E /* UIView+UIChatTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+UIChatTools.m"; sourceTree = "<group>"; };
+		A24E60091E5455BF0097029E /* UZUIChatToolsImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsImageCell.h; sourceTree = "<group>"; };
+		A24E600A1E5455BF0097029E /* UZUIChatToolsImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsImageCell.m; sourceTree = "<group>"; };
+		A24E600B1E5455BF0097029E /* UZUIChatToolsImageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsImageModel.h; sourceTree = "<group>"; };
+		A24E600C1E5455BF0097029E /* UZUIChatToolsImageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsImageModel.m; sourceTree = "<group>"; };
+		A24E600D1E5455BF0097029E /* UZUIChatToolsImagePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsImagePickerView.h; sourceTree = "<group>"; };
+		A24E600E1E5455BF0097029E /* UZUIChatToolsImagePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsImagePickerView.m; sourceTree = "<group>"; };
+		A24E600F1E5455BF0097029E /* UZUIChatToolsImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsImageUtils.h; sourceTree = "<group>"; };
+		A24E60101E5455BF0097029E /* UZUIChatToolsImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsImageUtils.m; sourceTree = "<group>"; };
+		A24E60141E5455BF0097029E /* UZUIChatToolsRecorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsRecorderView.h; sourceTree = "<group>"; };
+		A24E60151E5455BF0097029E /* UZUIChatToolsRecorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsRecorderView.m; sourceTree = "<group>"; };
+		A24E60221E54561F0097029E /* NSDictionaryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionaryUtils.h; sourceTree = "<group>"; };
+		A24E60231E54561F0097029E /* UIViewControllerExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewControllerExtension.h; sourceTree = "<group>"; };
+		A24E60241E54561F0097029E /* UZAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZAppDelegate.h; sourceTree = "<group>"; };
+		A24E60251E54561F0097029E /* UZAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZAppUtils.h; sourceTree = "<group>"; };
+		A24E60261E54561F0097029E /* UZModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZModule.h; sourceTree = "<group>"; };
+		A24E60361E5456E20097029E /* UZUIChatToolsAppendButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsAppendButton.h; sourceTree = "<group>"; };
+		A24E60371E5456E20097029E /* UZUIChatToolsAppendButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsAppendButton.m; sourceTree = "<group>"; };
+		A24E60391E5456E20097029E /* UZUIChatToolsAppendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsAppendCell.h; sourceTree = "<group>"; };
+		A24E603A1E5456E20097029E /* UZUIChatToolsAppendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsAppendCell.m; sourceTree = "<group>"; };
+		A24E603B1E5456E20097029E /* UZUIChatToolsAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsAttachment.h; sourceTree = "<group>"; };
+		A24E603C1E5456E20097029E /* UZUIChatToolsAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsAttachment.m; sourceTree = "<group>"; };
+		A24E603D1E5456E20097029E /* UZUIChatToolsBasicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UZUIChatToolsBasicCell.h; sourceTree = "<group>"; };
+		A24E603E1E5456E20097029E /* UZUIChatToolsBasicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UZUIChatToolsBasicCell.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A24E5FE81E54557E0097029E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A24E5FE21E54557D0097029E = {
+			isa = PBXGroup;
+			children = (
+				A24E5FED1E54557E0097029E /* UIChatTools */,
+				A24E5FEC1E54557E0097029E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A24E5FEC1E54557E0097029E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A24E5FEB1E54557E0097029E /* libUIChatTools.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A24E5FED1E54557E0097029E /* UIChatTools */ = {
+			isa = PBXGroup;
+			children = (
+				A24E5FF71E5455AB0097029E /* UZUIChatTools.h */,
+				A24E5FF81E5455AB0097029E /* UZUIChatTools.m */,
+				A24E5FF91E5455AB0097029E /* UZUIChatToolsView.h */,
+				A24E5FFA1E5455AB0097029E /* UZUIChatToolsView.m */,
+				A24E5FFB1E5455AB0097029E /* UZUIChatToolsInputView.h */,
+				A24E5FFC1E5455AB0097029E /* UZUIChatToolsInputView.m */,
+				A24E5FFD1E5455AB0097029E /* UZUIChatToolsBoard.h */,
+				A24E5FFE1E5455AB0097029E /* UZUIChatToolsBoard.m */,
+				7557C6F11EEFF56A0008D2C8 /* UIChatToolsSingleton.h */,
+				7557C6F21EEFF56A0008D2C8 /* UIChatToolsSingleton.m */,
+				A24E5FFF1E5455AB0097029E /* UIView+UIChatTools.h */,
+				A24E60001E5455AB0097029E /* UIView+UIChatTools.m */,
+				A24E60211E54561F0097029E /* HeadFile */,
+				A24E60351E5456E20097029E /* AppendTool */,
+				A24E60381E5456E20097029E /* FaceTool */,
+				A24E60081E5455BF0097029E /* ImageTool */,
+				A24E60111E5455BF0097029E /* RecorderTool */,
+			);
+			path = UIChatTools;
+			sourceTree = "<group>";
+		};
+		A24E60081E5455BF0097029E /* ImageTool */ = {
+			isa = PBXGroup;
+			children = (
+				A24E60091E5455BF0097029E /* UZUIChatToolsImageCell.h */,
+				A24E600A1E5455BF0097029E /* UZUIChatToolsImageCell.m */,
+				A24E600B1E5455BF0097029E /* UZUIChatToolsImageModel.h */,
+				A24E600C1E5455BF0097029E /* UZUIChatToolsImageModel.m */,
+				A24E600D1E5455BF0097029E /* UZUIChatToolsImagePickerView.h */,
+				A24E600E1E5455BF0097029E /* UZUIChatToolsImagePickerView.m */,
+				A24E600F1E5455BF0097029E /* UZUIChatToolsImageUtils.h */,
+				A24E60101E5455BF0097029E /* UZUIChatToolsImageUtils.m */,
+			);
+			path = ImageTool;
+			sourceTree = "<group>";
+		};
+		A24E60111E5455BF0097029E /* RecorderTool */ = {
+			isa = PBXGroup;
+			children = (
+				A24E60141E5455BF0097029E /* UZUIChatToolsRecorderView.h */,
+				A24E60151E5455BF0097029E /* UZUIChatToolsRecorderView.m */,
+			);
+			path = RecorderTool;
+			sourceTree = "<group>";
+		};
+		A24E60211E54561F0097029E /* HeadFile */ = {
+			isa = PBXGroup;
+			children = (
+				A24E60221E54561F0097029E /* NSDictionaryUtils.h */,
+				A24E60231E54561F0097029E /* UIViewControllerExtension.h */,
+				A24E60241E54561F0097029E /* UZAppDelegate.h */,
+				A24E60251E54561F0097029E /* UZAppUtils.h */,
+				A24E60261E54561F0097029E /* UZModule.h */,
+			);
+			path = HeadFile;
+			sourceTree = "<group>";
+		};
+		A24E60351E5456E20097029E /* AppendTool */ = {
+			isa = PBXGroup;
+			children = (
+				A24E60361E5456E20097029E /* UZUIChatToolsAppendButton.h */,
+				A24E60371E5456E20097029E /* UZUIChatToolsAppendButton.m */,
+			);
+			path = AppendTool;
+			sourceTree = "<group>";
+		};
+		A24E60381E5456E20097029E /* FaceTool */ = {
+			isa = PBXGroup;
+			children = (
+				A24E60391E5456E20097029E /* UZUIChatToolsAppendCell.h */,
+				A24E603A1E5456E20097029E /* UZUIChatToolsAppendCell.m */,
+				A24E603B1E5456E20097029E /* UZUIChatToolsAttachment.h */,
+				A24E603C1E5456E20097029E /* UZUIChatToolsAttachment.m */,
+				A24E603D1E5456E20097029E /* UZUIChatToolsBasicCell.h */,
+				A24E603E1E5456E20097029E /* UZUIChatToolsBasicCell.m */,
+			);
+			path = FaceTool;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A24E5FEA1E54557E0097029E /* UIChatTools */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A24E5FF41E54557E0097029E /* Build configuration list for PBXNativeTarget "UIChatTools" */;
+			buildPhases = (
+				A24E5FE71E54557E0097029E /* Sources */,
+				A24E5FE81E54557E0097029E /* Frameworks */,
+				A24E5FE91E54557E0097029E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UIChatTools;
+			productName = UIChatTools;
+			productReference = A24E5FEB1E54557E0097029E /* libUIChatTools.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A24E5FE31E54557D0097029E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = APICloud;
+				TargetAttributes = {
+					A24E5FEA1E54557E0097029E = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 8DYK63463V;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A24E5FE61E54557E0097029E /* Build configuration list for PBXProject "UIChatTools" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A24E5FE21E54557D0097029E;
+			productRefGroup = A24E5FEC1E54557E0097029E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A24E5FEA1E54557E0097029E /* UIChatTools */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A24E5FE71E54557E0097029E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7557C6F31EEFF56A0008D2C8 /* UIChatToolsSingleton.m in Sources */,
+				A24E603F1E5456E20097029E /* UZUIChatToolsAppendButton.m in Sources */,
+				A24E60011E5455AB0097029E /* UZUIChatTools.m in Sources */,
+				A24E60051E5455AB0097029E /* UIView+UIChatTools.m in Sources */,
+				A24E60171E5455BF0097029E /* UZUIChatToolsImageModel.m in Sources */,
+				A24E60191E5455BF0097029E /* UZUIChatToolsImageUtils.m in Sources */,
+				A24E60181E5455BF0097029E /* UZUIChatToolsImagePickerView.m in Sources */,
+				A24E60041E5455AB0097029E /* UZUIChatToolsBoard.m in Sources */,
+				A24E601B1E5455BF0097029E /* UZUIChatToolsRecorderView.m in Sources */,
+				A24E60021E5455AB0097029E /* UZUIChatToolsView.m in Sources */,
+				A24E60161E5455BF0097029E /* UZUIChatToolsImageCell.m in Sources */,
+				A24E60421E5456E20097029E /* UZUIChatToolsBasicCell.m in Sources */,
+				A24E60401E5456E20097029E /* UZUIChatToolsAppendCell.m in Sources */,
+				A24E60031E5455AB0097029E /* UZUIChatToolsInputView.m in Sources */,
+				A24E60411E5456E20097029E /* UZUIChatToolsAttachment.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A24E5FF21E54557E0097029E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A24E5FF31E54557E0097029E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A24E5FF51E54557E0097029E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 8DYK63463V;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A24E5FF61E54557E0097029E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 8DYK63463V;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A24E5FE61E54557E0097029E /* Build configuration list for PBXProject "UIChatTools" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A24E5FF21E54557E0097029E /* Debug */,
+				A24E5FF31E54557E0097029E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A24E5FF41E54557E0097029E /* Build configuration list for PBXNativeTarget "UIChatTools" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A24E5FF51E54557E0097029E /* Debug */,
+				A24E5FF61E54557E0097029E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A24E5FE31E54557D0097029E /* Project object */;
+}

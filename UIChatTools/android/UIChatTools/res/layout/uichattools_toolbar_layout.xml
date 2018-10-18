@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:id="@+id/maskLayout">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#FFF4F4F4"
+        android:id="@+id/chatBoxLayoutId">
+
+        <RelativeLayout
+            android:id="@+id/sendLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/sendBtn"
+                android:layout_width="56dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/inputField"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/uichattools_sendbtn_bg"
+                android:text="@string/uichattools_send_text"
+                android:textColor="@android:color/white" />
+
+            <EditText
+                android:id="@+id/inputField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_toLeftOf="@id/sendBtn"
+                android:background="@drawable/uichattools_input_bg"
+                android:maxLines="5"
+                android:minHeight="40dp"
+                android:padding="3dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/toolsbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sendLayout"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/recordBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/uichattools_voice_record_selecter" />
+
+            <ImageView
+                android:id="@+id/imageBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/uichattools_image_selecter" />
+
+            <ImageView
+                android:id="@+id/cameraBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/uichattools_camera_selector" />
+
+            <ImageView
+                android:id="@+id/redPacketBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/uichattools_hongbao_selector" />
+
+            <ImageView
+                android:id="@+id/faceBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/uichattools_face_selector" />
+
+            <ImageView
+                android:id="@+id/otherBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/uichattools_plus_selector" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/showPanel"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_below="@id/toolsbarLayout"
+            android:background="#FFFFFFFF"
+            android:visibility="gone" >
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
