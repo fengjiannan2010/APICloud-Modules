@@ -32,6 +32,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListPopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.apicloud.UIAlbumBrowser.UIAlbumBrowser;
@@ -145,7 +147,7 @@ public class MultiImageSelectorFragment extends Fragment {
 		return fragmentView;
 	}
 
-	@Override
+	@SuppressLint("NewApi") @Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
@@ -165,35 +167,48 @@ public class MultiImageSelectorFragment extends Fragment {
 
 		int footer_id = ResUtils.getInstance().getViewId(getContext(), "footer");
 		mPopupAnchorView = view.findViewById(footer_id);
+		
+		int category_btn_id = ResUtils.getInstance().getViewId(getContext(), "category_btn");
+
+		// ==================== //
+		mCategoryText = (TextView) view.findViewById(category_btn_id);
+		if (UIAlbumBrowser.mUZModuleContext != null && UIAlbumBrowser.config != null) {
+			mCategoryText.setTextColor(UZUtility.parseCssColor(UIAlbumBrowser.config.navRightColor));
+		}
+		// ==================== //
+
+		
 
 		if (Utils.hasNavBar(mContext)) {
 			// MarginLayoutParams params =
 			// (MarginLayoutParams)mPopupAnchorView.getLayoutParams();
 			// params.bottomMargin = Utils.getNavigationBarHeight(mContext);
-
-			((Activity) mContext).getWindow().getDecorView().findViewById(android.R.id.content).setPadding(0, 0, 0, Utils.getNavigationBarHeight(mContext));
-
+			//((Activity) mContext).getWindow().getDecorView().findViewById(android.R.id.content).setPadding(0, 0, 0, Utils.getNavigationBarHeight(mContext));
+			
+			RelativeLayout.LayoutParams mPopupParams = (RelativeLayout.LayoutParams)mPopupAnchorView.getLayoutParams();
+			mPopupParams.height = Utils.getNavigationBarHeight(mContext) + UZUtility.dipToPix(30);
+			
+            RelativeLayout.LayoutParams mCategoryParams = (RelativeLayout.LayoutParams)mCategoryText.getLayoutParams();
+            mCategoryParams.height = UZUtility.dipToPix(30);
+            mCategoryParams.removeRule(RelativeLayout.CENTER_VERTICAL);
+            mCategoryParams.topMargin = UZUtility.dipToPix(5);
+            
+			RelativeLayout.LayoutParams mGridParams = (RelativeLayout.LayoutParams)mGridView.getLayoutParams();
+			mGridParams.bottomMargin =  UZUtility.dipToPix(30);
+			
 		}
 
-		// ====================
+		// ==================== //
 		if (UIAlbumBrowser.mUZModuleContext != null && UIAlbumBrowser.config != null) {
 			mPopupAnchorView.setBackgroundColor(UZUtility.parseCssColor(UIAlbumBrowser.config.navBg));
 		}
-		// ====================
+		// ==================== //
 
-		int category_btn_id = ResUtils.getInstance().getViewId(getContext(), "category_btn");
-
-		// ====================
-		mCategoryText = (TextView) view.findViewById(category_btn_id);
-		if (UIAlbumBrowser.mUZModuleContext != null && UIAlbumBrowser.config != null) {
-			mCategoryText.setTextColor(UZUtility.parseCssColor(UIAlbumBrowser.config.navRightColor));
-		}
-		// ====================
-
+		
 		int mis_folder_all_id = ResUtils.getInstance().getStringId(getContext(), "mis_folder_all");
 		mCategoryText.setText(mis_folder_all_id);
 		mCategoryText.setOnClickListener(new View.OnClickListener() {
-			@SuppressLint("NewApi")
+			@SuppressLint("NewApi")                 
 			@Override
 			public void onClick(View view) {
 
@@ -214,9 +229,7 @@ public class MultiImageSelectorFragment extends Fragment {
 
 		mGridView.setAdapter(mImageAdapter);
 		
-		
-		
-		
+		mImageAdapter.setShowPreview(UIAlbumBrowser.config.isOpenPreview);
 		// TODO: ===>
 		if(UIAlbumBrowser.config.isOpenPreview){
 			setOnItemClickListenerForImageAdapter(mode);
@@ -240,6 +253,7 @@ public class MultiImageSelectorFragment extends Fragment {
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
 			}
+			
 		});
 		mFolderAdapter = new FolderAdapter(getActivity());
 	}
@@ -248,7 +262,6 @@ public class MultiImageSelectorFragment extends Fragment {
 	
 	public void setOnItemClickListenerForImageAdapter(final int mode){
 			mImageAdapter.setOnItemClickListener(new OnItemClickListener() {
-			
 			@Override
 			public void onItemClick(GridView gridView, int position) {
 				if (mImageAdapter.isShowCamera()) {
@@ -269,12 +282,24 @@ public class MultiImageSelectorFragment extends Fragment {
 				Intent intent = new Intent(getContext(), MultiImageSelectorPreviewActivity.class);
 				currentImages = mImageAdapter.getData();
 				
+				if(mImageAdapter.isShowCamera()){
+					position = position - 1;
+				}
+				
 				if(currentImages.get(position).isVideo){
 					return;
 				}
 				intent.putExtra("position", position);
 				intent.putExtra("maxCount", UIAlbumBrowser.config.max);
+				intent.putExtra("isShowCamera", mImageAdapter.isShowCamera());
 				((Activity)getContext()).startActivityForResult(intent, 2);
+			}
+
+			@Override
+			public void onCameraClick() {
+				if (mImageAdapter.isShowCamera()) {
+					showCameraAction();
+				}
 			}
 		});
 	}
@@ -284,6 +309,9 @@ public class MultiImageSelectorFragment extends Fragment {
 		mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+			
+			Log.i("debug", "Grid Item Click");
+			
 			if (mImageAdapter.isShowCamera()) {
 				if (i == 0) {
 					showCameraAction();
@@ -296,7 +324,25 @@ public class MultiImageSelectorFragment extends Fragment {
 				selectImageFromGrid(image, mode);
 			}
 		}
-	});
+		});
+		
+		mImageAdapter.setOnItemClickListener(new OnItemClickListener() {
+			
+			@Override
+			public void onItemClick(GridView gridView, int position) {
+				Log.i("debug", "Grid Item Click");
+			}
+			
+			@Override
+			public void onCameraClick() {
+				if (mImageAdapter.isShowCamera()) {
+						showCameraAction();
+				}
+			}
+			
+			@Override
+			public void gotoPreview(int position) {}
+		});
 	}
 
 	/**
@@ -376,7 +422,6 @@ public class MultiImageSelectorFragment extends Fragment {
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		// load image data
 		getActivity().getSupportLoaderManager().initLoader(LOADER_ALL, null, mLoaderCallback);
 	}
 
@@ -482,7 +527,8 @@ public class MultiImageSelectorFragment extends Fragment {
 			requestPermissions(new String[] { permission }, requestCode);
 		}
 	}
-
+	
+	
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode == REQUEST_STORAGE_WRITE_ACCESS_PERMISSION) {
@@ -546,14 +592,12 @@ public class MultiImageSelectorFragment extends Fragment {
 						return;
 					}
 					
-					Log.i("debug", "result : " + resultList.size());
-					
 					resultList.add(image.path);
 					if (mCallback != null) {
 						mCallback.onImageSelected(image);
 					}
 				}
-				mImageAdapter.select(image);
+				mImageAdapter.select(image, UIAlbumBrowser.config.max);
 			} else if (mode == MODE_SINGLE) {
 				if (mCallback != null) {
 					mCallback.onSingleImageSelected(image.path);
@@ -664,20 +708,20 @@ public class MultiImageSelectorFragment extends Fragment {
 									folder.images = imageList;
 									mResultFolder.add(folder);
 								} else {
-									f.images.add(image);
+									if(image != null){
+										f.images.add(image);
+									}
 								}
 							}
 						}
-
 					} while (data.moveToNext());
 
 					for (int i = 0; i < mResultFolder.size(); i++) {
 						Folder folder = mResultFolder.get(i);
 						Collections.sort(folder.images, new ImageSorter());
 					}
-
+					
 					Collections.sort(images, new ImageSorter());
-
 					mImageAdapter.setData(images);
 					if (resultList != null && resultList.size() > 0) {
 						mImageAdapter.setDefaultSelected(resultList);
@@ -692,6 +736,7 @@ public class MultiImageSelectorFragment extends Fragment {
 
 		@Override
 		public void onLoaderReset(Loader<Cursor> loader) {
+			
 		}
 	};
 
@@ -699,9 +744,9 @@ public class MultiImageSelectorFragment extends Fragment {
 		@Override
 		public int compare(Image arg0, Image arg1) {
 			if (arg0 == null || arg1 == null) {
-				return -1;
+				return 0;
 			}
-			return (int) (arg1.time - arg0.time);
+			return arg1.time.compareTo(arg0.time);
 		}
 	}
 

@@ -6,6 +6,7 @@
  */
 package me.nereo.multi_image_selector.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -38,6 +39,7 @@ public class HackyViewPager extends ViewPager {
     	return false;
     }
 
+    @SuppressLint("ClickableViewAccessibility") 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return !isLocked && super.onTouchEvent(event);

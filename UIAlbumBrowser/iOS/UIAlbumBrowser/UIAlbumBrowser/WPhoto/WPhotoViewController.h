@@ -16,6 +16,8 @@
 @interface WPhotoViewController : UIViewController
 
 @property (assign, nonatomic) NSInteger selectPhotoOfMax;/**< 选择照片的最多张数 */
+@property (assign, nonatomic) BOOL showCamera;
+
 
 /** 回调方法 */
 @property (nonatomic, copy) void(^selectPhotosBack)(NSMutableArray *photosArr);

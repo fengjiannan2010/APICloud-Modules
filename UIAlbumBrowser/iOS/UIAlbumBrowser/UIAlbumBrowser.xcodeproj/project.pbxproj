@@ -45,6 +45,9 @@
 		759AF7781E8117750077C30F /* UIView+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 759AF7601E8117750077C30F /* UIView+Category.m */; };
 		759AF7791E8117750077C30F /* UIViewController+Frame.m in Sources */ = {isa = PBXBuildFile; fileRef = 759AF7621E8117750077C30F /* UIViewController+Frame.m */; };
 		B61D403E20CD7F280040FE5D /* UIBlockButtonForAlbumBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = B61D403D20CD7F280040FE5D /* UIBlockButtonForAlbumBrowser.m */; };
+		B6B3236E2140C74800AF4D1D /* OpenAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B3236D2140C74800AF4D1D /* OpenAlbumCell.m */; };
+		B6B323CC2141365C00AF4D1D /* OpenAlbumDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6B323CB2141365C00AF4D1D /* OpenAlbumDetailController.m */; };
+		B6C0DE4C20DE4EF500EC9128 /* GroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B6C0DE4B20DE4EF500EC9128 /* GroupCell.m */; };
 		B6CF44E92005B9F100FC15DB /* AlbumBrowserSinglen.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CF44E82005B9F000FC15DB /* AlbumBrowserSinglen.m */; };
 		B6ED58BB20C5539000261238 /* PHAssetCollection+UZPhotoRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = B6ED58BA20C5539000261238 /* PHAssetCollection+UZPhotoRepresentation.m */; };
 		B6F13E2B1F6FDF8000AD98CF /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F13E2A1F6FDF8000AD98CF /* UIView+Toast.m */; };
@@ -177,6 +180,12 @@
 		759AF7621E8117750077C30F /* UIViewController+Frame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Frame.m"; sourceTree = "<group>"; };
 		B61D403C20CD7F280040FE5D /* UIBlockButtonForAlbumBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIBlockButtonForAlbumBrowser.h; sourceTree = "<group>"; };
 		B61D403D20CD7F280040FE5D /* UIBlockButtonForAlbumBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIBlockButtonForAlbumBrowser.m; sourceTree = "<group>"; };
+		B6B3236C2140C74800AF4D1D /* OpenAlbumCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenAlbumCell.h; sourceTree = "<group>"; };
+		B6B3236D2140C74800AF4D1D /* OpenAlbumCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenAlbumCell.m; sourceTree = "<group>"; };
+		B6B323CA2141365C00AF4D1D /* OpenAlbumDetailController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenAlbumDetailController.h; sourceTree = "<group>"; };
+		B6B323CB2141365C00AF4D1D /* OpenAlbumDetailController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenAlbumDetailController.m; sourceTree = "<group>"; };
+		B6C0DE4A20DE4EF500EC9128 /* GroupCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupCell.h; sourceTree = "<group>"; };
+		B6C0DE4B20DE4EF500EC9128 /* GroupCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupCell.m; sourceTree = "<group>"; };
 		B6CF44E72005B9F000FC15DB /* AlbumBrowserSinglen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlbumBrowserSinglen.h; sourceTree = "<group>"; };
 		B6CF44E82005B9F000FC15DB /* AlbumBrowserSinglen.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AlbumBrowserSinglen.m; sourceTree = "<group>"; };
 		B6ED58B920C5539000261238 /* PHAssetCollection+UZPhotoRepresentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PHAssetCollection+UZPhotoRepresentation.h"; sourceTree = "<group>"; };
@@ -353,6 +362,12 @@
 				7570296B1E7A70A2005B6E76 /* HeadFile */,
 				7570298F1E7A70E9005B6E76 /* UZUIAlbumBrowser.h */,
 				757029901E7A70E9005B6E76 /* UZUIAlbumBrowser.m */,
+				B6C0DE4A20DE4EF500EC9128 /* GroupCell.h */,
+				B6C0DE4B20DE4EF500EC9128 /* GroupCell.m */,
+				B6B3236C2140C74800AF4D1D /* OpenAlbumCell.h */,
+				B6B3236D2140C74800AF4D1D /* OpenAlbumCell.m */,
+				B6B323CA2141365C00AF4D1D /* OpenAlbumDetailController.h */,
+				B6B323CB2141365C00AF4D1D /* OpenAlbumDetailController.m */,
 				B6CF44E72005B9F000FC15DB /* AlbumBrowserSinglen.h */,
 				B6CF44E82005B9F000FC15DB /* AlbumBrowserSinglen.m */,
 				B61D403C20CD7F280040FE5D /* UIBlockButtonForAlbumBrowser.h */,
@@ -577,7 +592,9 @@
 			files = (
 				757029911E7A70E9005B6E76 /* UZUIAlbumBrowser.m in Sources */,
 				750718B31E7FCDDC000AA992 /* UIApplication+MemoryLeak.m in Sources */,
+				B6B3236E2140C74800AF4D1D /* OpenAlbumCell.m in Sources */,
 				759AF7781E8117750077C30F /* UIView+Category.m in Sources */,
+				B6C0DE4C20DE4EF500EC9128 /* GroupCell.m in Sources */,
 				759AF7751E8117750077C30F /* PhotoStore.m in Sources */,
 				750718B61E7FCDDC000AA992 /* UISplitViewController+MemoryLeak.m in Sources */,
 				750718B91E7FCDDC000AA992 /* UIViewController+MemoryLeak.m in Sources */,
@@ -599,6 +616,7 @@
 				759AF7661E8117750077C30F /* PhotoBrowseViewModel.m in Sources */,
 				750718B51E7FCDDC000AA992 /* UIPageViewController+MemoryLeak.m in Sources */,
 				759AF7651E8117750077C30F /* PhotoBrowseController.m in Sources */,
+				B6B323CC2141365C00AF4D1D /* OpenAlbumDetailController.m in Sources */,
 				759AF76D1E8117750077C30F /* PhotoCacheManager.mm in Sources */,
 				759AF7681E8117750077C30F /* PhotoGroupViewController.m in Sources */,
 				759AF7691E8117750077C30F /* PhotoGroupViewModel.m in Sources */,

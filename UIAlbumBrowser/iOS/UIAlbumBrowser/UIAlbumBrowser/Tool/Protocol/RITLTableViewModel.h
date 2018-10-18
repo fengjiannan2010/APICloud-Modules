@@ -54,9 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  当前位置的cell是否允许点击
-
- @param indexPath 当前位置的indexPath
- @return
  */
 - (BOOL)shouldHighlightRowAtIndexPath:(nullable NSIndexPath *)indexPath;
 
@@ -72,8 +69,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  当前section的footerView的高度
-
- @param section 
  */
 - (CGFloat)heightForFooterInSection:(NSInteger)section;
 

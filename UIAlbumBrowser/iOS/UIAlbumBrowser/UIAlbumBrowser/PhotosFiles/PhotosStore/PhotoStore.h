@@ -24,6 +24,15 @@ NS_AVAILABLE_IOS(8_0) @interface PhotoStore : NSObject<PHPhotoLibraryChangeObser
 + (instancetype)storeWithConfiguration:(PhotoStoreConfiguraion *)configuration;
 
 
+/// 获取photos提供的所有的智能分类相册组
+- (void)fetchAlbumRegularGroups:(void(^)(NSArray <PHAssetCollection *> *))complete;
+/// 获取的将'胶卷相册'放在第一位
+//- (void)fetchAlbumRegularGroupsByUserLibrary:(void(^)(NSArray <PHAssetCollection *> *))complete;
+
+/// 权限检测
++ (void)authorizationStatusAllow:(void(^)(void))allowHander denied:(void(^)(void))deniedHander;
+/// 权限通过进行的handler
++ (void)handlerWithAuthorizationAllow:(void(^)(void))hander;
 #pragma mark - 相册组
 
 /** 获取photos提供的所有的智能分类相册组，与config属性无关 */
@@ -34,7 +43,7 @@ NS_AVAILABLE_IOS(8_0) @interface PhotoStore : NSObject<PHPhotoLibraryChangeObser
  *  根据photos提供的智能分类相册组
  *  根据config中的groupNamesConfig属性进行筛别
  */
-- (void)fetchDefaultPhotosGroup:(void(^)(NSArray <PHAssetCollection *> *)) groups;
+//- (void)fetchDefaultPhotosGroup:(void(^)(NSArray <PHAssetCollection *> *)) groups;
 
 
 /**
@@ -47,9 +56,7 @@ NS_AVAILABLE_IOS(8_0) @interface PhotoStore : NSObject<PHPhotoLibraryChangeObser
 #pragma mark - 处理相册的方法
 /**
  获取某个相册的所有照片的简便方法
- 
- @param group
- @return
+
  */
 + (PHFetchResult *)fetchPhotos:(PHAssetCollection *)group;
 

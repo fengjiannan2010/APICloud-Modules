@@ -8,6 +8,7 @@
 #import "PhotoStoreConfiguraion.h"
 #import "AlbumBrowserSinglen.h"
 
+#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
 NSString * ConfigurationCameraRoll = @"Camera Roll";
 NSString * ConfigurationAllPhotos = @"All Photos";
 NSString * ConfigurationHidden = @"Hidden";
@@ -31,25 +32,35 @@ static NSArray <NSString *>*  groupNames;
 {
     if (self == [PhotoStoreConfiguraion class])
     {
-   
-//        if ( [AlbumBrowserSinglen.sharedSingleton.openType  isEqualToString:@"image"]) {
-//               groupNames = @[@"所有照片",@"相机胶卷",@"隐藏",@"慢动作",@"屏幕快照",@"全景照片",@"定时拍照",@"最近添加",@"最近删除",@"连拍快照",@"喜爱",@"自拍"];
-//        }else{
-//
-//              groupNames = @[@"所有照片",@"相机胶卷",@"隐藏",@"慢动作",@"屏幕快照",@"视频",@"全景照片",@"定时拍照",@"最近添加",@"最近删除",@"连拍快照",@"喜爱",@"自拍"];
-//        }
-//         groupNames = @[@"所有照片",@"相机胶卷",@"隐藏",@"慢动作",@"屏幕快照",@"视频",@"全景照片",@"定时拍照",@"最近添加",@"最近删除",@"连拍快照",@"喜爱",@"自拍"];
         
     }
 }
 
 -(NSArray *)groupNamesConfig
 {
+    
+    NSArray *languages = [NSLocale preferredLanguages];
+    NSString *currentLanguage = [languages objectAtIndex:0];
+    NSLog( @"currentLanguage%@" , currentLanguage);
+    
             if ( [AlbumBrowserSinglen.sharedSingleton.openType  isEqualToString:@"image"]) {
-                   groupNames = @[@"所有照片",@"相机胶卷",@"隐藏",@"慢动作",@"屏幕快照",@"全景照片",@"定时拍照",@"最近添加",@"最近删除",@"连拍快照",@"喜爱",@"自拍"];
+                if([currentLanguage isEqualToString:@"en-CN"]){
+                    
+                  
+               groupNames = @[@"All Photos",@"Camera Roll",@"Slo-mo",@"Screenshots",@"Panoramas",@"Time-lapse",@"Recently Added",@"Bursts",@"Favorites",@"Selfies",@"Live Photos"];
+        
+                }else{
+                   groupNames = @[@"所有照片",@"相机胶卷",@"慢动作",@"屏幕快照",@"全景照片",@"定时拍照",@"最近添加",@"连拍快照",@"个人收藏",@"自拍",@"实况照片",@"延时摄影",@"Live Photo"];
+                }
             }else{
     
-                  groupNames = @[@"所有照片",@"相机胶卷",@"隐藏",@"慢动作",@"屏幕快照",@"视频",@"全景照片",@"定时拍照",@"最近添加",@"最近删除",@"连拍快照",@"喜爱",@"自拍"];
+                if([currentLanguage isEqualToString:@"en-CN"]){
+                 
+                 groupNames = @[@"All Photos",@"Camera Roll",@"Slo-mo",@"Screenshots",@"Videos",@"Panoramas",@"Time-lapse",@"Recently Added",@"Bursts",@"Favorites",@"Selfies",@"Live Photos"];
+                }else{
+                groupNames = @[@"所有照片",@"相机胶卷",@"慢动作",@"屏幕快照",@"视频",@"全景照片",@"定时拍照",@"最近添加",@"连拍快照",@"个人收藏",@"自拍",@"实况照片",@"延时摄影",@"Live Photo"];
+                }
+            
             }
     return groupNames;
 }

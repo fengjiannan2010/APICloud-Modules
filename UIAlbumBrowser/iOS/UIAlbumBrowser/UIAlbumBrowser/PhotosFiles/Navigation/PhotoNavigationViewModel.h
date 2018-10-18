@@ -32,7 +32,6 @@ extern CGSize const PhotoOriginSize;
 
 @property (nonatomic, strong) NSDictionary * _Nullable paramsDict;
 
-//@property (nonatomic, weak) UZUIAlbumBrowser * _Nullable uiAlbumBrowser;
 
 
 @end

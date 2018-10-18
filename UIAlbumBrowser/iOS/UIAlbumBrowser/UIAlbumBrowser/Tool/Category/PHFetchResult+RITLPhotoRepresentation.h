@@ -52,7 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  转成ObjectType的泛型数组
 
- @param arrayObject
  */
 - (void)transToArrayComplete:(void(^)(NSArray <id> *, PHFetchResult *)) arrayObject;
 

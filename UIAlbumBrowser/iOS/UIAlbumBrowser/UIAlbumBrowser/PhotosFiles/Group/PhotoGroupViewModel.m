@@ -33,9 +33,6 @@
 -(void)dealloc
 {
     [[PhotoCacheManager sharedInstace] resetMaxSelectedCount];
-#ifdef RITLDebug
-    NSLog(@"Dealloc %@",NSStringFromClass([self class]));
-#endif
 }
 
 
@@ -133,16 +130,7 @@
         
     }];
     
-    //   [_photoStore fetchPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull groups) {
-    //
-    //       __strong typeof(weakSelf) strongSelf = weakSelf;
-    //
-    //       strongSelf.groups = groups;
-    //
-    //       //进行回调
-    //       if (strongSelf.fetchGroupsBlock)  strongSelf.fetchGroupsBlock(strongSelf.groups);
-    //
-    //   }];
+
 }
 
 -(CGSize)imageSize
@@ -166,7 +154,6 @@
     
     [collection representationImageWithSize:self.imageSize complete:^(NSString * _Nonnull title, NSUInteger count, UIImage * _Nullable image) {
         
-        //
         NSString * appendTitle = [NSString stringWithFormat:@"%@(%@)",NSLocalizedString(title,@""),@(count)];
         
         complete(title,image,appendTitle,count);

@@ -4,8 +4,10 @@
     android:versionCode="2"
     android:versionName="1.0.0" >
 
-    <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="21"/>
-    
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="21" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -13,55 +15,61 @@
         android:resizeable="true"
         android:smallScreens="true"
         android:xlargeScreens="true" />
-    
-    <!-- 访问网络  -->
+
+    <!-- 访问网络 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- 写外部存储  -->
+    <!-- 写外部存储 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!-- 获取运营商信息，用于支持提供运营商信息相关的接口-->
+    <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- 访问wifi网络信息,wifi信息可用于进行网络定位-->
+    <!-- 访问wifi网络信息,wifi信息可用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- 控制振动器-->
+    <!-- 控制振动器 -->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- 读取手机当前的状态-->
+    <!-- 读取手机当前的状态 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    
-    <application android:name="com.uzmap.pkg.uzapp.UZApplication"
+
+    <application
+        android:name="com.uzmap.pkg.uzapp.UZApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/uz_icon"
         android:label="UIAlbumBrowser"
-        android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true">
-        <meta-data android:name="uz_version" android:value="1.2.0" />
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="uz_version"
+            android:value="1.2.0" />
+
         <activity
             android:name="com.uzmap.pkg.EntranceActivity"
+            android:configChanges="orientation|locale|keyboardHidden|keyboard|screenLayout|screenSize|smallestScreenSize"
             android:label="UIAlbumBrowser"
-        	android:screenOrientation="portrait"
-        	android:configChanges="orientation|locale|keyboardHidden|keyboard|screenLayout|screenSize|smallestScreenSize" >
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
-        	android:configChanges="orientation|screenSize"
-        	android:theme="@style/AppTheme"
-        	android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity" />
-        
+            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme" />
         <activity
+            android:name="me.nereo.multi_image_selector.MultiImageSelectorPreviewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:name="me.nereo.multi_image_selector.MultiImageSelectorPreviewActivity"/>
-        
-        
+            android:theme="@style/AppTheme" />
+
         <provider
-        	android:name="com.apicloud.UIAlbumBrowser.MyProvider"
-        	android:authorities="com.apicloud.pkg.sdk" 
-        	/>
-        
+            android:name="com.apicloud.UIAlbumBrowser.MyProvider"
+            android:authorities="com.apicloud.pkg.sdk" />
+
+        <activity
+            android:name="com.apicloud.UIAlbumBrowser.videoActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
     </application>
 
 </manifest>

@@ -90,8 +90,6 @@ typedef PhotoCompleteBlock9 BrowerQuarityStatusChangeBlock;
 
 /**
  滚动视图结束滚动的方法
- 
- @param scrollView
  */
 - (void)viewModelScrollViewDidEndDecelerating:(UIScrollView *_Nullable)scrollView;
 
@@ -99,8 +97,6 @@ typedef PhotoCompleteBlock9 BrowerQuarityStatusChangeBlock;
 
 /**
  高清状态发生变化
- 
- @param scrollView
  */
 - (void)highQualityStatusShouldChanged:(UIScrollView *_Nullable)scrollView;
 

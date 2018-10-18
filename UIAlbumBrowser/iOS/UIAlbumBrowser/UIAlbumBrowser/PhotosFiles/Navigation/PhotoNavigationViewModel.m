@@ -34,14 +34,6 @@ CGSize const PhotoOriginSize = {-100,-100};
     
 }
 
-//-(void)setMaxNumberOfSelectedPhoto:(NSUInteger)maxNumberOfSelectedPhoto
-//
-//{
-//    _maxNumberOfSelectedPhoto = maxNumberOfSelectedPhoto;
-//    
-//    [PhotoCacheManager sharedInstace].maxNumberOfSelectedPhoto = maxNumberOfSelectedPhoto;
-//}
-
 
 -(void)setBridgeGetImageBlock:(void (^)(NSArray<UIImage *> * _Nonnull))BridgeGetImageBlock
 {

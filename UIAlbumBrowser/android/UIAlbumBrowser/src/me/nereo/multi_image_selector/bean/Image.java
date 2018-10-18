@@ -15,7 +15,7 @@ import android.text.TextUtils;
 public class Image {
     public String path;
     public String name;
-    public long time;
+    public Long time;
     public boolean isVideo;
     
     public long duration;

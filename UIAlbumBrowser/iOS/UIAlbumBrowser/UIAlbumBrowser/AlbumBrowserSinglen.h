@@ -12,7 +12,8 @@
 
 
 @property(strong,nonatomic) NSString *openType;
-
+@property(strong,nonatomic) NSString *position;
+@property(strong,nonatomic) NSDictionary *openAlbumDict;
 @property(assign,nonatomic) BOOL isOpenPreview;
 @property(assign,nonatomic) BOOL selectAll;
 

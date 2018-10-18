@@ -7,7 +7,6 @@
 package me.nereo.multi_image_selector;
 
 import java.util.List;
-
 import me.nereo.multi_image_selector.adapter.ImageGridAdapter;
 import me.nereo.multi_image_selector.bean.Image;
 import me.nereo.multi_image_selector.utils.ResUtils;
@@ -77,11 +76,16 @@ public class MultiImageSelectorPreviewActivity extends Activity{
 		}
 	}
 	
-	
 	public void configView(ViewPager viewPager){
 		
 		Intent intent = getIntent();
 		int position = intent.getIntExtra("position", 0);
+		
+/*		boolean isShowCamera = intent.getBooleanExtra("isShowCamera", false);
+		if(isShowCamera){
+			position -= 1;
+		}
+*/		
 		viewPager.setCurrentItem(position);
 		
 		final int maxCount = intent.getIntExtra("maxCount", 9);
@@ -244,5 +248,4 @@ public class MultiImageSelectorPreviewActivity extends Activity{
 			container.removeView((View) object);
 		}
 	}
-	
 }

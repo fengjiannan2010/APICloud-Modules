@@ -184,16 +184,6 @@
                 stongSelf.ritl_PhotoBrowerSimpleTapHandleBlock(stongSelf);
             }
             
-            /********** 此处不再返回原始比例，如需此功能，请清除此处注释 2017-01-04 ***********/
-            /*
-             if (stongSelf.bottomScrollView.zoomScale != 1.0f)
-             {
-             //单击缩小
-             [stongSelf.bottomScrollView setZoomScale:1.0f animated:true];
-             }
-             */
-            /*************************************************************************/
-            
         }];
     }
 }

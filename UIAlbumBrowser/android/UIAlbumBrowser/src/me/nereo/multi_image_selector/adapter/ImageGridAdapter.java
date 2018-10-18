@@ -19,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
@@ -35,6 +36,8 @@ import java.util.List;
 import me.nereo.multi_image_selector.bean.Image;
 import me.nereo.multi_image_selector.utils.ResUtils;
 import me.nereo.multi_image_selector.utils.Utils;
+import me.nereo.multi_image_selector.view.SquaredImageView;
+import me.nereo.multi_image_selector.view.SquaredImageView.OnClickListener;
 
 /**
  * 图片Adapter
@@ -51,6 +54,8 @@ public class ImageGridAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private boolean showCamera = true;
     private boolean showSelectIndicator = true;
+    
+    private boolean isShowPreview = false;
 
     private List<Image> mImages = new ArrayList<Image>();
     public static List<Image> mSelectedImages = new ArrayList<Image>();
@@ -94,12 +99,21 @@ public class ImageGridAdapter extends BaseAdapter {
     public boolean isShowCamera(){
         return showCamera;
     }
+    
+    public void setShowPreview(boolean isShowPreview){
+    	this.isShowPreview = isShowPreview;
+    }
 
     /**
      * 选择某个图片，改变选择状态
      * @param image
      */
-    public void select(Image image) {
+    public void select(Image image, int count) {
+    	if(mSelectedImages.size() == count && !mSelectedImages.contains(image)){
+    		int mis_msg_amount_limit_id = ResUtils.getInstance().getStringId(mContext, "mis_msg_amount_limit");
+			Toast.makeText(mContext, mis_msg_amount_limit_id, Toast.LENGTH_SHORT).show();
+    		return;
+    	}
         if(mSelectedImages.contains(image)){
             mSelectedImages.remove(image);
         }else{
@@ -162,7 +176,7 @@ public class ImageGridAdapter extends BaseAdapter {
     @Override
     public int getItemViewType(int position) {
         if(showCamera){
-            return position==0 ? TYPE_CAMERA : TYPE_NORMAL;
+            return position == 0 ? TYPE_CAMERA : TYPE_NORMAL;
         }
         return TYPE_NORMAL;
     }
@@ -183,12 +197,12 @@ public class ImageGridAdapter extends BaseAdapter {
             return mImages.get(i);
         }
     }
-
+    
     @Override
     public long getItemId(int i) {
         return i;
     }
-
+    
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
@@ -207,6 +221,14 @@ public class ImageGridAdapter extends BaseAdapter {
                 		takePhotoImage.setImageBitmap(bmp);
                 	}
                 }
+                view.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						if(mOnItemClickListener != null){
+							mOnItemClickListener.onCameraClick();
+						}
+					}
+				});
                 return view;
             }
         }
@@ -226,7 +248,7 @@ public class ImageGridAdapter extends BaseAdapter {
         
         final int position = i;
         
-        if(mOnItemClickListener != null){
+        if(mOnItemClickListener != null && isShowPreview){
         	holder.indicator.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -234,12 +256,25 @@ public class ImageGridAdapter extends BaseAdapter {
 				}
 			});
         	
-        	holder.image.setOnClickListener(new View.OnClickListener() {
+//        	holder.image.setOnClickListener(new View.OnClickListener() {
+//				@Override
+//				public void onClick(View arg0) {
+//					mOnItemClickListener.gotoPreview(position);
+//				}
+//			});
+        	((SquaredImageView)holder.image).setTouchEnable(true);
+        	((SquaredImageView)holder.image).setOnClickListener(new OnClickListener() {
+				
 				@Override
-				public void onClick(View arg0) {
+				public void onClickCorner() {
+					mOnItemClickListener.onItemClick(mGridView, position);
+				}
+				
+				@Override
+				public void onClick() {
 					mOnItemClickListener.gotoPreview(position);
 				}
-			});
+			}, UIAlbumBrowser.config.markPosition);
         }
         
         if(getItem(i).isVideo){
@@ -248,12 +283,14 @@ public class ImageGridAdapter extends BaseAdapter {
         } else {
            holder.timeLabel.setVisibility(View.GONE);
         }
+        
         return view;
     }
     
     public interface OnItemClickListener{
     	void onItemClick(GridView gridView, int position);
     	void gotoPreview(int position);
+    	void onCameraClick();
     }
     
     private OnItemClickListener mOnItemClickListener;
@@ -375,5 +412,4 @@ public class ImageGridAdapter extends BaseAdapter {
             }
         }
     }
-
 }

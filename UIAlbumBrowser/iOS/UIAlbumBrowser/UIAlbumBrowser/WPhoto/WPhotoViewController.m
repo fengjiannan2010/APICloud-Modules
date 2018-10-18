@@ -51,13 +51,9 @@
 #pragma mark - **************** 懒加载
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     [self makeNav];
-    
     self.view.backgroundColor = UIColorFromRGB(0xffffff);
-    
-    
     [self.view addSubview:[self ado_collectionView]];
     
     [self getAllPhotos];
@@ -173,7 +169,13 @@
     
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
     {
-        return self.allPhotoArr.count +1;
+        if (self.showCamera) {
+            return self.allPhotoArr.count +1;
+
+        }else{
+            return self.allPhotoArr.count;
+
+        }
     }
     
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -182,79 +184,102 @@
         NSDictionary *stylesInfo = UZAlbumSingleton.sharedSingleton.stylesInfo;
         NSString *cameraImg = [stylesInfo stringValueForKey:@"cameraImg" defaultValue:@""];
         NSString *cameraPath = [UZAppUtils getPathWithUZSchemeURL:cameraImg];
-      
-  
-        if (_allPhotoArr.count >indexPath.row-1) {
-            NSString *cellId = [NSString stringWithFormat:@"cell%ld", (long)indexPath.row-1];
 
-            myPhotoCell *cell = (myPhotoCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
+        if (self.showCamera) {
+            if (_allPhotoArr.count >indexPath.row-1) {
+                NSString *cellId = [NSString stringWithFormat:@"cell%ld", (long)indexPath.row-1];
+                myPhotoCell *cell = (myPhotoCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
 
-            if ([phoneVersion integerValue] >= 8) {
                 
-                if (indexPath.row == 0) {
-                    if (![cameraPath isEqualToString:@""]) {
-
-                        cell.photoView.image = [UIImage imageWithContentsOfFile:cameraPath];
-
+                if ([phoneVersion integerValue] >= 8) {
+                    
+                    
+                    if (indexPath.row == 0) {
+                        if (![cameraPath isEqualToString:@""]) {
+                            
+                            cell.photoView.image = [UIImage imageWithContentsOfFile:cameraPath];
+                            
+                        }else{
+                            
+                            cell.photoView.image = [UIImage imageNamed:@"res_UIAlbumBrowser/CAM1.png"];
+                            
+                        }
+                        cell.signImage.hidden = YES;
                     }else{
-
-                        cell.photoView.image = [UIImage imageNamed:@"res_UIAlbumBrowser/CAM1.png"];
-
+                        PHAsset *asset = _allPhotoArr[_allPhotoArr.count - indexPath.item];
+                        cell.progressView.hidden = YES;
+                        cell.representedAssetIdentifier = asset.localIdentifier;
+                        CGFloat scale = [UIScreen mainScreen].scale;
+                        CGSize cellSize = cell.frame.size;
+                        CGSize AssetGridThumbnailSize = CGSizeMake(cellSize.width * scale, cellSize.height * scale);
+                        [_imageManager requestImageForAsset:asset
+                                                 targetSize:AssetGridThumbnailSize
+                                                contentMode:PHImageContentModeDefault
+                                                    options:nil
+                                              resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                                                  if ([cell.representedAssetIdentifier isEqualToString:asset.localIdentifier]) {
+                                                      cell.photoView.image = result;
+                                                  }
+                                              }];
                     }
-                    cell.signImage.hidden = YES;
+                    
+                } else {
+                    
+                    
+                    if (!cell.photoView.image) {
+                        cell.progressView.hidden = YES;
+                        NSURL *url = self.allPhotoArr[self.allPhotoArr.count - indexPath.row+1 ];
+                        ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
+                        [assetLibrary assetForURL:url resultBlock:^(ALAsset *asset) {
+                            UIImage *image = [UIImage imageWithCGImage:asset.thumbnail];
+                            cell.photoView.image = image;
+                        } failureBlock:^(NSError *error) {
+                            NSLog(@"error=%@", error);
+                        }];
+                    }
+                }
+                
+                return cell;
+            }
+            else {
+                myPhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
+                
+                cell.backgroundColor = [UIColor whiteColor];
+                if (![cameraPath isEqualToString:@""] ) {
+                    
+                    cell.photoView.image = [UIImage imageWithContentsOfFile:cameraPath];
+                    
                 }else{
-                    PHAsset *asset = _allPhotoArr[_allPhotoArr.count - indexPath.item];
-                    cell.progressView.hidden = YES;
-                    cell.representedAssetIdentifier = asset.localIdentifier;
-                    CGFloat scale = [UIScreen mainScreen].scale;
-                    CGSize cellSize = cell.frame.size;
-                    CGSize AssetGridThumbnailSize = CGSizeMake(cellSize.width * scale, cellSize.height * scale);
-                    [_imageManager requestImageForAsset:asset
-                                             targetSize:AssetGridThumbnailSize
-                                            contentMode:PHImageContentModeDefault
-                                                options:nil
-                                          resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                                              if ([cell.representedAssetIdentifier isEqualToString:asset.localIdentifier]) {
-                                                  cell.photoView.image = result;
-                                              }
-                                          }];
+                    
+                    cell.photoView.image = [UIImage imageNamed:@"res_UIAlbumBrowser/CAM1.png"];
+                    
                 }
-                
-            } else {
-                
-                
-                if (!cell.photoView.image) {
-                    cell.progressView.hidden = YES;
-                    NSURL *url = self.allPhotoArr[self.allPhotoArr.count - indexPath.row+1 ];
-                    ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
-                    [assetLibrary assetForURL:url resultBlock:^(ALAsset *asset) {
-                        UIImage *image = [UIImage imageWithCGImage:asset.thumbnail];
-                        cell.photoView.image = image;
-                    } failureBlock:^(NSError *error) {
-                        NSLog(@"error=%@", error);
-                    }];
-                }
+                cell.signImage.hidden = YES;
+                //
+                return cell;
             }
-            
-            return cell;
-        }
-        else {
+        }else{
+           
             myPhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
-
-            cell.backgroundColor = [UIColor whiteColor];
-            if (![cameraPath isEqualToString:@""] ) {
-
-                cell.photoView.image = [UIImage imageWithContentsOfFile:cameraPath];
-
-            }else{
-
-                cell.photoView.image = [UIImage imageNamed:@"res_UIAlbumBrowser/CAM1.png"];
-
-            }
-            cell.signImage.hidden = YES;
-//
+            PHAsset *asset = _allPhotoArr[_allPhotoArr.count - indexPath.item-1];
+            cell.progressView.hidden = YES;
+            cell.representedAssetIdentifier = asset.localIdentifier;
+            CGFloat scale = [UIScreen mainScreen].scale;
+            CGSize cellSize = cell.frame.size;
+            CGSize AssetGridThumbnailSize = CGSizeMake(cellSize.width * scale, cellSize.height * scale);
+            [_imageManager requestImageForAsset:asset
+                                     targetSize:AssetGridThumbnailSize
+                                    contentMode:PHImageContentModeDefault
+                                        options:nil
+                                  resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                                      if ([cell.representedAssetIdentifier isEqualToString:asset.localIdentifier]) {
+                                          cell.photoView.image = result;
+                                      }
+                                  }];
             return cell;
         }
+  
+
     }
     
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -277,134 +302,224 @@
         
         myPhotoCell *cell = (myPhotoCell *)[collectionView cellForItemAtIndexPath:indexPath];
         
-        if ([phoneVersion integerValue] >= 8) {
-            
-            if (indexPath.row == 0) {
+        if (self.showCamera) {
+            if ([phoneVersion integerValue] >= 8) {
                 
-                [self useCamera];
-                
-            }else{
-                PHAsset *asset = _allPhotoArr[_allPhotoArr.count-indexPath.row];
-                
-                cell.progressView.hidden = NO;
-
-                [WPFunctionView getChoosePicPHImageManager:^(double progress) {
-                    cell.progressFloat = progress;
+                if (indexPath.row == 0) {
+                    [self useCamera];
+                }else{
                     
-                } manager:^(UIImage *result) {
-                    // Hide the progress view now the request has completed.
-                    
-                    cell.progressView.hidden = YES;
-                    
-                    // Check if the request was successful.
-                    if (!result) {
-                        return;
-                    } else {
+                    cell.progressView.hidden = NO;
+                    PHAsset *asset = _allPhotoArr[_allPhotoArr.count-indexPath.row];
+                    [WPFunctionView getChoosePicPHImageManager:^(double progress) {
+                        cell.progressFloat = progress;
                         
-                        if (cell.chooseStatus == NO) {
-                            if ((_chooseArray.count+_choosePhotoArr.count)< _selectPhotoOfMax) {
-                                [_chooseArray addObject:result];
-                                [_chooseCellArray addObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                                [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
-                                
-                                UIImageView *signImage = [[UIImageView alloc]init];
-                                
-                                if ([position isEqualToString:@"top_right"]) {
-                                    signImage.frame = CGRectMake(cell.frame.size.width-size-3,3, size, size);
-                                }else if ([position isEqualToString:@"top_left"]){
-                                    signImage.frame = CGRectMake(3, 3, size, size);
+                    } manager:^(UIImage *result) {
+                        // Hide the progress view now the request has completed.
+                        
+                        cell.progressView.hidden = YES;
+                        
+                        // Check if the request was successful.
+                        if (!result) {
+                            return;
+                        } else {
+                            
+                            if (cell.chooseStatus == NO) {
+                                if ((_chooseArray.count+_choosePhotoArr.count)< _selectPhotoOfMax) {
+                                    [_chooseArray addObject:result];
+                                    [_chooseCellArray addObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                                    [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
                                     
-                                }else if ([position isEqualToString:@"bottom_left"]){
+                                    UIImageView *signImage = [[UIImageView alloc]init];
                                     
-                                    signImage.frame = CGRectMake(3, cell.frame.size.width-size-3, size, size);
+                                    if ([position isEqualToString:@"top_right"]) {
+                                        signImage.frame = CGRectMake(cell.frame.size.width-size-3,3, size, size);
+                                    }else if ([position isEqualToString:@"top_left"]){
+                                        signImage.frame = CGRectMake(3, 3, size, size);
+                                        
+                                    }else if ([position isEqualToString:@"bottom_left"]){
+                                        
+                                        signImage.frame = CGRectMake(3, cell.frame.size.width-size-3, size, size);
+                                        
+                                    }else if ([position isEqualToString:@"bottom_right"]){
+                                        signImage.frame = CGRectMake(cell.frame.size.width-size-3, cell.frame.size.width-size-3, size, size);
+                                        
+                                    }
+                                    if ([realPath isEqualToString:@""]) {
+                                        
+                                        signImage.image = [UIImage imageNamed:@"res_UIAlbumBrowser/wphoto_select_yes@2x.png"];
+                                    }else{
+                                        
+                                        signImage.image = [UIImage imageWithContentsOfFile:realPath];
+                                    }
+                                    signImage.layer.masksToBounds = YES;
+                                    signImage.layer.cornerRadius = size/2;
                                     
-                                }else if ([position isEqualToString:@"bottom_right"]){
-                                    signImage.frame = CGRectMake(cell.frame.size.width-size-3, cell.frame.size.width-size-3, size, size);
+                                    [cell addSubview:signImage];
                                     
-                                }
-                                if ([realPath isEqualToString:@""]) {
+                                    [WPFunctionView shakeToShow:signImage];
                                     
-                                    signImage.image = [UIImage imageNamed:@"res_UIAlbumBrowser/wphoto_select_yes@2x.png"];
+                                    
+                                    cell.chooseStatus = YES;
                                 }else{
+                                    if ( ! self.isShowToast) {
+                                        self.isShowToast = YES;
+                                        
+                                        [self.navigationController.view makeToast:@"已经达到最高选择数量"
+                                                                         duration:[CSToastManager defaultDuration] position:[CSToastManager defaultPosition] title:nil image:nil style:nil completion:^(BOOL didTap) {
+                                                                             self.isShowToast = NO;
+                                                                         }];
+                                    }
                                     
-                                    signImage.image = [UIImage imageWithContentsOfFile:realPath];
-                                }
-                                signImage.layer.masksToBounds = YES;
-                                signImage.layer.cornerRadius = size/2;
-                                
-                                [cell addSubview:signImage];
-                                
-                                [WPFunctionView shakeToShow:signImage];
-                                
-                                
-                                cell.chooseStatus = YES;
-                            }else{
-                                if ( ! self.isShowToast) {
-                                    self.isShowToast = YES;
                                     
-                                    [self.navigationController.view makeToast:@"已经达到最高选择数量"
-                                                                     duration:[CSToastManager defaultDuration] position:[CSToastManager defaultPosition] title:nil image:nil style:nil completion:^(BOOL didTap) {
-                                                                         self.isShowToast = NO;
-                                                                     }];
+                                    
+                                    
                                 }
                                 
-                                
-                                
-                                
-                            }
-                            
-                        } else{
-                            for (NSInteger i = 2; i<cell.subviews.count; i++) {
-                                [cell.subviews[i] removeFromSuperview];
-                            }
-                            for (NSInteger j = 0; j<_chooseCellArray.count; j++) {
-                                
-                                NSIndexPath *ip = [NSIndexPath indexPathForRow:[_chooseCellArray[j] integerValue] inSection:0];
-                                
-                                if (indexPath.row == ip.row) {
-                                    [_chooseArray removeObjectAtIndex:j];
+                            } else{
+                                for (NSInteger i = 2; i<cell.subviews.count; i++) {
+                                    [cell.subviews[i] removeFromSuperview];
                                 }
+                                for (NSInteger j = 0; j<_chooseCellArray.count; j++) {
+                                    
+                                    NSIndexPath *ip = [NSIndexPath indexPathForRow:[_chooseCellArray[j] integerValue] inSection:0];
+                                    
+                                    if (indexPath.row == ip.row) {
+                                        [_chooseArray removeObjectAtIndex:j];
+                                    }
+                                }
+                                [_chooseArray removeObject:result];
+                                [_chooseCellArray removeObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                                //                        [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
+                                
+                                cell.chooseStatus = NO;
                             }
-                            [_chooseArray removeObject:result];
-                            [_chooseCellArray removeObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                            //                        [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
-                            
-                            cell.chooseStatus = NO;
                         }
-                    }
-                } asset:asset viewSize:self.view.bounds.size];
+                    } asset:asset viewSize:self.view.bounds.size];
+                    
+                }
                 
+            } else {
+                if (cell.chooseStatus == NO) {
+                    if ((_chooseArray.count+_choosePhotoArr.count) < _selectPhotoOfMax) {
+                        [_chooseArray addObject:_allPhotoArr[_allPhotoArr.count-indexPath.row]];
+                        [_chooseCellArray addObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        //                    [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
+                        
+                        UIImageView *signImage = [[UIImageView alloc]initWithFrame:CGRectMake(cell.frame.size.width-22-5, 5, 22, 22)];
+                        signImage.layer.cornerRadius = 22/2;
+                        signImage.image = [UIImage imageNamed:@"res_UIAlbumBrowser/wphoto_select_yes@2x.png"];
+                        signImage.layer.masksToBounds = YES;
+                        [cell addSubview:signImage];
+                        
+                        [WPFunctionView shakeToShow:signImage];
+                        
+                        cell.chooseStatus = YES;
+                    }
+                } else{
+                    for (NSInteger i = 2; i<cell.subviews.count; i++) {
+                        [cell.subviews[i] removeFromSuperview];
+                    }
+                    [_chooseArray removeObject:_allPhotoArr[_allPhotoArr.count-indexPath.row]];
+                    [_chooseCellArray removeObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                    //                [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
+                    cell.chooseStatus = NO;
+                }
             }
+        }else{
+            cell.progressView.hidden = NO;
+            PHAsset *asset = _allPhotoArr[_allPhotoArr.count-indexPath.row-1];
+            [WPFunctionView getChoosePicPHImageManager:^(double progress) {
+                cell.progressFloat = progress;
+                
+            } manager:^(UIImage *result) {
+                // Hide the progress view now the request has completed.
+                
+                cell.progressView.hidden = YES;
+                
+                // Check if the request was successful.
+                if (!result) {
+                    return;
+                } else {
+                    
+                    if (cell.chooseStatus == NO) {
+                        if ((_chooseArray.count+_choosePhotoArr.count)< _selectPhotoOfMax) {
+                            [_chooseArray addObject:result];
+                            [_chooseCellArray addObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                            [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
+                            
+                            UIImageView *signImage = [[UIImageView alloc]init];
+                            
+                            if ([position isEqualToString:@"top_right"]) {
+                                signImage.frame = CGRectMake(cell.frame.size.width-size-3,3, size, size);
+                            }else if ([position isEqualToString:@"top_left"]){
+                                signImage.frame = CGRectMake(3, 3, size, size);
+                                
+                            }else if ([position isEqualToString:@"bottom_left"]){
+                                
+                                signImage.frame = CGRectMake(3, cell.frame.size.width-size-3, size, size);
+                                
+                            }else if ([position isEqualToString:@"bottom_right"]){
+                                signImage.frame = CGRectMake(cell.frame.size.width-size-3, cell.frame.size.width-size-3, size, size);
+                                
+                            }
+                            if ([realPath isEqualToString:@""]) {
+                                
+                                signImage.image = [UIImage imageNamed:@"res_UIAlbumBrowser/wphoto_select_yes@2x.png"];
+                            }else{
+                                
+                                signImage.image = [UIImage imageWithContentsOfFile:realPath];
+                            }
+                            signImage.layer.masksToBounds = YES;
+                            signImage.layer.cornerRadius = size/2;
+                            
+                            [cell addSubview:signImage];
+                            
+                            [WPFunctionView shakeToShow:signImage];
+                            
+                            
+                            cell.chooseStatus = YES;
+                        }else{
+                            if ( ! self.isShowToast) {
+                                self.isShowToast = YES;
+                                
+                                [self.navigationController.view makeToast:@"已经达到最高选择数量"
+                                                                 duration:[CSToastManager defaultDuration] position:[CSToastManager defaultPosition] title:nil image:nil style:nil completion:^(BOOL didTap) {
+                                                                     self.isShowToast = NO;
+                                                                 }];
+                            }
+                            
+                            
+                            
+                            
+                        }
+                        
+                    } else{
+                        for (NSInteger i = 2; i<cell.subviews.count; i++) {
+                            [cell.subviews[i] removeFromSuperview];
+                        }
+                        for (NSInteger j = 0; j<_chooseCellArray.count; j++) {
+                            
+                            NSIndexPath *ip = [NSIndexPath indexPathForRow:[_chooseCellArray[j] integerValue] inSection:0];
+                            
+                            if (indexPath.row == ip.row) {
+                                [_chooseArray removeObjectAtIndex:j];
+                            }
+                        }
+                        [_chooseArray removeObject:result];
+                        [_chooseCellArray removeObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        //                        [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
+                        
+                        cell.chooseStatus = NO;
+                    }
+                }
+            } asset:asset viewSize:self.view.bounds.size];
             
-        } else {
-            if (cell.chooseStatus == NO) {
-                if ((_chooseArray.count+_choosePhotoArr.count) < _selectPhotoOfMax) {
-                    [_chooseArray addObject:_allPhotoArr[_allPhotoArr.count-indexPath.row]];
-                    [_chooseCellArray addObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                    //                    [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
-                    
-                    UIImageView *signImage = [[UIImageView alloc]initWithFrame:CGRectMake(cell.frame.size.width-22-5, 5, 22, 22)];
-                    signImage.layer.cornerRadius = 22/2;
-                    signImage.image = [UIImage imageNamed:@"res_UIAlbumBrowser/wphoto_select_yes@2x.png"];
-                    signImage.layer.masksToBounds = YES;
-                    [cell addSubview:signImage];
-                    
-                    [WPFunctionView shakeToShow:signImage];
-                    
-                    cell.chooseStatus = YES;
-                }
-            } else{
-                for (NSInteger i = 2; i<cell.subviews.count; i++) {
-                    [cell.subviews[i] removeFromSuperview];
-                }
-                [_chooseArray removeObject:_allPhotoArr[_allPhotoArr.count-indexPath.row]];
-                [_chooseCellArray removeObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                //                [self finishColorAndTextChange:_chooseArray.count+_choosePhotoArr.count];
-                cell.chooseStatus = NO;
-            }
         }
+        
     }
-    
+
+
     
 -(void)finishColorAndTextChange:(NSInteger)choosePhotoCount
     {
@@ -640,7 +755,6 @@
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_chooseCellArray[i] integerValue] inSection:0];
             
             asset = _allPhotoArr[_allPhotoArr.count-indexPath.row];
-            
             [self cache:_chooseArray[i] imagePath:asset.localIdentifier
                complete:^(NSString * _Nonnull thumbPath) {
                    NSDictionary * listItem;
@@ -697,7 +811,10 @@
     /* 根据localIdentifier 缓存资源. */
     
 - (void)cache:(UIImage *)img imagePath:(NSString *)localIdentifier complete:(nonnull void (^)(NSString * _Nonnull))completeBlock {//保存指定图片到临时位置并回调改位置路径
-    UIImage *saveImg = img;
+    NSDictionary *thumbnail = [UZAlbumSingleton.sharedSingleton.stylesInfo dictValueForKey:@"thumbnail" defaultValue:@{}];
+    CGFloat w = [thumbnail floatValueForKey:@"w" defaultValue:img.size.width];
+    CGFloat h = [thumbnail floatValueForKey:@"h" defaultValue:img.size.height];
+    UIImage *saveImg = [self image:img centerInSize:CGSizeMake(w, h)];
     NSString *name = [self md5:localIdentifier];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/UZUIAlbumBrowser"];
@@ -729,7 +846,30 @@
         }
     });
 }
+
+-(UIImage *) image: (UIImage *) image centerInSize: (CGSize) viewsize{
+    CGSize size = image.size;
     
+    CGFloat scalex = viewsize.width / size.width;
+    CGFloat scaley = viewsize.height / size.height;
+    CGFloat scale = MAX(scalex, scaley);
+    
+    UIGraphicsBeginImageContext(viewsize);
+    
+    CGFloat width = size.width * scale;
+    CGFloat height = size.height * scale;
+    
+    float dwidth = ((viewsize.width - width) / 2.0f);
+    float dheight = ((viewsize.height - height) / 2.0f);
+    
+    CGRect rect = CGRectMake(dwidth, dheight, size.width * scale, size.height * scale);
+    [image drawInRect:rect];
+    
+    UIImage *newimg = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newimg;
+
+}
 - (NSString *)md5:(NSString *)str{
     const char *cStr = [str UTF8String];
     unsigned char result[16];

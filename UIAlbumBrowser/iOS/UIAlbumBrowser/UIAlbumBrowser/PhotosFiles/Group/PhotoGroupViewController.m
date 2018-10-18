@@ -13,6 +13,8 @@
 #import <objc/message.h>
 #import "NSDictionaryUtils.h"
 #import "UZAppUtils.h"
+#import "PhotoCacheManager.h"
+
 static NSString * cellIdentifier = @"PhotoGroupCell";
 
 @interface PhotoGroupViewController ()
@@ -90,8 +92,14 @@ static NSString * cellIdentifier = @"PhotoGroupCell";
             
             __strong typeof(weakSelf) strongSelf = weakSelf;
             [strongSelf.tableView reloadData];
+
             // 跳入第一个
-            // [strongSelf ritlTableView:strongSelf.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:2] Animated:false];
+            BOOL classify = [self.paramsDict boolValueForKey:@"classify" defaultValue:true];
+            if (classify == true) {
+            }else{
+            [strongSelf ritlTableView:strongSelf.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] Animated:false];
+            }
+          
         };
         
         viewModel.selectedBlock = ^(PHAssetCollection * colletion,NSIndexPath * indexPath,BOOL animate){
@@ -109,6 +117,8 @@ static NSString * cellIdentifier = @"PhotoGroupCell";
             viewModel.paramsDict = strongSelf.paramsDict;
             
             PhotosViewController *pVC = [PhotosViewController photosViewModelInstance:viewModel];
+        
+            [PhotoCacheManager sharedInstace].numberOfSelectedPhoto = 0;
             //弹出控制器
             [strongSelf.navigationController pushViewController:pVC animated:animate];
         };
@@ -155,6 +165,8 @@ static NSString * cellIdentifier = @"PhotoGroupCell";
     
     //设置
     [(PhotoGroupViewModel *)self.viewModel loadGroupTitleImage:indexPath complete:^(id _Nonnull title, id _Nonnull image, id _Nonnull appendTitle, NSUInteger count) {
+        
+        
         
         cell.titleLabel.text = appendTitle;
         cell.imageView.image = image;

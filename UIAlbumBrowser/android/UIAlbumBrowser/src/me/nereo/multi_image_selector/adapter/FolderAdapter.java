@@ -18,6 +18,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bumptech.glide.Glide;
+import com.uzmap.pkg.uzkit.UZUtility;
+
 import me.nereo.multi_image_selector.bean.Folder;
 import me.nereo.multi_image_selector.utils.ResUtils;
 
@@ -36,6 +39,8 @@ public class FolderAdapter extends BaseAdapter {
     int mImageSize;
 
     int lastSelected = 0;
+    
+    private int THUMBNAIL_SIZE = UZUtility.dipToPix(50);
 
     public FolderAdapter(Context context){
         mContext = context;
@@ -103,7 +108,17 @@ public class FolderAdapter extends BaseAdapter {
 //                                .resizeDimen(mis_folder_cover_size_id, mis_folder_cover_size_id)
 //                                .centerCrop()
 //                                .into(holder.cover);
-                    }else{
+                    	
+                    	int mis_default_error_id = ResUtils.getInstance().getDrawableId(mContext, "mis_default_error");
+                    	Glide.with(mContext)
+              		  		.load(f.images.get(0).path)
+              		  		.placeholder(mis_default_error_id)
+              		  		.override(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
+              		  		.error(mis_default_error_id)
+              		  		.centerCrop()
+              		  		.into(holder.cover);
+                    	
+                    } else {
                         int mis_default_error_id = ResUtils.getInstance().getDrawableId(mContext, "mis_default_error");
                         holder.cover.setImageResource(mis_default_error_id);
                     }
@@ -189,6 +204,17 @@ public class FolderAdapter extends BaseAdapter {
 //                        .resizeDimen(mis_folder_cover_size_id, mis_folder_cover_size_id)
 //                        .centerCrop()
 //                        .into(cover);
+            	
+            	
+            	int mis_default_error_id = ResUtils.getInstance().getDrawableId(mContext, "mis_default_error");
+            	Glide.with(mContext)
+      		  		.load(data.images.get(0).path)
+      		  		.placeholder(mis_default_error_id)
+      		  		.override(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
+      		  		.error(mis_default_error_id)
+      		  		.centerCrop()
+      		  		.into(cover);
+            	
             }else{
                 int mis_default_error_id = ResUtils.getInstance().getDrawableId(mContext, "mis_default_error");
                 cover.setImageResource(mis_default_error_id);

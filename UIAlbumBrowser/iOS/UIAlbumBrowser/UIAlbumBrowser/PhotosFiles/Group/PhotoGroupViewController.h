@@ -13,8 +13,6 @@
 /// viewModel
 @property (nonatomic, strong) id <RITLTableViewModel> viewModel;
 @property (nonatomic, strong) NSDictionary * paramsDict;
-
-
 @property (nonatomic, weak) UZUIAlbumBrowser * uiAlbumBrowser;
 
 @end

@@ -5,6 +5,7 @@
  * Please see the license.html included with this distribution for details.
  */
 
+
 #import "UZUIAlbumBrowser.h"
 #import "NSDictionaryUtils.h"
 #import "PhotoNavigationViewModel.h"
@@ -23,12 +24,10 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "AlbumBrowserSinglen.h"
 #import "UIBlockButtonForAlbumBrowser.h"
-
-
-//#import "RITLPhotosViewController.h"
-//#import "RITLPhotosCell.h"
-//#import <Photos/Photos.h>
-//#import "RITLKit.h"
+#import "GroupCell.h"
+#import "OpenAlbumCell.h"
+#import "OpenAlbumDetailController.h"
+#import "UIView+Toast.h"
 
 #define Start_X          5.0f      // 第一个按钮的X坐标
 #define Start_Y          5.0f     // 第一个按钮的Y坐标
@@ -37,20 +36,16 @@
 #define Button_Height   97.0f    // 高
 
 
-@interface UZUIAlbumBrowser () <UITableViewDelegate, UITableViewDataSource,UIImagePickerControllerDelegate,UINavigationControllerDelegate>{
-    NSInteger opencbId, cbScannerId, fecthCbId ,requestCbId,openGroupCbId,changeGroupCbId;
-    NSMutableDictionary *_scanDict;
-    NSMutableArray *_picAry, *_vidAry, *_allAry, *_cBAll;
+@interface UZUIAlbumBrowser () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,UICollectionViewDelegate,UICollectionViewDataSource>{
+    NSInteger opencbId, cbScannerId, fecthCbId ,requestCbId,openGroupCbId,changeGroupCbId,openAlbumCbId;
     NSInteger capicity;          //每页数据容量
-    BOOL preparedData;           //所需数据是否准备完
-    UIButton *_addBut;
-    UITableView *_tableView;
-    NSMutableArray *_photosArr;
+    NSMutableArray *_photosArr, *_cBAll;
 }
+/** 颜色变化 */
+
 
 @property (strong, nonatomic) NSMutableArray *assets;
 @property (strong, nonatomic) NSMutableArray *assetCollections;
-@property (strong, nonatomic) NSMutableDictionary *scanDict;
 @property (strong, nonatomic) NSOperationQueue *transPathQueue;
 @property (strong, nonatomic) UICollectionView *collectionView;
 @property (strong, nonatomic) PhotoStore * photoStore;
@@ -69,21 +64,39 @@
 
 @property (nonatomic, assign) CGSize assetSize;
 @property (nonatomic, assign) CGFloat openGroupWidth;
-//@property (nonatomic, copy)NSArray <UIImage *> * assets;
 @property (nonatomic, copy)NSArray <NSString *> *saveAssetIds;
 
-
+//openGroup
 @property (nonatomic, strong)UIScrollView *groupView;
 @property (nonatomic, strong)NSMutableArray *openGroupArray;
 @property (nonatomic, strong)NSDictionary *openGroupDict;
+@property (nonatomic, strong)UICollectionView *mainCollectionView;
+@property (nonatomic, strong)NSMutableArray *selectedPaths;
+@property (nonatomic, strong)NSString *groupId;
+
+//openAlbum
+@property (nonatomic, strong)UIScrollView *openAlbumGroupView;
+@property (nonatomic, strong)NSMutableArray *openAlbumArray;
+@property (nonatomic, strong)NSDictionary *openAlbumDict;
+@property (nonatomic, strong)UICollectionView *albumCollectionView;
+@property (nonatomic, strong)NSMutableArray *openAlbumSelectedPaths;
+@property (nonatomic, strong)NSMutableArray *openAlbumSelectedVideoPaths;
+@property (nonatomic, strong)NSString *openAlbumGroupId;
+@property (nonatomic, assign) CGFloat openAlbumWidth;
+@property (nonatomic, assign) BOOL isOpenAlbum;
+@property (nonatomic, assign) BOOL videoPreview;
+@property (strong, nonatomic) NSString *openAlbumPosition;
+@property (strong, nonatomic) NSDictionary *albumSelectDict;
+@property (assign, nonatomic) NSInteger openAlbumMax;
+@property (strong, nonatomic) NSMutableArray *openAlbumSelectMax;
+@property (nonatomic, strong) NSMutableDictionary *cellOpenAlbumDic;
+
 @end
 
 @implementation UZUIAlbumBrowser
 
 @synthesize assets = _assets;
-@synthesize scanDict = _scanDict;
 static int fetchPosition = 0;
-//static char extendKey;
 
 -(void)dispose {
     if (self.transPathQueue) {
@@ -97,6 +110,37 @@ static int fetchPosition = 0;
         _groupAssets = [NSMutableArray arrayWithCapacity:42];
     }
     return _groupAssets;
+}
+- (NSMutableDictionary *)cellOpenAlbumDic {
+    if ( ! _cellOpenAlbumDic) {
+        _cellOpenAlbumDic = [NSMutableDictionary dictionaryWithCapacity:42];
+    }
+    return _cellOpenAlbumDic;
+}
+
+- (NSMutableArray *)selectedPaths {
+    if ( ! _selectedPaths) {
+        _selectedPaths = [NSMutableArray arrayWithCapacity:42];
+    }
+    return _selectedPaths;
+}
+- (NSMutableArray *)openAlbumSelectedVideoPaths {
+    if ( ! _openAlbumSelectedVideoPaths) {
+        _openAlbumSelectedVideoPaths = [NSMutableArray arrayWithCapacity:42];
+    }
+    return _openAlbumSelectedVideoPaths;
+}
+- (NSMutableArray *)openAlbumSelectedPaths {
+    if ( ! _openAlbumSelectedPaths) {
+        _openAlbumSelectedPaths = [NSMutableArray arrayWithCapacity:42];
+    }
+    return _openAlbumSelectedPaths;
+}
+- (NSMutableArray *)openAlbumSelectMax {
+    if ( ! _openAlbumSelectMax) {
+        _openAlbumSelectMax = [NSMutableArray arrayWithCapacity:42];
+    }
+    return _openAlbumSelectMax;
 }
 
 - (PhotoStore *)photoStore {
@@ -121,185 +165,178 @@ static int fetchPosition = 0;
     return _transPathQueue;
 }
 
-- (void)openGroup:(NSDictionary *)paramsDict_{
+#pragma mark - openAlbum closeAlbum
+-(void)openAlbum:(NSDictionary *)paramsDict_{
+  
+    self.isOpenAlbum = YES;
+    openAlbumCbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
+    __block NSString *albumCollectionId = @"";
+    __block NSString *albumCollectionName =@"";
     
-    NSString * groupId = [paramsDict_ stringValueForKey:@"groupId" defaultValue:nil];
+    self.openAlbumGroupId = [paramsDict_ stringValueForKey:@"groupId" defaultValue:@""];
+    if ([self.openAlbumGroupId isEqualToString:@""]) {
+        [self.photoStore fetchDefaultAllPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull groups, PHFetchResult * _Nonnull collections) {
+            for (int i = 0; i < groups.count; i++) {
+                PHAssetCollection * collection = groups[i];
+                NSLog(@"localizedTitlealbum%@,%@",collection.localizedTitle,collection.localIdentifier);
+                if ([collection.localizedTitle isEqualToString:@"所有照片"]||[collection.localizedTitle isEqualToString:@"相机胶卷"]) {
+                    albumCollectionId = collection.localIdentifier;
+                    albumCollectionName = collection.localizedTitle;
+                    self.openAlbumGroupId = albumCollectionId;
+                }
+            }
+            
+        }];
+    }
+    
+    
     NSDictionary *rectInfo = [paramsDict_ dictValueForKey:@"rect" defaultValue:@{}];
-    self.openGroupDict = paramsDict_;
+    NSString * openAlbumType = [paramsDict_ stringValueForKey:@"type" defaultValue:@"image"];
+    self.openAlbumDict = paramsDict_;
     CGFloat x = [rectInfo floatValueForKey:@"x" defaultValue:0];
-    CGFloat y = [rectInfo floatValueForKey:@"y" defaultValue:0];
+    CGFloat y = [rectInfo floatValueForKey:@"y" defaultValue:30];
     CGFloat w = [rectInfo floatValueForKey:@"w" defaultValue:self.viewController.view.frame.size.width];
+    self.openAlbumWidth = w;
     CGFloat h = [rectInfo floatValueForKey:@"h" defaultValue:300];
     NSString * fixedOn = [paramsDict_ stringValueForKey:@"fixedOn" defaultValue:nil];
     BOOL fixed = [paramsDict_ boolValueForKey:@"fixed" defaultValue:YES];
-    self.openGroupWidth = w;
-    if ( ! groupId) {
+    
+    NSDictionary *stylesInfo = [paramsDict_ dictValueForKey:@"styles" defaultValue:@{}];
+    int column = [stylesInfo intValueForKey:@"column" defaultValue:3];
+    self.openAlbumMax = [paramsDict_ integerValueForKey:@"max" defaultValue:9];
+    self.videoPreview = [paramsDict_ integerValueForKey:@"videoPreview" defaultValue:true];
+
+    CGFloat interval = [stylesInfo floatValueForKey:@"interval" defaultValue:5];
+    AlbumBrowserSinglen.sharedSingleton.openAlbumDict = [stylesInfo dictValueForKey:@"selector" defaultValue:@{}];
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    [layout setItemSize:CGSizeMake((SelfView_W-(column+1)*interval)/column, (SelfView_W-(column+1)*interval)/column)];
+    [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
+    layout.sectionInset = UIEdgeInsetsMake(0, interval, 0, interval);
+    layout.minimumInteritemSpacing = interval;
+    layout.minimumLineSpacing = interval; //上下的间距 可以设置0看下效果
+    self.albumCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(x, y, w, h) collectionViewLayout:layout];
+    [self addSubview:self.albumCollectionView fixedOn:fixedOn fixed:fixed];
+    self.albumCollectionView.backgroundColor = [UIColor whiteColor];
+    //3.注册collectionViewCell
+    //注意，此处的ReuseIdentifier 必须和 cellForItemAtIndexPath 方法中 一致 均为 cellId
+    [self.albumCollectionView registerClass:[OpenAlbumCell class] forCellWithReuseIdentifier:@"OpenAlbumCell"];
+    //注册headerView  此处的ReuseIdentifier 必须和 cellForItemAtIndexPath 方法中 一致  均为reusableView
+//    [self.albumCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"reusableView"];
+    //4.设置代理
+    self.albumCollectionView.delegate = self;
+    self.albumCollectionView.dataSource = self;
+    /* 从资源id --> 本地资源的转换 */
+    PHFetchResult<PHAssetCollection *>  * fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[self.openAlbumGroupId] options:nil];
+    if (0 == fetchResult.count) {
         return;
     }
+    PHAssetCollection * assetCollection = fetchResult.firstObject;
+    self.openAlbumArray = [NSMutableArray arrayWithArray:[self getAssetsInAssetCollection:assetCollection
+                                                                                ascending:true type:openAlbumType]];
+    if (![albumCollectionId isEqualToString:@""]) {
+        [self sendResultEventWithCallbackId:openAlbumCbId dataDict:@{@"eventType":@"show",@"groupName":albumCollectionName} errDict:nil doDelete:NO];
+    }else{
+        [self sendResultEventWithCallbackId:openAlbumCbId dataDict:@{@"eventType":@"show"} errDict:nil doDelete:NO];
+        
+    }
+    
+}
+
+-(void)closeAlbum:(NSDictionary *)paramsDict_{
+    self.albumCollectionView.delegate = nil;
+    self.albumCollectionView.dataSource = nil;
+    [self.openAlbumSelectMax removeAllObjects];
+     [self.openAlbumSelectedPaths removeAllObjects];
+    [self.openAlbumSelectedVideoPaths removeAllObjects];
+
+    if (self.albumCollectionView) {
+        [self.albumCollectionView removeFromSuperview];
+        self.albumCollectionView = nil;
+
+    }
+}
+
+#pragma mark - openGroup
+
+-(void)openGroup:(NSDictionary *)paramsDict_{
+     self.isOpenAlbum = NO;
     openGroupCbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
-    NSArray *selectedPaths = [paramsDict_ arrayValueForKey:@"selectedPaths" defaultValue:@[]];
+    __block NSString *groupCollectionId = @"";
+     __block NSString *groupCollectionName =@"";
+    
+    self.groupId = [paramsDict_ stringValueForKey:@"groupId" defaultValue:@""];
+    if ([self.groupId isEqualToString:@""]) {
+        [self.photoStore fetchDefaultAllPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull groups, PHFetchResult * _Nonnull collections) {
+            for (int i = 0; i < groups.count; i++) {
+                PHAssetCollection * collection = groups[i];
+                //NSLog(@"localizedTitle%@",collection.localizedTitle);
+                if ([collection.localizedTitle isEqualToString:@"所有照片"]||[collection.localizedTitle isEqualToString:@"相机胶卷"]) {
+                    groupCollectionId = collection.localIdentifier;
+                    groupCollectionName = collection.localizedTitle;
+                }
+            }
+            
+        }];
+        self.groupId = groupCollectionId;
+    }
+ 
+    
+    NSDictionary *rectInfo = [paramsDict_ dictValueForKey:@"rect" defaultValue:@{}];
+    self.openGroupDict = paramsDict_;
+    CGFloat x = [rectInfo floatValueForKey:@"x" defaultValue:0];
+    CGFloat y = [rectInfo floatValueForKey:@"y" defaultValue:30];
+    CGFloat w = [rectInfo floatValueForKey:@"w" defaultValue:self.viewController.view.frame.size.width];
+    self.openGroupWidth = w;
+    CGFloat h = [rectInfo floatValueForKey:@"h" defaultValue:300];
+    NSString * fixedOn = [paramsDict_ stringValueForKey:@"fixedOn" defaultValue:nil];
+    BOOL fixed = [paramsDict_ boolValueForKey:@"fixed" defaultValue:YES];
+     NSArray *selectedPathsArray = [paramsDict_ arrayValueForKey:@"selectedPaths" defaultValue:@[]];
+    [self.selectedPaths addObjectsFromArray:selectedPathsArray];
+    
+    
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    [layout setItemSize:CGSizeMake((SelfView_W-10)/4, (SelfView_W-10)/4)];
+    [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
+    layout.sectionInset = UIEdgeInsetsMake(0, 2, 0, 2);
+    layout.minimumInteritemSpacing = 2;
+    layout.minimumLineSpacing = 2; //上下的间距 可以设置0看下效果
+    self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(x, y, w, h) collectionViewLayout:layout];
+    [self addSubview:self.mainCollectionView fixedOn:fixedOn fixed:fixed];
+    self.mainCollectionView.backgroundColor = [UIColor whiteColor];
+    //3.注册collectionViewCell
+    //注意，此处的ReuseIdentifier 必须和 cellForItemAtIndexPath 方法中 一致 均为 cellId
+    [self.mainCollectionView registerClass:[GroupCell class] forCellWithReuseIdentifier:@"cellId"];
+    //注册headerView  此处的ReuseIdentifier 必须和 cellForItemAtIndexPath 方法中 一致  均为reusableView
+    [self.mainCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"reusableView"];
+    //4.设置代理
+    self.mainCollectionView.delegate = self;
+    self.mainCollectionView.dataSource = self;
     /* 从资源id --> 本地资源的转换 */
-    PHFetchResult<PHAssetCollection *>  * fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[groupId] options:nil];
+    PHFetchResult<PHAssetCollection *>  * fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[self.groupId] options:nil];
     if (0 == fetchResult.count) {
         return;
     }
     PHAssetCollection * assetCollection = fetchResult.firstObject;
     self.openGroupArray = [NSMutableArray arrayWithArray:[self getAssetsInAssetCollection:assetCollection
-                                                                                           ascending:true type:@"image"]];
-    /* 先计算下total,因为循环开始后,会动态删除元素. */
-    //NSInteger total = self.groupAssets.count;
-    if ( self.openGroupArray.count == 0) { // 兼容一种已经没有更多数据的情况.
-        return;
-    };
-    
-    self.groupView = [[UIScrollView alloc]initWithFrame:CGRectMake(x, y, w, h)];
-    NSInteger rowCount =ceilf(( self.openGroupArray.count+1)/4);
-    CGFloat openGroupCellWidth = (w-5)/4-5;
-    self.groupView.contentSize = CGSizeMake(w,102*(rowCount+1));
-    self.groupView.backgroundColor = [UIColor whiteColor];
-    self.groupView.clipsToBounds = YES;
-    [self addSubview:self.groupView fixedOn:fixedOn fixed:fixed];
-//    [self.viewController.view addSubview:self.groupView];
-    for (NSInteger i =  self.openGroupArray.count  ; i >= 0; i--) {
-        NSInteger index = i % 4;
-        NSInteger page = i / 4;
-        if (0 ==  self.openGroupArray.count) {
-            UIButton *cameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-            cameraBtn.frame = CGRectMake(5, 5, openGroupCellWidth, Button_Height);
-            [cameraBtn setImage:[UIImage imageNamed:@"res_UIAlbumBrowser/groupTakePhoto.png"] forState:UIControlStateNormal];
-            CAShapeLayer *borderLayer = [CAShapeLayer layer];
-            borderLayer.bounds = CGRectMake(5, 5, openGroupCellWidth, Button_Height);//虚线框的大小
-            borderLayer.position = CGPointMake(CGRectGetMidX(cameraBtn.bounds),CGRectGetMidY(cameraBtn.bounds));//虚线框锚点
-            borderLayer.path = [UIBezierPath bezierPathWithRect:borderLayer.bounds].CGPath;//矩形路径
-            borderLayer.lineWidth = 1. / [[UIScreen mainScreen] scale];//虚线宽度
-            //虚线边框
-            borderLayer.lineDashPattern = @[@5, @5];
-            //实线边框
-            borderLayer.fillColor = [UIColor clearColor].CGColor;
-            borderLayer.strokeColor = [UIColor redColor].CGColor;
-            [cameraBtn.layer addSublayer:borderLayer];
-            [self.groupView addSubview: cameraBtn];
-            //按钮点击方法
-            [cameraBtn addTarget:self action:@selector(cameraBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-            break;
-        }
-        /* 每输出一个,就移除一个,所以此处,总是从 allAssets的开始处取值. */
-        PHAsset * asset =  self.openGroupArray[0];
-        [ self.openGroupArray removeObjectAtIndex:0];
-        UIImageView *imageAlbum = [[UIImageView alloc]init];
-        UIBlockButtonForAlbumBrowser *pictureBtn = [UIBlockButtonForAlbumBrowser buttonWithType:UIButtonTypeCustom];
-        [self requestImageForAsset:asset size:CGSizeMake(60, 60) resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
-            imageAlbum.frame = CGRectMake(index * (openGroupCellWidth + Width_Space) + Start_X, page  * (Button_Height + Height_Space)+Start_Y,openGroupCellWidth, Button_Height);
-            imageAlbum.image = image;
-            [self.groupView addSubview:imageAlbum];
-            pictureBtn.frame = imageAlbum.frame;
-            [pictureBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
-            [pictureBtn setImage:[UIImage imageNamed:@"res_UIAlbumBrowser/circleGroup@3x.png"] forState:UIControlStateSelected];
-            [self.groupView addSubview: pictureBtn];
-            [pictureBtn handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-                NSString   *path =  asset.localIdentifier;
-                pictureBtn.selected = !pictureBtn.selected;
-                if (pictureBtn.selected) {
-                    pictureBtn.backgroundColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.5];
-                    [self transPathOpenGroup:path groupImage:image  withBlock:^(NSString *gifImagePath, NSString *path, NSString *thumPath) {
-                        if (nil != gifImagePath){
-                            [self sendResultEventWithCallbackId:openGroupCbId
-                                                       dataDict:@{
-                                                                  @"eventType":@"select",
-                                                                  @"target":@{
-                                                               @"gifImagePath": gifImagePath ?: @"",
-                                                                },
-                                                                  @"groupId":groupId
-                                                                 
-                                                                  }
-                                                        errDict:nil
-                                                       doDelete:NO];
+                                                                                ascending:true type:@"image"]];
+    if (![groupCollectionId isEqualToString:@""]) {
+        [self sendResultEventWithCallbackId:openGroupCbId dataDict:@{@"eventType":@"show",@"groupName":groupCollectionName} errDict:nil doDelete:NO];
+    }else{
+        [self sendResultEventWithCallbackId:openGroupCbId dataDict:@{@"eventType":@"show"} errDict:nil doDelete:NO];
 
-                        }else{
-                            [self sendResultEventWithCallbackId:openGroupCbId
-                                                       dataDict:@{
-                                                                  @"eventType":@"select",
-                                                                  @"target":@{
-                                                                          @"path": path ?: @"",
-                                                                          @"thumPath": thumPath ?: @""},
-                                                                   @"groupId":groupId,
-                                                                  }
-                                                        errDict:nil
-                                                       doDelete:NO];
-                        }
-                    }];
-                
-                    
-                }else{
-                    pictureBtn.backgroundColor = [UIColor clearColor];
-                    
-                    [self transPathOpenGroup:path groupImage:image  withBlock:^(NSString *gifImagePath, NSString *path, NSString *thumPath) {
-                        if (nil != gifImagePath){
-                            [self sendResultEventWithCallbackId:openGroupCbId
-                                                       dataDict:@{
-                                                                  @"eventType":@"cancel",
-                                                                  @"target":@{
-                                                                          @"gifImagePath": gifImagePath ?: @"",
-                                                                          },
-                                                                  @"groupId":groupId
-                                                                  
-                                                                  }
-                                                        errDict:nil
-                                                       doDelete:NO];
-                            
-                        }else{
-                            [self sendResultEventWithCallbackId:openGroupCbId
-                                                       dataDict:@{
-                                                                  @"eventType":@"cancel",
-                                                                  @"target":@{
-                                                                          @"path": path ?: @"",
-                                                                          @"thumPath": thumPath ?: @""},
-                                                                  @"groupId":groupId,
-                                                                  }
-                                                        errDict:nil
-                                                       doDelete:NO];
-                        }
-                    }];
-                    
-                }
-            }];
-            
-            for (int i = 0; i < selectedPaths.count; i++) {
-                
-                if ([asset.localIdentifier isEqualToString:selectedPaths[i]]) {
-                    pictureBtn.selected = YES;
-                }
-            }
-        }];
     }
     
-    [self sendResultEventWithCallbackId:openGroupCbId dataDict:@{@"eventType":@"show"} errDict:nil doDelete:NO];
-    
-    
-}
 
--(void)cameraBtnClick:(UIButton*)sender{
     
-    [self sendResultEventWithCallbackId:openGroupCbId dataDict:@{@"eventType":@"camera"} errDict:nil doDelete:NO];
 }
 
 -(void)changeGroup:(NSDictionary *)paramsDict_{
-    
-    if (self.groupView) {
-        [self.groupView removeFromSuperview];
-        self.groupView = nil;
-    }
-    NSDictionary *rectInfo =[self.openGroupDict dictValueForKey:@"rect" defaultValue:@{}];
-    CGFloat x = [rectInfo floatValueForKey:@"x" defaultValue:0];
-    CGFloat y = [rectInfo floatValueForKey:@"y" defaultValue:0];
-    CGFloat w = [rectInfo floatValueForKey:@"w" defaultValue:self.viewController.view.frame.size.width];
-    CGFloat h = [rectInfo floatValueForKey:@"h" defaultValue:300];
-    NSString * fixedOn = [self.openGroupDict stringValueForKey:@"fixedOn" defaultValue:nil];
-    BOOL fixed = [self.openGroupDict boolValueForKey:@"fixed" defaultValue:YES];
-    NSString *groupId = [paramsDict_ stringValueForKey:@"groupId" defaultValue:@""];
-    NSArray *selectedPaths = [paramsDict_ arrayValueForKey:@"selectedPaths" defaultValue:@[]];
+    self.groupId = [paramsDict_ stringValueForKey:@"groupId" defaultValue:@""];
+    NSArray *seletedArray = [paramsDict_ arrayValueForKey:@"selectedPaths" defaultValue:@[]];
+    [self.selectedPaths removeAllObjects];
+    [self.selectedPaths addObjectsFromArray:seletedArray];
     /* 从资源id --> 本地资源的转换 */
-    PHFetchResult<PHAssetCollection *>  * fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[groupId] options:nil];
+    PHFetchResult<PHAssetCollection *>  * fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[self.groupId] options:nil];
     if (0 == fetchResult.count) {
         return;
     }
@@ -307,141 +344,291 @@ static int fetchPosition = 0;
     NSMutableArray *changeGroupArray = [NSMutableArray arrayWithArray:[self getAssetsInAssetCollection:assetCollection
                                                                                              ascending:true type:@"image"]];
     
-    self.groupView = [[UIScrollView alloc]initWithFrame:CGRectMake(x, y, w, h)];
-    NSInteger rowCount =ceilf(( changeGroupArray.count+1)/4);
-    CGFloat changeGroupCellWidth = (w-5)/4-5;
-    self.groupView.contentSize = CGSizeMake(w,102*(rowCount+1));
-    self.groupView.backgroundColor = [UIColor whiteColor];
-    self.groupView.clipsToBounds = YES;
-//    [self.viewController.view addSubview:self.groupView];
-    [self addSubview:self.groupView fixedOn:fixedOn fixed:fixed];
-    /* 先计算下total,因为循环开始后,会动态删除元素. */
-    //NSInteger total = self.groupAssets.count;
-    if (changeGroupArray.count == 0) { // 兼容一种已经没有更多数据的情况.
-        return;
-    };
-    for (NSInteger i = changeGroupArray.count  ; i >= 0; i--) {
-        
-        NSInteger index = i % 4;
-        NSInteger page = i / 4;
-        if (0 == changeGroupArray.count) {
-            UIButton *cameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-            cameraBtn.frame = CGRectMake(5, 5, changeGroupCellWidth, Button_Height);
-            [cameraBtn setImage:[UIImage imageNamed:@"res_UIAlbumBrowser/groupTakePhoto.png"] forState:UIControlStateNormal];
-            CAShapeLayer *borderLayer = [CAShapeLayer layer];
-            borderLayer.bounds = CGRectMake(5, 5, changeGroupCellWidth, Button_Height);//虚线框的大小
-            borderLayer.position = CGPointMake(CGRectGetMidX(cameraBtn.bounds),CGRectGetMidY(cameraBtn.bounds));//虚线框锚点
-            borderLayer.path = [UIBezierPath bezierPathWithRect:borderLayer.bounds].CGPath;//矩形路径
-            borderLayer.lineWidth = 1. / [[UIScreen mainScreen] scale];//虚线宽度
-            //虚线边框
-            borderLayer.lineDashPattern = @[@5, @5];
-            //实线边框
-            borderLayer.fillColor = [UIColor clearColor].CGColor;
-            borderLayer.strokeColor = [UIColor redColor].CGColor;
-            [cameraBtn.layer addSublayer:borderLayer];
-            [self.groupView addSubview: cameraBtn];
-            //按钮点击方法
-            [cameraBtn addTarget:self action:@selector(cameraBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-            break;
-        }
-        /* 每输出一个,就移除一个,所以此处,总是从 allAssets的开始处取值. */
-        PHAsset * asset = changeGroupArray[0];
-        [changeGroupArray removeObjectAtIndex:0];
-        
-        [self requestImageForAsset:asset size:CGSizeMake(60, 60) resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
-            
-            UIImageView *imageAlbum = [[UIImageView alloc]init];
-            imageAlbum.frame = CGRectMake(index * (changeGroupCellWidth + Width_Space) + Start_X, page  * (Button_Height + Height_Space)+Start_Y, changeGroupCellWidth, Button_Height);
+    
+    [self.openGroupArray removeAllObjects];
+    self.openGroupArray = changeGroupArray;
+    [self.mainCollectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    [self.mainCollectionView reloadData];
+    [self sendResultEventWithCallbackId:openGroupCbId dataDict:@{@"eventType":@"change",@"groupId":self.groupId} errDict:nil doDelete:NO];
 
-            imageAlbum.image = image;
-            [self.groupView addSubview:imageAlbum];
+}
+#pragma mark collectionView代理方法
+//返回section个数
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+//每个section的item个数
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    if (self.isOpenAlbum) {
+    return  self.openAlbumArray.count;
+    }else{
+    return self.openGroupArray.count+1;
+    }
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.isOpenAlbum) {
+        
+        NSString *identifier = [NSString stringWithFormat:@"OpenAlbumCell"];
+        OpenAlbumCell *albumCell = (OpenAlbumCell *)[collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
+    
+        albumCell.asset = self.openAlbumArray[_openAlbumArray.count-indexPath.row-1];
+        //albumCell.asset.mediaType
+        if (albumCell.asset.mediaType == PHAssetMediaTypeImage) {
+            albumCell.videoImg.hidden = YES;
+            albumCell.signBtn.hidden = NO;
+
+            if ([self.openAlbumSelectedPaths containsObject:albumCell.asset.localIdentifier]) {
+                albumCell.chooseStatus = YES;
+                albumCell.signBtn.selected = YES;
+            }else{
+                albumCell.chooseStatus = NO;
+                albumCell.signBtn.selected = NO;
+            }
+        }else{
+            albumCell.videoImg.hidden = NO;
+            albumCell.signBtn.hidden = YES;
+
+        }
+        albumCell.chooseStatus = NO;
+        albumCell.topBtn.userInteractionEnabled = false;
+        albumCell.signBtn.userInteractionEnabled = false;
+        return albumCell;
+    }else{
+        GroupCell *cell = (GroupCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
+        
+        if (indexPath.row==0) {
             
-            UIBlockButtonForAlbumBrowser *pictureBtn = [UIBlockButtonForAlbumBrowser buttonWithType:UIButtonTypeCustom];
-            pictureBtn.frame = imageAlbum.frame;
+            [cell.topBtn setImage:[UIImage imageNamed:@"res_UIAlbumBrowser/groupTakePhoto@3x.png"] forState:UIControlStateNormal] ;
+            [cell.topBtn.layer addSublayer:cell.borderLayer];
+            cell.signBtn.hidden = YES;
             
-            [pictureBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
-            [pictureBtn setImage:[UIImage imageNamed:@"res_UIAlbumBrowser/circleGroup@3x.png"] forState:UIControlStateSelected];
-            [self.groupView addSubview: pictureBtn];
+        }else{
+            cell.asset = self.openGroupArray[_openGroupArray.count - indexPath.row];
             
-            [pictureBtn handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-                NSString   *path =  asset.localIdentifier;
-                pictureBtn.selected = !pictureBtn.selected;
-                if (pictureBtn.selected) {
-                    pictureBtn.backgroundColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.5];
-                    [self transPathOpenGroup:path groupImage:image  withBlock:^(NSString *gifImagePath, NSString *path, NSString *thumPath) {
-                        if (nil != gifImagePath){
-                            [self sendResultEventWithCallbackId:openGroupCbId
-                                                       dataDict:@{
-                                                                  @"eventType":@"select",
-                                                                  @"target":@{
-                                                                          @"gifImagePath": gifImagePath ?: @"",
-                                                                          },
-                                                                  @"groupId":groupId
-                                                                  
-                                                                  }
-                                                        errDict:nil
-                                                       doDelete:NO];
-                            
-                        }else{
-                            [self sendResultEventWithCallbackId:openGroupCbId
-                                                       dataDict:@{
-                                                                  @"eventType":@"select",
-                                                                  @"target":@{
-                                                                          @"path": path ?: @"",
-                                                                          @"thumPath": thumPath ?: @""},
-                                                                  @"groupId":groupId,
-                                                                  }
-                                                        errDict:nil
-                                                       doDelete:NO];
-                        }
+            if ([self.selectedPaths containsObject:cell.asset.localIdentifier]) {
+                cell.chooseStatus = YES;
+                cell.signBtn.hidden = NO;
+            }else{
+                cell.chooseStatus = NO;
+                cell.signBtn.hidden = YES;
+            }
+            [cell.borderLayer removeFromSuperlayer];
+        }
+        cell.topBtn.userInteractionEnabled = false;
+        cell.signBtn.userInteractionEnabled = false;
+        
+        return cell;
+    }
+
+}
+- (void) cellButtonClick:(UIButton *)button
+{
+    button.selected = !button.selected;
+}
+
+
+//点击item方法
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.isOpenAlbum) {
+        OpenAlbumCell *cell = (OpenAlbumCell *)[collectionView cellForItemAtIndexPath:indexPath];
+     
+            __block  NSMutableDictionary *sendDict = [NSMutableDictionary dictionaryWithCapacity:42];
+            [sendDict setObject:self.openAlbumGroupId forKey: @"groupId"];
+        
+        if (cell.asset.mediaType == PHAssetMediaTypeVideo) {
+            
+            
+            if (self.videoPreview) {
+                __block   NSString *videoUrl;
+                PHVideoRequestOptions* options = [[PHVideoRequestOptions alloc] init];
+                options.version = PHVideoRequestOptionsVersionOriginal;
+                options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
+                options.networkAccessAllowed = YES;
+                NSLog(@"%@",cell.asset.localIdentifier);
+                [[PHImageManager defaultManager] requestAVAssetForVideo:cell.asset options:options resultHandler:^(AVAsset* avasset, AVAudioMix* audioMix, NSDictionary* info){
+                    AVURLAsset *videoAsset = (AVURLAsset*)avasset;
+                    videoUrl = [NSString stringWithFormat:@"%@",[videoAsset.URL absoluteString]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        __block NSDictionary *targetDict;
+                        
+                        
+                        
+                        OpenAlbumDetailController *detailVC = [[OpenAlbumDetailController alloc]init];
+                        self.viewController.navigationController.navigationBarHidden = NO;
+                        detailVC.localPath = videoUrl ;
+                        detailVC.openAlbumCbId = openAlbumCbId;
+                        detailVC.groupId = self.openAlbumGroupId;
+                        detailVC.module = self;
+                        detailVC.asset = cell.asset;
+                        detailVC.targetDict = targetDict;
+                        [self.viewController.navigationController pushViewController:detailVC animated:false];
+                        
+                        
+                    });
+                    
+                }];
+            }else{
+                
+                if (self.openAlbumSelectedPaths.count>0) {
+                    [self.viewController.navigationController.view makeToast:[NSString stringWithFormat:@"不能同时选择视频和图片"] duration:[CSToastManager defaultDuration] position:@"center"];
+                }else{
+                [self requestImageForAsset:cell.asset size:CGSizeMake(300, 300) resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
+                    [self cache:image imagePath:cell.asset.localIdentifier complete:^(NSString * _Nonnull thumPath) {
+                        
+                        NSDictionary *targetDict = @{
+                                                     @"path": cell.asset.localIdentifier ?: @"",
+                                                     @"thumbPath": thumPath ?: @"",
+                                                     @"type":@"video",
+                                                     };
+                        [sendDict setObject:targetDict forKey:@"target"];
+                        [sendDict setObject:@"select" forKey: @"eventType"];
+                        [self sendResultEventWithCallbackId:openAlbumCbId dataDict:sendDict errDict:nil doDelete:NO];
+                        [self.openAlbumSelectedVideoPaths addObject:cell.asset.localIdentifier];
+
+                        
+
                     }];
+
+                }];
+                }
+           
+               
+
+                
+            }
+ 
+       
+            
+        }else{
+            
+            if (self.openAlbumSelectedVideoPaths.count>0) {
+                  [self.viewController.navigationController.view makeToast:[NSString stringWithFormat:@"不能同时选择视频和图片"] duration:[CSToastManager defaultDuration] position:@"center"];
+            }else{
+            [self transPathOpenGroup:cell.asset.localIdentifier groupImage:[cell.topBtn imageForState:UIControlStateNormal]  withBlock:^(NSString *gifImagePath, NSString *path, NSString *thumPath) {
+                if (nil != gifImagePath){
+                    [sendDict setObject:@{
+                                          @"gifImagePath": gifImagePath ?: @"",
+                                          @"type":@"image",
+                                          } forKey:@"target"];
+                }else{
+                    NSDictionary *targetDict = @{
+                                                 @"path": path ?: @"",
+                                                 @"thumbPath": thumPath ?: @"",
+                                                 @"type":@"image",
+                                                 };
+                    [sendDict setObject:targetDict forKey:@"target"];
+                }
+
+                
+             
+                if (cell.chooseStatus == NO) {
+                    
+                
+                    if (self.openAlbumSelectMax.count> (self.openAlbumMax-1)) {
+                        
+                        cell.signBtn.selected= NO;
+                        cell.chooseStatus = NO;
+                        [self.viewController.navigationController.view makeToast:[NSString stringWithFormat:@"图片最多选择%ld张",(long)self.openAlbumMax] duration:[CSToastManager defaultDuration] position:@"center"];
+
+                    }else{
+                        [self.openAlbumSelectMax addObject:cell.asset.localIdentifier];
+                        cell.chooseStatus = YES;
+                        cell.signBtn.selected = YES;
+                        [self.openAlbumSelectedPaths addObject:cell.asset.localIdentifier];
+                        [sendDict setObject:@"select" forKey: @"eventType"];
+                        [self sendResultEventWithCallbackId:openAlbumCbId dataDict:sendDict errDict:nil doDelete:NO];
+                    }
+                    
+          
                     
                 }else{
-                    pictureBtn.backgroundColor = [UIColor clearColor];
-                    [self transPathOpenGroup:path groupImage:image  withBlock:^(NSString *gifImagePath, NSString *path, NSString *thumPath) {
-                        if (nil != gifImagePath){
-                            [self sendResultEventWithCallbackId:openGroupCbId
-                                                       dataDict:@{
-                                                                  @"eventType":@"cancel",
-                                                                  @"target":@{
-                                                                          @"gifImagePath": gifImagePath ?: @"",
-                                                                          },
-                                                                  @"groupId":groupId
-                                                                  
-                                                                  }
-                                                        errDict:nil
-                                                       doDelete:NO];
-                            
-                        }else{
-                            [self sendResultEventWithCallbackId:openGroupCbId
-                                                       dataDict:@{
-                                                                  @"eventType":@"cancel",
-                                                                  @"target":@{
-                                                                          @"path": path ?: @"",
-                                                                          @"thumPath": thumPath ?: @""},
-                                                                  @"groupId":groupId,
-                                                                  }
-                                                        errDict:nil
-                                                       doDelete:NO];
-                        }
-                    }];
+                    cell.signBtn.selected = NO;
+                    cell.chooseStatus = NO;
+                    [self.openAlbumSelectedPaths removeObject:cell.asset.localIdentifier];
+                    [self.openAlbumSelectMax removeObject:cell.asset.localIdentifier];
+                    [sendDict setObject:@"cancel" forKey: @"eventType"];
+                    [self sendResultEventWithCallbackId:openAlbumCbId dataDict:sendDict errDict:nil doDelete:NO];
+                    
                 }
+                
+            
+                
+                
+                
             }];
-            for (int i = 0; i < selectedPaths.count; i++) {
-                if ([asset.localIdentifier isEqualToString:selectedPaths[i]]) {
-                    pictureBtn.selected = YES;
+            
+            
+        }
+        }
+        
+    }else{
+      
+        GroupCell *cell = (GroupCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        if (indexPath.row == 0) {
+            [self sendResultEventWithCallbackId:openGroupCbId dataDict:@{@"eventType":@"camera"} errDict:nil doDelete:NO];
+        }else{
+            __block  NSMutableDictionary *sendDict = [NSMutableDictionary dictionaryWithCapacity:42];
+            [sendDict setObject:self.groupId forKey: @"groupId"];
+            
+            [self transPathOpenGroup:cell.asset.localIdentifier groupImage:[cell.topBtn imageForState:UIControlStateNormal]  withBlock:^(NSString *gifImagePath, NSString *path, NSString *thumPath) {
+                if (nil != gifImagePath){
+                    
+                    [sendDict setObject:@{
+                                          @"gifImagePath": gifImagePath ?: @"",
+                                          } forKey:@"target"];
+                    
+                }else{
+                    NSDictionary *targetDict = @{
+                                                 @"path": path ?: @"",
+                                                 @"thumPath": thumPath ?: @""};
+                    [sendDict setObject:targetDict forKey:@"target"];
                 }
-            }
-        }];
+                
+                if (cell.chooseStatus == NO) {
+                    cell.signBtn.hidden = NO;
+                    cell.chooseStatus = YES;
+                    
+                    [self.selectedPaths addObject:cell.asset.localIdentifier];
+                    
+                    [sendDict setObject:@"select" forKey: @"eventType"];
+                    [self sendResultEventWithCallbackId:openGroupCbId dataDict:sendDict errDict:nil doDelete:NO];
+                    
+                }else{
+                    cell.signBtn.hidden = YES;
+                    cell.chooseStatus = NO;
+                    [self.selectedPaths removeObject:cell.asset.localIdentifier];
+                    
+                    [sendDict setObject:@"cancel" forKey: @"eventType"];
+                    [self sendResultEventWithCallbackId:openGroupCbId dataDict:sendDict errDict:nil doDelete:NO];
+                    
+                }
+                
+            }];
+            
+            
+            
+        }
     }
-    [self sendResultEventWithCallbackId:openGroupCbId dataDict:@{@"eventType":@"change",@"groupId":groupId} errDict:nil doDelete:NO];
-    
+
 }
 
+
 -(void)closeGroup:(NSDictionary *)paramsDict_{
-    [self.groupView removeFromSuperview];
-    self.groupView = nil;
+    self.mainCollectionView.delegate = nil;
+    self.mainCollectionView.dataSource = nil;
+    if (self.mainCollectionView) {
+        [self.mainCollectionView removeFromSuperview];
+        self.mainCollectionView = nil;
+     
+    }
 }
+
 - (void)open:(NSDictionary *)paramsDict_ {
     opencbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
     BOOL albumRotation = [paramsDict_ boolValueForKey:@"rotation" defaultValue:false];
@@ -449,33 +636,72 @@ static int fetchPosition = 0;
     PhotoNavigationViewModel * viewModel = [PhotoNavigationViewModel new];
     NSString *openType = [paramsDict_ stringValueForKey:@"type" defaultValue:@"image"];
     BOOL isOpenPreview = [paramsDict_ boolValueForKey:@"isOpenPreview" defaultValue:true];
-    CGFloat thumbW = [paramsDict_ floatValueForKey:@"w" defaultValue:100.0];
-    CGFloat thumbH = [paramsDict_ floatValueForKey:@"h" defaultValue:100.0];
+    //CGFloat thumbW = [paramsDict_ floatValueForKey:@"w" defaultValue:300.0];
+    //CGFloat thumbH = [paramsDict_ floatValueForKey:@"h" defaultValue:300.0];
     [viewModel setBridgeGetAssetBlock:^(NSArray<PHAsset *> * assets){
         NSMutableArray *list = [NSMutableArray arrayWithCapacity:42];
         if (0 == assets.count) {
             [self sendResultEventWithCallbackId:opencbId
-                                       dataDict:@{@"eventType":@"cancle"}
+                                       dataDict:@{@"eventType":@"cancel"}
                                         errDict:nil
                                        doDelete:YES];
         }
         for (NSInteger i = assets.count -1 ; i >= 0; i--) {
             /* 每输出一个,就移除一个,所以此处,总是从 allAssets的开始处取值. */
             PHAsset * asset = assets[i];
+            CGFloat thumbW,thumbH;
+            if (asset.mediaType == PHAssetMediaTypeImage) {
+                thumbW = 300 ;
+                thumbH = 300;
+            }else{
+              
+                thumbW = asset.pixelWidth/4;
+                thumbH = asset.pixelHeight/4;
+            }
             [self requestImageForAsset:asset size:CGSizeMake(thumbW, thumbH) resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
+                
+                __block CGFloat resouceSize;
+                if (asset.mediaType == PHAssetMediaTypeImage) {
+                    [[PHImageManager defaultManager] requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                        resouceSize = imageData.length; //convert to MB
+                    }] ;
+                }else{
+
+                    PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+                    options.version = PHVideoRequestOptionsVersionOriginal;
+                    [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+                        if ([asset isKindOfClass:[AVURLAsset class]]) {
+                            AVURLAsset* urlAsset = (AVURLAsset*)asset;
+                            NSNumber *size;
+                            [urlAsset.URL getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
+                            //NSLog(@"size is %f",[size floatValue]); //size is 43.703005
+                            resouceSize = [size floatValue];
+
+                        }}];
+                }
+             
                 [self cache:image imagePath:asset.localIdentifier
                    complete:^(NSString * _Nonnull thumbPath) {
+                       CLLocation *newLocation = asset.location;
+                       CLLocationCoordinate2D oldCoordinate = newLocation.coordinate;
                        NSString * path = asset.localIdentifier;
                        // NSString * time = asset.modificationDate.description; // TODO: 转换成需要的格式 + 用"修改时间"
                        NSInteger timeSp = [asset.modificationDate timeIntervalSince1970] *1000.0;
                        NSTimeInterval duration = asset.duration*1000; // TODO: 建议添加,这样就没必要实现 getVideoDuration 接口了...
                        NSString * mediaType = asset.mediaType ==  PHAssetMediaTypeImage ? @"image":@"video";
                        NSDictionary * listItem;
+                       //PHAssetResource *resource = [[PHAssetResource assetResourcesForAsset:asset] firstObject];
+                       //long long resouceSize = [[resource valueForKey:@"fileSize"] longLongValue];
+                   
                        if (asset.mediaType == PHAssetMediaTypeImage) {
+                         
                            listItem  = @{@"path":path,
                                          @"thumbPath":thumbPath,
                                          @"time":@(timeSp),
                                          @"mediaType":mediaType,
+                                         @"size":@(resouceSize),
+                                         @"longitude":@(oldCoordinate.longitude),
+                                         @"latitude":@(oldCoordinate.latitude),
                                          };
                        }else
                        {
@@ -484,6 +710,9 @@ static int fetchPosition = 0;
                                          @"time":@(timeSp),
                                          @"duration":@(duration),
                                          @"mediaType":mediaType,
+                                          @"size":@(resouceSize),
+                                         @"longitude":@(oldCoordinate.longitude),
+                                         @"latitude":@(oldCoordinate.latitude),
                                          };
                        }
                        [list addObject:listItem];
@@ -519,6 +748,7 @@ static int fetchPosition = 0;
     NSInteger selectMax = [paramsDict_ integerValueForKey:@"max" defaultValue:9];
     NSDictionary *stylesInfo = [paramsDict_ dictValueForKey:@"styles" defaultValue:@{}];
     NSDictionary *navInfo = [stylesInfo dictValueForKey:@"nav" defaultValue:@{}];
+    BOOL showCamera = [paramsDict_ boolValueForKey:@"showCamera" defaultValue:true];
     UZAlbumSingleton.sharedSingleton.stylesInfo = stylesInfo;
     UZAlbumSingleton.sharedSingleton.navInfo = navInfo;
     UZAlbumSingleton.sharedSingleton.imagePickerCbId = imagePickerCbId;
@@ -526,6 +756,7 @@ static int fetchPosition = 0;
     WPhotoViewController *WphotoVC = [[WPhotoViewController alloc] init];
     //选择图片的最大数
     WphotoVC.selectPhotoOfMax = selectMax;
+    WphotoVC.showCamera = showCamera;
     [WphotoVC setSelectPhotosBack:^(NSMutableArray *phostsArr) {
         _photosArr = phostsArr;
     }];
@@ -576,113 +807,141 @@ static int fetchPosition = 0;
     
 }
 
+
 - (void)scan:(NSDictionary *)paramsDict_ {
-    NSString * type = [paramsDict_ stringValueForKey:@"type" defaultValue:@"all"];
-    NSUInteger count = [paramsDict_ integerValueForKey:@"count" defaultValue: NSUIntegerMax];
-    NSDictionary *sort = [paramsDict_ dictValueForKey:@"sort" defaultValue:@{}];
-    NSString * order = [sort stringValueForKey:@"order" defaultValue:@"desc"];
-    NSInteger cbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
-    BOOL ascending = false;
-    if ([order isEqualToString:@"asc"]) {
-        ascending = true;
-    }
-    NSDictionary *thumbSizeInfo = [paramsDict_ dictValueForKey:@"thumbnail" defaultValue:@{}];
-    CGFloat thumbW = [thumbSizeInfo floatValueForKey:@"w" defaultValue:100.0];
-    CGFloat thumbH = [thumbSizeInfo floatValueForKey:@"h" defaultValue:100.0];
-    CGSize thumbSize = CGSizeMake(thumbW, thumbH);
-    self.thumbSizeForAll = thumbSize;
-    self.allAssets = [NSMutableArray arrayWithArray: [self getAllAssetInPhotoAblumWithAscending:ascending type:type]];
-    if (count == NSUIntegerMax) {
-        count = self.allAssets.count;
-    }
-    self.countForAll = count;
-    NSMutableArray * list = [NSMutableArray arrayWithCapacity:count];
-    /* 先计算下total,因为循环开始后,会动态删除元素. */
-    NSInteger total = self.allAssets.count;
-    if (self.allAssets.count == 0) { // 兼容一种已经没有更多数据的情况.
-        NSDictionary * dataDict = @{
-                                    @"total":@(total),
-                                    @"list": @[]
-                                    };
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // 在子线程中执行耗时操作.
         
-        [self sendResultEventWithCallbackId:cbId
-                                   dataDict:dataDict
-                                    errDict:nil
-                                   doDelete:YES];
-        return;
-    };
-    
-    if (count > self.allAssets.count) {
-        count = self.allAssets.count;
-    }
-    
-    NSLog(@"%lu",(unsigned long)self.allAssets.count);
-    for (int i = 0; i < count; i++) {
-        /* 每输出一个,就移除一个,所以此处,总是从 allAssets的开始处取值. */
-        if (0 == self.allAssets.count) {
-            break;
+        NSString * type = [paramsDict_ stringValueForKey:@"type" defaultValue:@"all"];
+        NSUInteger count = [paramsDict_ integerValueForKey:@"count" defaultValue: NSUIntegerMax];
+        NSDictionary *sort = [paramsDict_ dictValueForKey:@"sort" defaultValue:@{}];
+        NSString * order = [sort stringValueForKey:@"order" defaultValue:@"desc"];
+        NSInteger cbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
+        BOOL ascending = false;
+        if ([order isEqualToString:@"asc"]) {
+            ascending = true;
         }
-        PHAsset * asset = self.allAssets[0];
-        [self.allAssets removeObjectAtIndex:0];
-        [self requestImageForAsset:asset size:thumbSize resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
+        NSDictionary *thumbSizeInfo = [paramsDict_ dictValueForKey:@"thumbnail" defaultValue:@{}];
+        CGFloat thumbW = [thumbSizeInfo floatValueForKey:@"w" defaultValue:100.0];
+        CGFloat thumbH = [thumbSizeInfo floatValueForKey:@"h" defaultValue:100.0];
+        CGSize thumbSize = CGSizeMake(thumbW, thumbH);
+        self.thumbSizeForAll = thumbSize;
+        self.allAssets = [NSMutableArray arrayWithArray: [self getAllAssetInPhotoAblumWithAscending:ascending type:type]];
+        if (count == NSUIntegerMax) {
+            count = self.allAssets.count;
+        }
+        self.countForAll = count;
+        NSMutableArray * list = [NSMutableArray arrayWithCapacity:count];
+        /* 先计算下total,因为循环开始后,会动态删除元素. */
+        NSInteger total = self.allAssets.count;
+        if (self.allAssets.count == 0) { // 兼容一种已经没有更多数据的情况.
+            NSDictionary * dataDict = @{
+                                        @"total":@(total),
+                                        @"list": @[]
+                                        };
             
-            [self cache:image imagePath:asset.localIdentifier
-               complete:^(NSString * _Nonnull thumbPath) {
-                   NSString * path = asset.localIdentifier;
-                   // NSString * time = asset.modificationDate.description; // TODO: 转换成需要的格式 + 用"修改时间"
-                   NSInteger timeSp = [asset.modificationDate timeIntervalSince1970] *1000.0;
-                   NSTimeInterval duration = asset.duration*1000; // TODO: 建议添加,这样就没必要实现 getVideoDuration 接口了...
-                   NSString * mediaType = asset.mediaType ==  PHAssetMediaTypeImage ? @"image":@"video";
-                   NSDictionary * listItem;
-                   if (asset.mediaType == PHAssetMediaTypeImage) {
-                       listItem  = @{@"path":path,
-                                     @"thumbPath":thumbPath,
-                                     @"time":@(timeSp),
-                                     @"mediaType":mediaType,
-                                     };
-                   }else
-                   {
-                       listItem  = @{@"path":path,
-                                     @"thumbPath":thumbPath,
-                                     @"time":@(timeSp),
-                                     @"duration":@(duration),
-                                     @"mediaType":mediaType,
-                                     };
-                   }
-                   
-                   [list addObject:listItem];
-                   
-                   if (list.count == count) {
-                       NSDictionary * dataDict = @{
-                                                   @"total":@(total),
-                                                   @"list": list
-                                                   };
+            [self sendResultEventWithCallbackId:cbId
+                                       dataDict:dataDict
+                                        errDict:nil
+                                       doDelete:YES];
+            return;
+        };
+        
+        if (count > self.allAssets.count) {
+            count = self.allAssets.count;
+        }
+        
+        NSLog(@"%lu",(unsigned long)self.allAssets.count);
+        for (int i = 0; i < count; i++) {
+            /* 每输出一个,就移除一个,所以此处,总是从 allAssets的开始处取值. */
+            if (0 == self.allAssets.count) {
+                break;
+            }
+            PHAsset * asset = self.allAssets[0];
+            [self.allAssets removeObjectAtIndex:0];
+            [self requestImageForAsset:asset size:thumbSize resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
+                
+                __block CGFloat resouceSize;
+                if (asset.mediaType == PHAssetMediaTypeImage) {
+                    [[PHImageManager defaultManager] requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                        resouceSize = imageData.length; //convert to MB
+                    }] ;
+                }else{
+                    
+                    PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+                    options.version = PHVideoRequestOptionsVersionOriginal;
+                    [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+                        if ([asset isKindOfClass:[AVURLAsset class]]) {
+                            AVURLAsset* urlAsset = (AVURLAsset*)asset;
+                            NSNumber *size;
+                            [urlAsset.URL getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
+                            //NSLog(@"size is %f",[size floatValue]); //size is 43.703005
+                            resouceSize = [size floatValue];
+                            
+                        }}];
+                }
+                [self cache:image imagePath:asset.localIdentifier
+                   complete:^(NSString * _Nonnull thumbPath) {
+                       NSString * path = asset.localIdentifier;
+                       // NSString * time = asset.modificationDate.description; // TODO: 转换成需要的格式 + 用"修改时间"
+                       NSInteger timeSp = [asset.modificationDate timeIntervalSince1970] *1000.0;
+                       NSTimeInterval duration = asset.duration*1000; // TODO: 建议添加,这样就没必要实现 getVideoDuration 接口了...
+                       NSString * mediaType = asset.mediaType ==  PHAssetMediaTypeImage ? @"image":@"video";
+                       NSDictionary * listItem;
+                       //PHAssetResource *resource = [[PHAssetResource assetResourcesForAsset:asset] firstObject];
+                       //long long size = [[resource valueForKey:@"fileSize"] longLongValue];
+                       if (asset.mediaType == PHAssetMediaTypeImage) {
+                           listItem  = @{@"path":path,
+                                         @"thumbPath":thumbPath,
+                                         @"time":@(timeSp),
+                                         @"mediaType":mediaType,
+                                         @"size":@(resouceSize)
+                                         };
+                       }else
+                       {
+                           listItem  = @{@"path":path,
+                                         @"thumbPath":thumbPath,
+                                         @"time":@(timeSp),
+                                         @"duration":@(duration),
+                                         @"mediaType":mediaType,
+                                          @"size":@(resouceSize)
+                                         };
+                       }
                        
-                       [self sendResultEventWithCallbackId:cbId
-                                                  dataDict:dataDict
-                                                   errDict:nil
-                                                  doDelete:YES];
-                   }
-               }];
-        }];
-    }
-}
-
-
-- (void)scanGroups:(NSDictionary *)paramsDict_{
+                       [list addObject:listItem];
+                       
+                       if (list.count == count) {
+                           NSDictionary * dataDict = @{
+                                                       @"total":@(total),
+                                                       @"list": list
+                                                       };
+                           
+                          //
+                               /// 切换到主线程,回调结果,或者进行 UI 操作.
+                               [self sendResultEventWithCallbackId:cbId
+                                                          dataDict:dataDict
+                                                           errDict:nil
+                                                          doDelete:YES];
+                          // });
+                       }
+                   }];
+            }];
+        }
+    });
     
+    
+}
+- (void)scanGroups:(NSDictionary *)paramsDict_{
+
     NSInteger cbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
     NSDictionary *thumbSizeInfo = [paramsDict_ dictValueForKey:@"thumbnail" defaultValue:@{}];
     CGFloat thumbW = [thumbSizeInfo floatValueForKey:@"w" defaultValue:100.0];
     CGFloat thumbH = [thumbSizeInfo floatValueForKey:@"h" defaultValue:100.0];
     CGSize thumbSize = CGSizeMake(thumbW, thumbH);
-    //NSString *fullpath = [NSString stringWithFormat:@"%@",[[self getPathWithUZSchemeURL:self.realPath] stringByDeletingLastPathComponent]];
-    //    NSFileManager *fileManager = [NSFileManager defaultManager];
-    //    [fileManager removeItemAtPath:self.realPath error:nil];
+
     [self.photoStore fetchDefaultAllPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull groups, PHFetchResult * _Nonnull collections) {
         //进行回调
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            //            dispatch_async(dispatch_get_main_queue(), ^{
             NSMutableArray * list = [NSMutableArray arrayWithCapacity: groups.count];
             for (int i = 0; i < groups.count; i++) {
                 PHAssetCollection * collection = groups[i];
@@ -693,7 +952,7 @@ static int fetchPosition = 0;
                             complete:^(NSString * _Nonnull thumbPath) {
                                 NSString * groupId = collection.localIdentifier;
                                 NSString * groupName = collection.localizedTitle;
-                                NSString * groupType = @""; // TODO: iOS 有两个类型属性,每个属性对应多个值,不是简单的 视频与图片,详见: PHAssetCollection 类的 assetCollectionType 和 assetCollectionSubtype 属性.
+                                NSString * groupType = @"";
                                 NSDictionary * item = @{
                                                         @"thumbPath":thumbPath,
                                                         @"groupId":groupId,
@@ -702,12 +961,14 @@ static int fetchPosition = 0;
                                                         @"imgCount":@(count)
                                                         };
                                 [list addObject:item];
+                                
+                            
                                 if (list.count == groups.count) {
                                     NSDictionary * dataDict = @{
                                                                 @"total":@(groups.count),
                                                                 @"list":list
                                                                 };
-                                    
+
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                         [self sendResultEventWithCallbackId:cbId
                                                                    dataDict:dataDict
@@ -715,17 +976,20 @@ static int fetchPosition = 0;
                                                                    doDelete:YES];
                                     });
                                 }
-                                
+
                             }];
                      }];
-                    
+
                 }
             }
             //
         });
-        
+
     }];
 }
+
+
+
 
 - (void)scanByGroupId:(NSDictionary *)paramsDict_ {
     
@@ -784,20 +1048,41 @@ static int fetchPosition = 0;
         PHAsset * asset = self.groupAssets[0];
         [self.groupAssets removeObjectAtIndex:0];
         [self requestImageForAsset:asset size:thumbSize resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
+            
+            __block CGFloat resouceSize;
+            if (asset.mediaType == PHAssetMediaTypeImage) {
+                [[PHImageManager defaultManager] requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                    resouceSize = imageData.length; //convert to MB
+                }] ;
+            }else{
+                
+                PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+                options.version = PHVideoRequestOptionsVersionOriginal;
+                [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+                    if ([asset isKindOfClass:[AVURLAsset class]]) {
+                        AVURLAsset* urlAsset = (AVURLAsset*)asset;
+                        NSNumber *size;
+                        [urlAsset.URL getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
+                        //NSLog(@"size is %f",[size floatValue]); //size is 43.703005
+                        resouceSize = [size floatValue];
+                        
+                    }}];
+            }
             [self cache:image imagePath:asset.localIdentifier
                complete:^(NSString * _Nonnull thumbPath) {
                    NSString * path = asset.localIdentifier;
                    //                   NSString * time = asset.modificationDate.description; // TODO: 转换成需要的格式 + 用"修改时间".
                    NSInteger timeSp = [asset.modificationDate timeIntervalSince1970] *1000.0;                   NSTimeInterval duration = asset.duration*1000; // TODO: 建议添加,这样就没必要实现 getVideoDuration 接口了...
                    NSString * mediaType = asset.mediaType ==  PHAssetMediaTypeImage ? @"image":@"video" ; // TODO: 加上,不会更好吗?
-                   
+                   //PHAssetResource *resource = [[PHAssetResource assetResourcesForAsset:asset] firstObject];
+                   //long long size = [[resource valueForKey:@"fileSize"] longLongValue];
                    NSDictionary * listItem;
-                   if (mediaType == PHAssetMediaTypeImage) {
+                   if (asset.mediaType == PHAssetMediaTypeImage) {
                        listItem  = @{@"path":path,
                                      @"thumbPath":thumbPath,
                                      @"time":@(timeSp),
                                      @"mediaType":mediaType,
-                                     
+                                     @"size":@(resouceSize)
                                      };
                    }else
                    {
@@ -806,6 +1091,7 @@ static int fetchPosition = 0;
                                      @"time":@(timeSp),
                                      @"duration":@(duration),
                                      @"mediaType":mediaType,
+                                     @"size":@(resouceSize)
                                      };
                    }
                    [list addObject:listItem];
@@ -852,6 +1138,26 @@ static int fetchPosition = 0;
         PHAsset * asset = self.groupAssets[0];
         [self.groupAssets removeObjectAtIndex:0];
         [self requestImageForAsset:asset size:thumbSize resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
+            
+            __block CGFloat resouceSize;
+            if (asset.mediaType == PHAssetMediaTypeImage) {
+                [[PHImageManager defaultManager] requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                    resouceSize = imageData.length; //convert to MB
+                }] ;
+            }else{
+                
+                PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+                options.version = PHVideoRequestOptionsVersionOriginal;
+                [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+                    if ([asset isKindOfClass:[AVURLAsset class]]) {
+                        AVURLAsset* urlAsset = (AVURLAsset*)asset;
+                        NSNumber *size;
+                        [urlAsset.URL getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
+                        //NSLog(@"size is %f",[size floatValue]); //size is 43.703005
+                        resouceSize = [size floatValue];
+                        
+                    }}];
+            }
             [self cache:image imagePath:asset.localIdentifier
                complete:^(NSString * _Nonnull thumbPath) {
                    NSString * path = asset.localIdentifier;
@@ -859,11 +1165,14 @@ static int fetchPosition = 0;
                    NSInteger timeSp = [asset.modificationDate timeIntervalSince1970] *1000.0;                   NSTimeInterval duration = asset.duration*1000; // TODO: 建议添加,这样就没必要实现 getVideoDuration 接口了...
                    NSString * mediaType = asset.mediaType ==  PHAssetMediaTypeImage ? @"image":@"video" ; // TODO: 加上,不会更好吗?
                    NSDictionary * listItem;
+                  // PHAssetResource *resource = [[PHAssetResource assetResourcesForAsset:asset] firstObject];
+                   //long long size = [[resource valueForKey:@"fileSize"] longLongValue];
                    if (asset.mediaType == PHAssetMediaTypeImage) {
                        listItem  = @{@"path":path,
                                      @"thumbPath":thumbPath,
                                      @"time":@(timeSp),
                                      @"mediaType":mediaType,
+                                     @"size":@(resouceSize)
                                      };
                    }else
                    {
@@ -872,6 +1181,7 @@ static int fetchPosition = 0;
                                      @"time":@(timeSp),
                                      @"duration":@(duration),
                                      @"mediaType":mediaType,
+                                     @"size":@(resouceSize)
                                      };
                    }
                    [list addObject:listItem];
@@ -890,6 +1200,7 @@ static int fetchPosition = 0;
 }
 
 - (void)fetch:(NSDictionary *)paramsDict_ {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     NSInteger cbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
     NSUInteger count = self.countForAll;
     NSMutableArray * list = [NSMutableArray arrayWithCapacity:count];
@@ -912,23 +1223,46 @@ static int fetchPosition = 0;
             break;
         }
         PHAsset * asset = self.allAssets[0];
+        
         [self.allAssets removeObjectAtIndex:0];
         [self requestImageForAsset:asset size:self.thumbSizeForAll resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
+            __block CGFloat resouceSize;
+            if (asset.mediaType == PHAssetMediaTypeImage) {
+                [[PHImageManager defaultManager] requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                    resouceSize = imageData.length; //convert to MB
+                }] ;
+            }else{
+                
+                PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+                options.version = PHVideoRequestOptionsVersionOriginal;
+                [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+                    if ([asset isKindOfClass:[AVURLAsset class]]) {
+                        AVURLAsset* urlAsset = (AVURLAsset*)asset;
+                        NSNumber *size;
+                        [urlAsset.URL getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
+                        //NSLog(@"size is %f",[size floatValue]); //size is 43.703005
+                        resouceSize = [size floatValue];
+                        
+                    }}];
+            }
             [self cache:image imagePath:asset.localIdentifier
                complete:^(NSString * _Nonnull thumbPath) {
                    NSString * path = asset.localIdentifier;
-                   NSString * time = asset.modificationDate.description; // TODO: 转换成需要的格式 + 用"修改时间"!
+                  // NSString * time = asset.modificationDate.description; // TODO: 转换成需要的格式 + 用"修改时间"!
                    NSInteger timeSp = [asset.modificationDate timeIntervalSince1970] *1000.0;
                    NSTimeInterval duration = asset.duration*1000 ; // TODO: 建议添加,这样就没必要实现 getVideoDuration 接口了...
                    
                    
                    NSString * mediaType = asset.mediaType ==  PHAssetMediaTypeImage ? @"image":@"video" ; // TODO: 加上,不会更好吗?
                    NSDictionary * listItem;
+                   //PHAssetResource *resource = [[PHAssetResource assetResourcesForAsset:asset] firstObject];
+                   //long long size = [[resource valueForKey:@"fileSize"] longLongValue];
                    if (asset.mediaType == PHAssetMediaTypeImage) {
                        listItem  =  @{@"path":path,
                                       @"thumbPath":thumbPath,
                                       @"time":@(timeSp),
                                       @"mediaType":mediaType,
+                                      @"size":@(resouceSize)
                                       };
                    }else
                    {
@@ -937,6 +1271,7 @@ static int fetchPosition = 0;
                                       @"time":@(timeSp),
                                       @"duration":@(duration),
                                       @"mediaType":mediaType,
+                                      @"size":@(resouceSize)
                                       };
                    }
                    [list addObject:listItem];
@@ -944,14 +1279,17 @@ static int fetchPosition = 0;
                        NSDictionary * dataDict = @{
                                                    @"list": list
                                                    };
+                       // dispatch_sync(dispatch_get_main_queue(), ^{
                        [self sendResultEventWithCallbackId:cbId
                                                   dataDict:dataDict
                                                    errDict:nil
                                                   doDelete:YES];
+                        //});
                    }
                }];
         }];
     }
+        });
 }
 - (void)fetchCallBack {//遍历接口回调
     NSMutableArray *callBackArr = [NSMutableArray array];
@@ -972,7 +1310,7 @@ static int fetchPosition = 0;
     PHFetchOptions *option = [[PHFetchOptions alloc] init];
     option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d",PHAssetMediaTypeImage];
     
-    option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:ascending]];
+    //option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:ascending]];
     PHFetchResult *result = [PHAsset fetchAssetsInAssetCollection:assetCollection options:option];
     return result;
 }
@@ -987,7 +1325,7 @@ static int fetchPosition = 0;
                                               type:(NSString *)type
 {
     NSMutableArray<PHAsset *> *arr = [NSMutableArray array];
-    PHFetchResult *result = [self fetchAssetsInAssetCollection:assetCollection ascending:ascending];
+    PHFetchResult *result = [self openAlbumfetchAssetsInAssetCollection:assetCollection ascending:ascending];
     [result enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([type isEqualToString:@"all"]) {
             [arr addObject:obj];
@@ -1002,9 +1340,20 @@ static int fetchPosition = 0;
     return arr;
 }
 
+- (PHFetchResult *)openAlbumfetchAssetsInAssetCollection:(PHAssetCollection *)assetCollection ascending:(BOOL)ascending
+{
+    PHFetchOptions *option = [[PHFetchOptions alloc] init];
+//    option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d",PHAssetMediaTypeImage];
+    
+   // option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+    PHFetchResult *result = [PHAsset fetchAssetsInAssetCollection:assetCollection options:option];
+    return result;
+}
+
 #pragma mark - 获取asset对应的图片
 - (void)requestImageForAsset:(PHAsset *)asset size:(CGSize)size resizeMode:(PHImageRequestOptionsResizeMode)resizeMode completion:(void (^)(UIImage *))completion
 {
+    __block BOOL isPhotoInICloud = NO;
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
     /**
      resizeMode：对请求的图像怎样缩放。有三种选择：None，默认加载方式；Fast，尽快地提供接近或稍微大于要求的尺寸；Exact，精准提供要求的尺寸。
@@ -1015,20 +1364,57 @@ static int fetchPosition = 0;
     option.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;//控制照片质量
     option.synchronous = YES;
     option.networkAccessAllowed = YES;
-    float scale = [UIScreen mainScreen].scale;
+    option.version = PHImageRequestOptionsVersionCurrent;
+    //float scale = [UIScreen mainScreen].scale;
+    // 下载iCloud 图片的进度回调 只要图片是在icloud中 然后去请求图片就会走这个回调 如果图片没有在iCloud中不回走这个回调
+    //里面的会调中的参数重 NSDictionary *info 是否有cloudKey 来判断是否是  iCloud 处理UI放到主线程
+    option.progressHandler = ^(double progress, NSError * _Nullable error, BOOL * _Nonnull stop, NSDictionary * _Nullable info) {
+        isPhotoInICloud = YES;
+    };
     
     //param：targetSize 即你想要的图片尺寸，若想要原尺寸则可输入PHImageManagerMaximumSize
-    [[PHCachingImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(size.width*scale, size.height*scale) contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-        completion(image);
+    [[PHCachingImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(size.width, size.height) contentMode:PHImageContentModeAspectFit options:option resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+        if (isPhotoInICloud) {
+            // Photo is in iCloud.
+        }else{
+            completion(image);
+        }
     }];
     
-    
-    
-    
-    
+ 
+   
 }
 
 
+#pragma mark - 获取asset对应的图片
+- (void)requestImageDataForAsset:(PHAsset *)asset resizeMode:(PHImageRequestOptionsResizeMode)resizeMode completion:(void (^)(UIImage *,UIImageOrientation))completion
+{
+    __block BOOL isPhotoInICloud = NO;
+    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+    /**
+     resizeMode：对请求的图像怎样缩放。有三种选择：None，默认加载方式；Fast，尽快地提供接近或稍微大于要求的尺寸；Exact，精准提供要求的尺寸。
+     deliveryMode：图像质量。有三种值：Opportunistic，在速度与质量中均衡；HighQualityFormat，不管花费多长时间，提供高质量图像；FastFormat，以最快速度提供好的质量。
+     这个属性只有在 synchronous 为 true 时有效。
+     */
+    option.resizeMode = resizeMode;//控制照片尺寸
+    option.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;//控制照片质量
+    option.synchronous = YES;
+    option.networkAccessAllowed = YES;
+    option.version = PHImageRequestOptionsVersionCurrent;
+    //float scale = [UIScreen mainScreen].scale;
+    // 下载iCloud 图片的进度回调 只要图片是在icloud中 然后去请求图片就会走这个回调 如果图片没有在iCloud中不回走这个回调
+    //里面的会调中的参数重 NSDictionary *info 是否有cloudKey 来判断是否是  iCloud 处理UI放到主线程
+    option.progressHandler = ^(double progress, NSError * _Nullable error, BOOL * _Nonnull stop, NSDictionary * _Nullable info) {
+        isPhotoInICloud = YES;
+    };
+    
+    
+    [[PHCachingImageManager defaultManager]requestImageDataForAsset:asset options:option resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+        UIImage *image = [UIImage imageWithData: imageData];
+        completion(image,orientation);
+    }];
+    
+}
 
 #pragma mark - 获取相册内所有照片资源
 - (NSArray<PHAsset *> *)getAllAssetInPhotoAblumWithAscending:(BOOL)ascending type:(NSString *)type
@@ -1036,7 +1422,7 @@ static int fetchPosition = 0;
     NSMutableArray<PHAsset *> *assets = [NSMutableArray array];
     PHFetchOptions *option = [[PHFetchOptions alloc] init];
     //ascending 为YES时，按照照片的创建时间升序排列;为NO时，则降序排列
-    option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:ascending]];
+   // option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:ascending]];
     PHFetchResult *result = nil;
     if ([type isEqualToString:@"image"]) {
         option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d",PHAssetMediaTypeImage];
@@ -1046,7 +1432,6 @@ static int fetchPosition = 0;
         
         result = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeVideo options:option];
     }else{
-        // option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d",PHAssetMediaTypeUnknown];
         result = [PHAsset fetchAssetsWithOptions:option];
     }
     [result enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1057,9 +1442,7 @@ static int fetchPosition = 0;
 }
 
 //排序
-
 #pragma mark - 修改 thumbnail 大小
-
 - (UIImage *)setNewSizeWithOriginImage:(UIImage *)oriImage toSize:(CGSize)newSize {
     UIGraphicsBeginImageContext(newSize);
     [oriImage drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
@@ -1067,8 +1450,6 @@ static int fetchPosition = 0;
     UIGraphicsEndImageContext();
     return newImage;
 }
-
-
 - (void)transPath:(NSDictionary *)paramsDict_ {
     NSInteger cbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
     self.transPathCbId = cbId;
@@ -1106,12 +1487,10 @@ static int fetchPosition = 0;
                     if(error.code == -1){//文件已存在
                         data = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:gifPath]];
                     }
-                    //NSLog(@"data%@",data);
-                    //if (completion) completion(data,nil,NO);
+               
                 } else {
                     data = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:gifPath]];
-                    //NSLog(@"data%@",data);
-                    //if (completion) completion(data,nil,NO);
+              
                 }
             }];
 
@@ -1123,20 +1502,26 @@ static int fetchPosition = 0;
     if (asset.mediaType == PHAssetMediaTypeImage && [gifPath isEqualToString:@""] ) {
         //创建NSBlockOperation 来执行每一次转换，图片复制等耗时操作
         NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-            [self requestImageForAsset:asset size:CGSizeMake(asset.pixelWidth, asset.pixelHeight) resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage * image) {
-                [self cache:image imagePath:asset.localIdentifier
-                   complete:^(NSString * _Nonnull path) {
+            
+               [self requestImageDataForAsset:asset resizeMode:PHImageRequestOptionsResizeModeExact completion:^(UIImage *image, UIImageOrientation orientation) {
+                
+                  
+                   [self cacheTransPath:image imageOrientation:&orientation imagePath:asset.localIdentifier complete:^(NSString * _Nonnull path) {
                        dispatch_async(dispatch_get_main_queue(), ^{
                            [self sendResultEventWithCallbackId:cbId
                                                       dataDict:@{
-                                                                 @"path":path
+                                                                 @"path":[NSString stringWithFormat:@"%@",path]
                                                                  }
                                                        errDict:nil
                                                       doDelete:YES];
+//                           UIImageView *heicImg2 = [[UIImageView alloc]initWithFrame:CGRectMake(200, 350, 100, 100)];
+//                           heicImg2.image = [UIImage imageNamed:path];
+//                           [self.viewController.view addSubview:heicImg2];
+                           
                        });
                    }];
             }];
-            
+
         }];
         [self.transPathQueue addOperation:operation];
         
@@ -1149,14 +1534,52 @@ static int fetchPosition = 0;
             options.networkAccessAllowed = YES;
             [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset* avasset, AVAudioMix* audioMix, NSDictionary* info){
                 AVURLAsset *videoAsset = (AVURLAsset*)avasset;
-                NSURL  *filePathString = [self condenseVideoNewUrl:videoAsset.URL];
-                NSLog(@"%@",filePathString);
+                NSURL  *filePathString;
+                if (videoAsset) {
+                    filePathString = [self condenseVideoNewUrl:videoAsset.URL];
+                }else{
+                    [self sendResultEventWithCallbackId:cbId dataDict:@{@"status":[NSNumber numberWithBool:false]} errDict:nil doDelete:NO];
+                }
             }];
         }];
         [self.transPathQueue addOperation:operation];
     }
   
-    
+}
+
+
+-(void)transVideoPath:(NSDictionary *)paramsDict_{
+    NSInteger transVideoPathCbId = [paramsDict_ integerValueForKey:@"cbId" defaultValue:-1];
+    NSString * path = [paramsDict_ stringValueForKey:@"path" defaultValue:nil];
+    PHFetchResult<PHAsset *> * fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[path] options:nil];
+    if (0 == fetchResult.count) {
+        return;
+    }
+    PHAsset * asset = fetchResult.firstObject;
+    if (asset.mediaType == PHAssetMediaTypeVideo) {
+        NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+            PHVideoRequestOptions* options = [[PHVideoRequestOptions alloc] init];
+            options.version = PHVideoRequestOptionsVersionOriginal;
+            options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
+            options.networkAccessAllowed = YES;
+            [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset* avasset, AVAudioMix* audioMix, NSDictionary* info){
+                AVURLAsset *videoAsset = (AVURLAsset*)avasset;
+                CMTime   time = [avasset duration];
+                int seconds = ceil(time.value/time.timescale);
+                NSNumber *size;
+                [videoAsset.URL getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
+                CGFloat fileSize = [size floatValue];
+
+                if (videoAsset) {
+                    [self sendResultEventWithCallbackId:transVideoPathCbId dataDict:@{@"status":[NSNumber numberWithBool:true],@"albumVideoPath":[NSString stringWithFormat:@"%@",[videoAsset.URL absoluteString]],@"fileSize":[NSString stringWithFormat:@"%ld",(long)fileSize],@"duration":@(seconds)} errDict:nil doDelete:NO];
+                }else{
+                    [self sendResultEventWithCallbackId:transVideoPathCbId dataDict:@{@"code":@(-1)} errDict:nil doDelete:NO];
+                }
+            }];
+        }];
+        [self.transPathQueue addOperation:operation];
+    }
+ 
 }
 
 
@@ -1228,8 +1651,7 @@ static int fetchPosition = 0;
     NSFileManager *manager = [NSFileManager defaultManager];
     NSError *error = nil;
     [manager copyItemAtURL:url toURL:destUrl error:&error];
-    NSLog(@"压缩前--%.2fk",[self getFileSize:destFilePath]);
-    
+   // NSLog(@"压缩前--%.2fk",[self getFileSize:destFilePath]);
     // 进行压缩
     AVAsset *asset = [AVAsset assetWithURL:url];
     //创建视频资源导出会话
@@ -1250,9 +1672,8 @@ static int fetchPosition = 0;
     session.outputFileType = @"com.apple.quicktime-movie";
     // 导出视频
     [session exportAsynchronouslyWithCompletionHandler:^{
-        NSLog(@"压缩后---%.2fk",[self getFileSize:resultPath]);
+       // NSLog(@"压缩后---%.2fk",[self getFileSize:resultPath]);
         NSLog(@"视频导出完成");
-        
         NSURL  *filePathString = session.outputURL;
         NSString * urlStr = [filePathString absoluteString];
         urlStr = [urlStr substringFromIndex:7];
@@ -1262,34 +1683,92 @@ static int fetchPosition = 0;
                                    doDelete:NO];
         
     }];
-    
-    NSLog(@"%@",session.outputURL);
-    
-    
-    
-    return session.outputURL;
-}
 
-// 获取视频的大小
-- (CGFloat) getFileSize:(NSString *)path
-{
-    NSFileManager *fileManager = [[NSFileManager alloc] init] ;
-    float filesize = -1.0;
-    if ([fileManager fileExistsAtPath:path]) {
-        NSDictionary *fileDic = [fileManager attributesOfItemAtPath:path error:nil];//获取文件的属性
-        unsigned long long size = [[fileDic objectForKey:NSFileSize] longLongValue];
-        filesize = 1.0*size/1024;
-    }
-    return filesize;
+    return session.outputURL;
 }
 
 /* 根据localIdentifier 缓存资源. */
 
-- (void)cache:(UIImage *)img imagePath:(NSString *)localIdentifier complete:(nonnull void (^)(NSString * _Nonnull))completeBlock {//保存指定图片到临时位置并回调改位置路径
-    UIImage *saveImg = img;
-    NSData * data = UIImageJPEGRepresentation(saveImg, self.scale);
-    NSString *typeName = [self imageTypeWithData:data];
-    //NSString *name = [self md5:localIdentifier];
+- (void)cache:(UIImage *)img  imagePath:(NSString *)localIdentifier complete:(nonnull void (^)(NSString * _Nonnull))completeBlock {//保存指定图片到临时位置并回调改位置路径
+    UIImage *saveImg ;
+    if (img.imageOrientation>0) {
+        saveImg = [self fixOrientation:img];
+    }else{
+        saveImg = img;
+    }
+    NSData * data = UIImagePNGRepresentation(saveImg);
+    PHFetchResult<PHAsset *> * fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[localIdentifier] options:nil];
+
+    PHAsset * asset = fetchResult.firstObject;
+    //可获取图片名称
+    NSString *filename =   [asset valueForKey:@"filename"];
+    NSString * typeName;
+    if (asset.mediaType == PHAssetMediaTypeImage) {
+        typeName = [filename pathExtension];
+        if ([typeName isEqualToString:@"heic"]||[typeName isEqualToString:@"HEIC"]||[typeName isEqualToString:@"HEIF"]) {
+            typeName = @"jpg";
+        }
+    }else{
+        typeName = @"png";
+    }
+    NSString *name = [self getCurrentTime];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/UZUIAlbumBrowser"];
+    self.realPath = filePath;
+    NSString *imgPath = [filePath stringByAppendingString:[NSString stringWithFormat:@"/%@.%@",name,typeName]];
+    // 是否已经存在缓存图片了?
+    if ([fileManager fileExistsAtPath:imgPath]) {
+        if (completeBlock) {
+            completeBlock(imgPath);
+        }
+        return;
+    }
+    if (![fileManager fileExistsAtPath:filePath]) {        //创建路径
+        [fileManager createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    //创建文件
+    if (data) {
+        [fileManager createFileAtPath:imgPath contents:data attributes:nil];
+    }else{// 说明没有有效的图片数据,比如相册中图片为0时,是没有对应的缩略图的.
+        if (completeBlock) {
+            completeBlock(@"");
+        }
+        return;
+    }
+    //回到主线程
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (completeBlock) {
+            completeBlock(imgPath);
+        }
+    });
+}
+
+
+- (void)cacheTransPath:(UIImage *)img  imageOrientation:(UIImageOrientation *)orientation imagePath:(NSString *)localIdentifier complete:(nonnull void (^)(NSString * _Nonnull))completeBlock {//保存指定图片到临时位置并回调改位置路径
+    NSLog(@"%ld",(long)img.imageOrientation);
+    
+    UIImage *saveImg ;
+    if (img.imageOrientation>0) {
+        saveImg = [self fixOrientation:img];
+    }else{
+        saveImg = img;
+    }
+
+    NSData * data = UIImagePNGRepresentation(saveImg);
+    PHFetchResult<PHAsset *> * fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[localIdentifier] options:nil];
+
+    PHAsset * asset = fetchResult.firstObject;
+    //可获取图片名称
+    NSString *filename =   [asset valueForKey:@"filename"];
+    NSString * typeName;
+    if (asset.mediaType == PHAssetMediaTypeImage) {
+        typeName = [filename pathExtension];
+        if ([typeName isEqualToString:@"heic"]||[typeName isEqualToString:@"HEIC"]||[typeName isEqualToString:@"HEIF"]) {
+            typeName = @"jpg";
+        }
+    }else{
+        typeName = @"png";
+    }
     NSString *name = [self getCurrentTime];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/UZUIAlbumBrowser"];
@@ -1323,9 +1802,29 @@ static int fetchPosition = 0;
 }
 
 - (void)cacheOpenGroup:(UIImage *)image imagePath:(NSString *)localIdentifier complete:(nonnull void (^)(NSString * _Nonnull))completeBlock {//保存指定图片到临时位置并回调改位置路径
-    UIImage *saveImg = image;
+    UIImage *saveImg;
+    if (image.imageOrientation>0) {
+        saveImg = image;
+    }else{
+        saveImg=[self fixOrientation:image];
+        
+    }
     NSData * data = UIImageJPEGRepresentation(saveImg, self.scale);
-    NSString *typeName = [self imageTypeWithData:data];
+    PHFetchResult<PHAsset *> * fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[localIdentifier] options:nil];
+//    if (0 == fetchResult.count) {
+//        return;
+//    }
+    PHAsset * asset = fetchResult.firstObject;
+    NSString *filename =   [asset valueForKey:@"filename"];
+    NSString * typeName;
+    if (asset.mediaType == PHAssetMediaTypeImage) {
+        typeName = [filename pathExtension];
+        if ([typeName isEqualToString:@"heic"]||[typeName isEqualToString:@"HEIC"]||[typeName isEqualToString:@"HEIF"]) {
+            typeName = @"jpg";
+        }
+    }else{
+        typeName = @"png";
+    }
     NSString *name = [self md5:localIdentifier];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/UZUIAlbumBrowser"];
@@ -1359,33 +1858,6 @@ static int fetchPosition = 0;
 }
 
 
-/** 根据图片二进制流获取图片格式 */
-- (NSString *)imageTypeWithData:(NSData *)data {
-    uint8_t type;
-    [data getBytes:&type length:1];
-    switch (type) {
-        case 0xFF:
-            return @"jpeg";
-        case 0x89:
-            return @"png";
-        case 0x47:
-            return @"gif";
-        case 0x49:
-        case 0x4D:
-            return @"tiff";
-        case 0x52:
-            // R as RIFF for WEBP
-            if ([data length] < 12) {
-                return nil;
-            }
-            NSString *testString = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(0, 12)] encoding:NSASCIIStringEncoding];
-            if ([testString hasPrefix:@"RIFF"] && [testString hasSuffix:@"WEBP"]) {
-                return @"image/webp";
-            }
-            return nil;
-    }
-    return nil;
-}
 
 - (NSString *)md5:(NSString *)str{
     const char *cStr = [str UTF8String];
@@ -1418,6 +1890,87 @@ static int fetchPosition = 0;
         NSDictionary *sendDict = [[NSDictionary alloc]initWithDictionary:listDict];
         [self sendResultEventWithCallbackId:opencbId dataDict:sendDict errDict:nil doDelete:NO];
     }
+}
+
+
+
+
+
+- (UIImage *)fixOrientation:(UIImage *)aImage {
+    
+    // No-op if the orientation is already correct
+    if (aImage.imageOrientation == UIImageOrientationUp)
+    return aImage;
+    
+    // We need to calculate the proper transformation to make the image upright.
+    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationDown:
+        case UIImageOrientationDownMirrored:
+        transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);
+        transform = CGAffineTransformRotate(transform, M_PI);
+        break;
+        
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+        transform = CGAffineTransformRotate(transform, M_PI_2);
+        break;
+        
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+        transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);
+        transform = CGAffineTransformRotate(transform, -M_PI_2);
+        break;
+        default:
+        break;
+    }
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationUpMirrored:
+        case UIImageOrientationDownMirrored:
+        transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+        transform = CGAffineTransformScale(transform, -1, 1);
+        break;
+        
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRightMirrored:
+        transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);
+        transform = CGAffineTransformScale(transform, -1, 1);
+        break;
+        default:
+        break;
+    }
+    
+    // Now we draw the underlying CGImage into a new context, applying the transform
+    // calculated above.
+    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,
+                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,
+                                             CGImageGetColorSpace(aImage.CGImage),
+                                             CGImageGetBitmapInfo(aImage.CGImage));
+    CGContextConcatCTM(ctx, transform);
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+        // Grr...
+        CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);
+        break;
+        
+        default:
+        CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);
+        break;
+    }
+    
+    // And now we just create a new UIImage from the drawing context
+    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
+    UIImage *img = [UIImage imageWithCGImage:cgimg];
+    CGContextRelease(ctx);
+    CGImageRelease(cgimg);
+    return img;
 }
 
 

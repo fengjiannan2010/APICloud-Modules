@@ -17,7 +17,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Thumbnails;
-import android.text.TextUtils;
 
 public class MediaResource {
 	
@@ -37,32 +36,36 @@ public class MediaResource {
 		return mInstance;
 	}
 	
+	@SuppressWarnings("unused")
 	public List<FileInfo> getAllImages(Context mContext){
 		List<FileInfo> list = new ArrayList<FileInfo>();
 		
 		HashMap<Integer, ThumbnailInfo> thumbInfos = listAllThumbnail(mContext);
-		
         Cursor cursor = mContext.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[] { MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.DATE_MODIFIED, MediaStore.Images.Media.TITLE,
                         MediaStore.Images.Media.MIME_TYPE, MediaStore.Images.Media.SIZE, MediaStore.Images.Media.DATA }, null,
                 new String[] {}, null);
+        
+        if(cursor == null){
+        	return list;
+        }
         while (cursor.moveToNext()) {
             String filePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-            if(!TextUtils.isEmpty(filePath) && filePath.endsWith("gif")){
-        		continue;
-        	}
-            int imageId = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
+//          if(!TextUtils.isEmpty(filePath) && filePath.endsWith("gif")){
+//        		continue;
+//        	}
+//          int imageId = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
             long modifyTime = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED));
             long fileSize = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE));
             FileInfo fileInfo = new FileInfo();
             fileInfo.path = filePath;
             fileInfo.fileSize = fileSize;
             fileInfo.modifiedTime = modifyTime;
-            if(thumbInfos.get(imageId) != null){
-            	fileInfo.thumbPath = thumbInfos.get(imageId).imagePath;
-            	fileInfo.modifiedTime = modifyTime;
-            }
+//          if(thumbInfos.get(imageId) != null){
+//              fileInfo.thumbPath = thumbInfos.get(imageId).imagePath;
+//            	fileInfo.modifiedTime = modifyTime;
+//          }
             list.add(fileInfo);
         }
         cursor.close();
@@ -71,7 +74,7 @@ public class MediaResource {
 	
     public List<FileInfo> getAllVideos(Context context){
     	
-        String[] thumbColumns = new String[]{  
+        String[] thumbColumns = new String[]{
                 MediaStore.Video.Thumbnails.DATA,  
                 MediaStore.Video.Thumbnails.VIDEO_ID  
         };  
@@ -87,7 +90,11 @@ public class MediaResource {
         };
         Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, mediaColumns, null, null, null);  
 
-        ArrayList<FileInfo> videoList = new ArrayList<FileInfo>();  
+        ArrayList<FileInfo> videoList = new ArrayList<FileInfo>();
+        
+        if(cursor == null){
+        	return videoList;
+        }
 
         if(cursor.moveToFirst()){
             do {
@@ -109,6 +116,10 @@ public class MediaResource {
                 }
                 fileInfo.duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                 videoList.add(fileInfo);
+                
+                if(thumbCursor != null){
+                	thumbCursor.close();
+                }
             } while(cursor.moveToNext());
         }
         cursor.close();
@@ -179,7 +190,6 @@ public class MediaResource {
 		return categarys;
 	}
 	
-	
 	public static class Categary {
 		
 		public String categaryId;
@@ -210,7 +220,5 @@ public class MediaResource {
 				return true;
 			return false;
 		}
-		
-		
 	}
 }

@@ -39,10 +39,6 @@ typedef void(^PhotosCellOperationBlock)(PhotosCell * __nullable cell);
 /// control对象点击的回调
 @property (nullable, copy, nonatomic)PhotosCellOperationBlock chooseImageDidSelectBlock;
 
-//simple method to set UI change, not evoked the block
-//- (void) cellDidSelect;
-//- (void) cellDidDeselect;
-
 #pragma mark - Deprecated
 
 /// button in order to display the selected image

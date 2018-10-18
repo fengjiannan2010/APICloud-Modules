@@ -120,8 +120,7 @@
 
 /**
  预备处理
-
- @param indexPaths 
+ 
  */
 - (void)prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths NS_AVAILABLE_IOS(10_0);
 
@@ -130,7 +129,6 @@
 /**
  取消预备处理
 
- @param indexPaths 
  */
 - (void)cancelPrefetchingForItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths NS_AVAILABLE_IOS(10_0);
 

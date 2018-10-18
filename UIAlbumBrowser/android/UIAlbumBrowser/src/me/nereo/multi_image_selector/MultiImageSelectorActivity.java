@@ -107,7 +107,6 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
 		}
 
 		int mis_activity_default_id = ResUtils.getInstance().getLayoutId(this, "mis_activity_default");
-
 		setContentView(mis_activity_default_id);
 
 		final Intent intent = getIntent();
@@ -177,7 +176,7 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
 			}
 		}
 	}
-
+	
 	public View getContentView() {
 		return this.findViewById(android.R.id.content);
 	}
@@ -220,9 +219,8 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
 					return;
 				}
 				isFinish = true;
-				
 				Log.i("debug", "finished text");
-				new ImageHandlerTask().execute();
+				new ImageHandlerTask(uzContext).execute();
 			}
 		});
 
@@ -266,7 +264,13 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
 
 	@SuppressLint("NewApi")
 	public class ImageHandlerTask extends AsyncTask<Void, Integer, Integer> {
-
+		
+		private UZModuleContext uzContext;
+		
+		public ImageHandlerTask(UZModuleContext uzContext){
+			this.uzContext = uzContext;
+		}
+		
 		@Override
 		protected void onPreExecute() {
 
@@ -276,10 +280,11 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
 		protected void onPostExecute(Integer result) {
 
 		}
+		
 
 		@Override
 		protected Integer doInBackground(Void... params) {
-
+			
 			JSONArray paths = new JSONArray();
 			for (int i = 0; i < resultList.size(); i++) {
 				JSONObject item = new JSONObject();
@@ -318,15 +323,29 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
 						}
 						item.put("thumbPath", savePath);
 					} else {
-						Bitmap bmp = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(resultList.get(i)), 300, 300);
+						
+						Bitmap originalBmp = BitmapFactory.decodeFile(resultList.get(i));
+						
+						int w = 300, h = 300;
+						JSONObject stylesObj = uzContext.optJSONObject("styles");
+						if(stylesObj != null){
+							JSONObject thumbnailObj = stylesObj.optJSONObject("thumbnail");
+							if(thumbnailObj != null){
+								w = thumbnailObj.optInt("w", originalBmp.getWidth());
+								h = thumbnailObj.optInt("h", originalBmp.getHeight());
+							}
+						}
+						Bitmap bmp = ThumbnailUtils.extractThumbnail(originalBmp, w, h, 300);
 						int degree = BitmapToolkit.readPictureDegree(resultList.get(i));
 						bmp = BitmapToolkit.rotaingImageView(degree, bmp);
 						
 						String savePath = cacheDir + "/" + realFile.getName();
 						if(!new File(savePath).exists()){
 							try {
-								bmp.compress(Bitmap.CompressFormat.JPEG, 80, new FileOutputStream(savePath));
-								BitmapToolkit.setPictureDegreeZero(savePath, degree);
+								if(bmp != null){
+									bmp.compress(Bitmap.CompressFormat.JPEG, 80, new FileOutputStream(savePath));
+									BitmapToolkit.setPictureDegreeZero(savePath, degree);
+								}
 							} catch (FileNotFoundException e) {
 								e.printStackTrace();
 							}
@@ -438,7 +457,7 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
 			}
 		}
 	}
-
+	
 	@Override
 	public void onCameraShot(File imageFile, final String realPath) {
 		if (imageFile != null) {

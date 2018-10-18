@@ -59,9 +59,7 @@
 
 /**
  修改index位置的选中状态
- 
- @param index
- @return true表示修改成功，false失败
+
  */
 - (BOOL)changeAssetIsSelectedSignal:(NSUInteger)index;
 
@@ -83,13 +81,6 @@
  */
 - (void)freeAllSignal __deprecated_msg("no safe");
 
-
-/// 重置初始化信号标志位
-//void resetSignal(BOOL ** signal,NSUInteger count, BOOL value);
-
-
-/// 取反
-//void negation(BOOL * value);
 
 @end
 

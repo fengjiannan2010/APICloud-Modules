@@ -14,9 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  便利构造器
-
- @param deliverMode 当前的类型
- @return
  */
 + (instancetype)imageRequestOptionsWithDeliveryMode:(PHImageRequestOptionsDeliveryMode)deliverMode;
 

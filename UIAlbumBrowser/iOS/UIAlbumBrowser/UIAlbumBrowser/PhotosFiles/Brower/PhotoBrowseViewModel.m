@@ -45,13 +45,13 @@
     NSArray <PHAsset *> * assets = [PhotoHandleManager
                                     assetForAssets:self.allAssets status:cacheManager.assetIsSelectedSignal
                                     orders: cacheManager.assetSelectedStatusChangeOrderSignal];
-    
+
     //进行回调
-    [[PhotoBridgeManager sharedInstance]startRenderImage:assets];
+   // [[PhotoBridgeManager sharedInstance]startRenderImage:assets];
     
-    //弹出
     self.dismissBlock();
-    
+  
+
 }
 
 
@@ -135,9 +135,7 @@
 
 
 -(void)sendViewBarDidChangedSignal
-{
-    printf("噼里啪啦\n");
-    
+{    
     if (!self.ritl_BrowerBarHiddenStatusChangedBlock)
     {
         return;
@@ -354,9 +352,6 @@
 
 /**
  当前索引的图片是否被选中
- 
- @param index 索引
- @return
  */
 - (BOOL)ritl_currentPhotoIsSelected:(NSUInteger)index
 {
@@ -368,9 +363,7 @@
 
 /**
  当前选择位置显示的图片
- 
- @param isSelected 选择状态
- @return
+
  */
 - (UIImage *)ritl_imageForCurrentAsset:(BOOL)isSelected
 {

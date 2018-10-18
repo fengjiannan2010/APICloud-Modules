@@ -241,7 +241,7 @@
     NSArray <PHAsset *> * assets = [PhotoHandleManager assetForAssets:self.assetResults status:[PhotoCacheManager sharedInstace].assetIsSelectedSignal orders: [PhotoCacheManager sharedInstace].assetSelectedStatusChangeOrderSignal];
     
     //进行回调
-    [[PhotoBridgeManager sharedInstance]startRenderImage:assets];
+    //[[PhotoBridgeManager sharedInstance]startRenderImage:assets];
     
     
     if ([[PhotoBridgeManager sharedInstance]BridgeGetAssetBlock]) {
@@ -289,13 +289,9 @@
     return _navigationTitle;
 }
 
-//
-
 
 -(void)dealloc
 {
-    //修复再次返回列表限制数量出问题的bug
-//    [[PhotoCacheManager sharedInstace] freeAllSignal];
     [[PhotoCacheManager sharedInstace] freeSignalIngnoreMax];
 
 }

@@ -90,7 +90,6 @@
 
 -(void)freeAllSignal
 {
-    NSAssert(false, @"方法不安全，禁止使用");
     
 
 }

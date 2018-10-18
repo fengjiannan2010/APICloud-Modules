@@ -20,7 +20,6 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
 
 //记录默认全部组的block,适当的进行回调
 @property (nonatomic, copy) void(^defaultAllPhotosGroupBlock)(NSArray<PHAssetCollection *> * _Nonnull topLevelArray, PHFetchResult * _Nonnull result);
-
 @end
 
 @implementation PhotoStore
@@ -32,12 +31,9 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
 
         self.photoLibaray = [PHPhotoLibrary sharedPhotoLibrary];
         [self.photoLibaray registerChangeObserver:self];
-        
         _config = [[PhotoStoreConfiguraion alloc]init];
         
-        
-        NSLog(@"-------%@",AlbumBrowserSinglen.sharedSingleton.openType);
-    }
+            }
     
     return self;
 }
@@ -113,7 +109,7 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
 {
     __block NSMutableArray <PHAssetCollection *> * defaultAllGroups = [NSMutableArray arrayWithCapacity:0];
     
-    
+
     [self fetchDefaultPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull defaultGroups) {
         
         [defaultAllGroups addObjectsFromArray:defaultGroups];
@@ -129,7 +125,7 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
                     [cleanTopLevelArray addObject: obj];
                 }
             }];
-            
+
             [defaultAllGroups addObjectsFromArray:cleanTopLevelArray];
             
             //callBack with block
@@ -178,8 +174,8 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
     options.wantsIncrementalChangeDetails = YES;
     options.includeAllBurstAssets = YES;
     options.includeHiddenAssets = YES;
+    //options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     // 只取图片
-    
     if ([AlbumBrowserSinglen.sharedSingleton.openType isEqualToString:@"image"]) {
         options.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d",PHAssetMediaTypeImage];
     }else if([AlbumBrowserSinglen.sharedSingleton.openType isEqualToString:@"video"]){
@@ -204,14 +200,19 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
     {
         //获取当前的相册组
         PHAssetCollection * collection = collections[i];
-        
-        if ([collection.localizedTitle isEqualToString:NSLocalizedString(ConfigurationCameraRoll, @"")] || [collection.localizedTitle isEqualToString:NSLocalizedString(ConfigurationAllPhotos, @"")])
+        //NSLog(@"localizedTitle%@",collection.localizedTitle);
+       
+        if ([collection.localizedTitle isEqualToString:@"所有照片"] || [collection.localizedTitle isEqualToString:@"相机胶卷"]||[collection.localizedTitle isEqualToString:@"All Photos"]||[collection.localizedTitle isEqualToString:@"Camera Roll"])
         {
-            //移除该相册
+       
+            if (collection == nil) {
+              
+            }else{
+                //移除该相册
             [collections removeObject:collection];
-            
-            //添加至第一位
+                //添加至第一位
             [collections insertObject:collection atIndex:0];
+            }
             
             break;
         }
@@ -340,6 +341,8 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
     options.wantsIncrementalChangeDetails = YES;
     options.includeAllBurstAssets = YES;
     options.includeHiddenAssets = YES;
+    //options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+
     if ([AlbumBrowserSinglen.sharedSingleton.openType isEqualToString:@"image"]) {
         options.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d",PHAssetMediaTypeImage];
     }else if([AlbumBrowserSinglen.sharedSingleton.openType isEqualToString:@"video"]){
@@ -441,22 +444,33 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
         
         //获取图片类型
         PHImageRequestOptionsDeliveryMode mode = status[i].integerValue;
-        
+         __block BOOL isPhotoInICloud = NO;
         PHImageRequestOptions * option = [PHImageRequestOptions imageRequestOptionsWithDeliveryMode:mode];
         option.synchronous = true;
-        
+        option.networkAccessAllowed = YES;
+        option.version = PHImageRequestOptionsVersionCurrent;
+
+        option.progressHandler = ^(double progress, NSError * _Nullable error, BOOL * _Nonnull stop, NSDictionary * _Nullable info) {
+            isPhotoInICloud = YES;
+        };
         //请求图片
         [[PHImageManager defaultManager]requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
             
-            [images addObject:result];
             
-            if (images.count == assets.count)//表示已经添加完毕
-            {
-                //回调
-                imagesBlock([images mutableCopy]);
+            if(isPhotoInICloud){
                 
-                images = nil;
+            }else{
+                [images addObject:result];
+                
+                if (images.count == assets.count)//表示已经添加完毕
+                {
+                    //回调
+                    imagesBlock([images mutableCopy]);
+                    
+                    images = nil;
+                }
             }
+         
         }];
     }
     
@@ -506,6 +520,8 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
     options.wantsIncrementalChangeDetails = YES;
     options.includeAllBurstAssets = YES;
     options.includeHiddenAssets = YES;
+    //options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+
     // 只取图片
     if ([AlbumBrowserSinglen.sharedSingleton.openType isEqualToString:@"image"]) {
         options.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d",PHAssetMediaTypeImage];

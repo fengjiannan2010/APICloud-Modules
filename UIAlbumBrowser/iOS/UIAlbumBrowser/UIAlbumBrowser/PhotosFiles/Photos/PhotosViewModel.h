@@ -51,17 +51,12 @@ typedef PhotoCompleteBlock6 PhotoSendStatusBlock;
 
 /**
  图片被选中的处理方法
- 
- @param indexPath
  */
 - (BOOL)didSelectImageAtIndexPath:(NSIndexPath *)indexPath;
 
 
 /**
  该位置的图片是否选中
- 
- @param indexPath
- @return
  */
 - (BOOL)imageDidSelectedAtIndexPath:(NSIndexPath *)indexPath;
 

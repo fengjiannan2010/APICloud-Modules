@@ -538,7 +538,7 @@ static NSString * const cellIdentifier = @"PhotoBrowerCell";
 
 -(void)dismissViewController
 {
-    return [super dismissViewControllerAnimated:true completion:nil];
+    return [super dismissViewControllerAnimated:false completion:nil];
 }
 
 

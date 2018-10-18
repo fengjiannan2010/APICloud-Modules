@@ -112,7 +112,7 @@ static NSString * reusableViewIdentifier = @"PhotoBottomReusableView";
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:items-1  inSection:0]atScrollPosition:UICollectionViewScrollPositionBottom animated:false];
         
         //重置偏移量
-        [self.collectionView setContentOffset:CGPointMake(0, self.collectionView.contentOffset.y + 64)];
+        [self.collectionView setContentOffset:CGPointMake(0, self.collectionView.contentOffset.y + 108)];
     }
     
     //完成按钮设置
@@ -125,7 +125,7 @@ static NSString * reusableViewIdentifier = @"PhotoBottomReusableView";
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:false animated:true];
-    [PhotoCacheManager sharedInstace].numberOfSelectedPhoto = 0;
+//    [PhotoCacheManager sharedInstace].numberOfSelectedPhoto = 0;
     
 }
 
@@ -137,7 +137,6 @@ static NSString * reusableViewIdentifier = @"PhotoBottomReusableView";
 {
     self.collectionView.delegate = nil;
     self.collectionView.dataSource = nil;
-
     
 #ifdef __IPHONE_10_0
     if ([UIDevice currentDevice].systemVersion.floatValue >= 10.0f)
@@ -572,6 +571,8 @@ static NSString * reusableViewIdentifier = @"PhotoBottomReusableView";
             // 选择完毕
             [((PhotosViewModel *)strongSelf.viewModel) photoDidSelectedComplete];
             
+            [PhotoCacheManager sharedInstace].numberOfSelectedPhoto = 0;
+            
         }];
         
     }
@@ -620,6 +621,8 @@ static NSString * reusableViewIdentifier = @"PhotoBottomReusableView";
 
 -(void)dismissViewController
 {
+    [PhotoCacheManager sharedInstace].numberOfSelectedPhoto = 0;
+
     return [super dismissViewControllerAnimated:true completion:nil];
     
     
