@@ -33,26 +33,13 @@ NVTabBar 是一个底部导航条模块，该模块依附于当前主 window 。
 本模块可实现的效果图如下所示：
 
 
-![图片说明](http://docs.apicloud.com/img/docImage/NVTabBar/dot1.png)
+![图片说明](https://docs.apicloud.com/img/docImage/module-doc-img/menu/NVTabBar/NVTabBar1.PNG)
 
 
-![图片说明](http://docs.apicloud.com/img/docImage/NVTabBar/dot2.png)
+![图片说明](https://docs.apicloud.com/img/docImage/module-doc-img/menu/NVTabBar/NVTabBar2.PNG)
 
 
-![图片说明](http://docs.apicloud.com/img/docImage/NVTabBar/dynamic1.png)
-
-
-![图片说明](http://docs.apicloud.com/img/docImage/NVTabBar/dynamic2.png)
-
-
-![图片说明](http://docs.apicloud.com/img/docImage/NVTabBar/tuber1.png)
-
-
-![图片说明](http://docs.apicloud.com/img/docImage/NVTabBar/tuber2.png)
-
-
-![图片说明](http://docs.apicloud.com/img/docImage/NVTabBar/tuber3.png)
-
+![图片说明](https://docs.apicloud.com/img/docImage/module-doc-img/menu/NVTabBar/NVTabBar3.PNG)
 
 <div id="open"></div>
 
