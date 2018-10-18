@@ -31,6 +31,8 @@ APICloud 的 UIAlbumBrowser 是一个相册访问模块，是 UIMediaScanner 模
 
 [transPath](#transPath)
 
+[transVideoPath](#transVideoPath)
+
 [getVideoDuration](#getVideoDuration)
 
 [openGroup](#openGroup)
@@ -39,11 +41,17 @@ APICloud 的 UIAlbumBrowser 是一个相册访问模块，是 UIMediaScanner 模
 
 [changeGroup](#changeGroup)
 
+[openAlbum](#openAlbum)
 
+[closeAlbum](#closeAlbum)
 
 </div>
 
-## **模块概述**
+# 论坛示例
+
+为帮助用户更好更快的使用模块，论坛维护了一个[示例](https://community.apicloud.com/bbs/thread-109416-1-1.html)，示例中包含示例代码、知识点讲解、注意事项等，供您参考。
+
+# **概述**
 
 UIAlbumBrowser 是一个本地媒体资源扫描器，在 Android 平台上可扫描整个设备的资源，iOS 仅扫描相册内的资源。本模块仅支持对本地图片资源的浏览、读取，目前尚不支持编辑。注意本模块在iPhone设备上仅支持 iOS8.0 及以上版本。
 
@@ -80,7 +88,7 @@ UIAlbumBrowser 是一个本地媒体资源扫描器，在 Android 平台上可�
 
 **注意：使用本模块前需在云编译页面添加勾选访问相册权限，否则会有崩溃闪退现象**
 
-## 模块接口
+# 模块接口
 
 
 <div id="open"></div>
@@ -114,7 +122,14 @@ isOpenPreview：
 - 描述：（可选项）显是否打开预览界面
 - 默认：true
 
- selectedAll：
+classify：
+
+- 类型：布尔
+- 描述：（可选项）是否将图片分类显示，为 true 时，会首先跳转到相册分类列表页面，false时打开第一个分组的详情。(仅对iOS有效)
+**注意:iOS把所有照片或相机胶卷调整为第一个分组，此调整借鉴微信朋友圈的相册选择**
+- 默认：true
+
+selectedAll：
 
 - 类型：布尔
 - 描述：（可选项）当type为all时，视频和图片不能同时选中，参考微信，仅当type为all时本参数有意义
@@ -177,9 +192,11 @@ ret：
         path: '',                    //字符串类型；资源路径，返回资源在本地的绝对路径，注意：iOS 平台上需要用 transPath 接口转换之后才可读取原图
         thumbPath: '',               //字符串类型；缩略图路径，返回资源缩略图在本地的绝对路径
         suffix: '',                  //字符串类型；文件后缀名，如：png、jpg、 mp4(iOS不支持)
-        size: 1048576,               //数字类型；资源大小，单位（Bytes）(iOS不支持)
+        size: 1048576,               //数字类型；资源大小，单位（Bytes）
         time: '1490580032000',       //字符串类型；资源修改时间，格式：时间戳，单位为毫秒。  
-        videoPath:''                 //字符串类型；视频路径                     
+        videoPath:''                 //字符串类型；视频路径
+        longitude:116.3718           //数字类型；资源的经度 ；注意确认一下相机的定位权限是否被开启，如果不开启的话经纬度为0，查看方式:设置-->隐私-->定位服务-->相机 (仅支持iOS)
+        latitude:39.982'             //数字类型；资源的纬度度  (仅支持iOS)      
     }]
 }
 ```
@@ -237,6 +254,13 @@ max：
 - 描述：（可选项）最多选择几张图片
 - 默认值：9
 
+
+showCamera:
+
+- 类型：布尔
+- 描述：是否显示相机
+- 默认：true
+
 styles：
 
 - 类型：JSON 对象
@@ -264,7 +288,12 @@ styles：
         cancelSize: 16,                 //（可选项）数字类型；取消按钮的文字大小；默认：18
         nextStepColor: '#fff',            //（可选项）字符串类型；下一步按钮的文字颜色，支持 rgb，rgba，#；默认：'#fff'
         nextStepSize: 16                  //（可选项）数字类型；下一步按钮的文字大小；默认：18
-    }
+    },
+  thumbnail:{      //（可选项）返回的缩略图配置，**建议本图片不要设置过大** 若已有缩略图，则使用已有的缩略图。若要重新生成缩略图，可先调用清除缓存接口api.clearCache()。  
+      w: 100,     //（可选项）数字类型；返回的缩略图的宽；默认：原图的宽度
+      h: 100      //（可选项）数字类型；返回的缩略图的宽；默认：原图的高度
+}  
+    
 }
 ```
 animation：
@@ -465,7 +494,7 @@ ret：
 		  path: '',                    //字符串类型；资源路径，返回资源在本地的绝对路径。注意：在 iOS 平台上需要先调用 transPath 接口将路径转换之后才能读取目标资源媒体文件
         thumbPath: '',                //字符串类型；缩略图路径，返回资源缩略图在本地的绝对路径
         suffix: '',                   //字符串类型；文件后缀名，如：png，jpg, mp4(iOS不支持)
-        size: 1048576,                //数字类型；资源大小，单位（Bytes）(ios不支持)
+        size: 1048576,                //数字类型；资源大小，单位（Bytes）
         time: '1490580032000',        //字符串类型；资源修改时间，格式：时间戳，单位为毫秒。
         mediaType:'',                 //字符串类型;所在相册的类型,   Image ,Video ,Audio。
         duration:50,                  //数字类型；视频时长,单位为毫秒
@@ -523,7 +552,7 @@ ret：
 		  path: '',                    //字符串类型；资源路径，返回资源在本地的绝对路径。注意：在 iOS 平台上需要先调用 transPath 接口将路径转换之后才能读取目标资源媒体文件
         thumbPath: '',                //字符串类型；缩略图路径，返回资源缩略图在本地的绝对路径
         suffix: '',                   //字符串类型；文件后缀名，如：png，jpg, mp4(iOS不支持)
-        size: 1048576,                //数字类型；资源大小，单位（Bytes）(ios不支持)
+        size: 1048576,                //数字类型；资源大小，单位（Bytes）
         time: '1490580032000',        //字符串类型；资源修改时间，格式：时间戳，单位为毫秒。
         mediaType:'',                 //字符串类型;所在相册的类型,   Image ,Video ,Audio.
         duration:50                   //数字类型；视频时长,单位为毫秒
@@ -696,12 +725,13 @@ ret：
 {
     total: 100,                       //数字类型；媒体资源总数
 	list: [{                           //数组类型；返回指定的资源信息数组
-	     gifImagePath:'',             //字符串类型；gif图路径，返回gif图在本地的绝对路径，可直接使用 注意:当gifImagePath存在，则不返回path和thumbPath路径
-		  path: '',                     //字符串类型；资源路径，返回资源在本地的绝对路径。注意：在 iOS 平台上需要先调用 transPath 接口将路径转换之后才能读取目标资源媒体文件
-        thumbPath: '',                 //字符串类型；缩略图路径，返回资源缩略图在本地的绝对路径
-        suffix: '',                    //字符串类型；文件后缀名，如：png，jpg, mp4
-        size: 1048576,                 //数字类型；资源大小，单位（Bytes）
-        time: '1490580032000',         //字符串类型；资源修改时间，格式：时间戳，单位为毫秒。
+	     gifImagePath:'',              //字符串类型；gif图路径，返回gif图在本地的绝对路径，可直接使用 注意:当gifImagePath存在，则不返回path和thumbPath路径
+		  path: '',                    //字符串类型；资源路径，返回资源在本地的绝对路径。注意：在 iOS 平台上需要先调用 transPath 接口将路径转换之后才能读取目标资源媒体文件
+        thumbPath: '',                //字符串类型；缩略图路径，返回资源缩略图在本地的绝对路径
+        suffix: '',                   //字符串类型；文件后缀名，如：png，jpg, mp4  (iOS不支持)
+        size: 1048576,                //数字类型；资源大小，单位（Bytes）
+        time: '1490580032000',        //字符串类型；资源修改时间，格式：时间戳，单位为毫秒。
+        mediaType:'',                 //字符串类型;所在相册的类型,   image ,video.
 	}]
 }
 ```
@@ -756,7 +786,7 @@ ret：
 		  path: '',                   //字符串类型；资源路径，返回资源在本地的绝对路径。注意：在 iOS 平台上需要先调用 transPath 接口将路径转换之后才能读取目标资源媒体文件
         thumbPath: '',               //字符串类型；缩略图路径，返回资源缩略图在本地的绝对路径
         suffix: '',                  //字符串类型；文件后缀名，如：png，jpg, mp4(iOS不支持)
-        size: 1048576,               //数字类型；资源大小，单位（Bytes）(iOS不支持)
+        size: 1048576,               //数字类型；资源大小，单位（Bytes）
         time: '1490580032000',       //字符串类型；资源修改时间，格式：时间戳，单位为毫秒。
         mediaType:'',                //字符串类型;所在相册的类型,   Image ,Video ,Audio.
         duration:50                  //数字类型；视频时长,单位为毫秒
@@ -824,7 +854,17 @@ ret：
 
 ```js
 {
-   path: ''     //字符串类型；相册内图片被拷贝到临时文件夹，返回已拷贝图片的绝对路径
+   path: ''          //字符串类型；相册内图片被拷贝到临时文件夹，返回已拷贝图片的绝对路径 
+}
+```
+err：
+
+- 类型：JSON 对象
+- 内部字段：
+
+```js
+{
+  status: false     //转化失败
 }
 ```
 
@@ -846,6 +886,68 @@ UIAlbumBrowser.transPath({
 ## 可用性
 
 iOS系统，Android系统
+
+可提供的1.0.0及更高版本
+
+<div id="transVideoPath"></div>
+
+# **transVideoPath**
+
+视频路径转化，**可传给videoPlayer模块直接使用**
+
+transVideoPath({params}, callback(ret))
+
+## params
+
+path：
+
+- 类型：字符串
+- 描述：要转换的视频路径（在相册库的绝对路径）
+
+## callback(ret)
+
+ret：
+
+- 类型：JSON 对象
+- 内部字段：
+
+```js
+{
+   status: true,     //布尔类型
+   albumVideoPath:'' //字符串类型；相册视频路径
+   fileSize: 3819599 //视频文件大小；byte为单位
+   duration: 4       //视频时长；单位为秒
+}
+```
+err：
+
+- 类型：JSON 对象
+- 内部字段：
+
+```js
+{
+ code:-1
+}
+```
+
+## 示例代码
+
+```js
+var UIAlbumBrowser = api.require('UIAlbumBrowser');
+UIAlbumBrowser.transVideoPath({
+	path: ''
+}, function(ret, err) {
+	if (ret) {
+		alert(JSON.stringify(ret));
+	} else {
+		alert(JSON.stringify(err));
+	}
+});
+```
+
+## 可用性
+
+iOS系统
 
 可提供的1.0.0及更高版本
 
@@ -908,6 +1010,8 @@ openGroup({params}, callback(ret))
 
 以 frame 形式打开一个图片预览区域
 
+
+
 ## params
 
 rect：
@@ -928,8 +1032,11 @@ rect：
 
 groupId:
 
+**注意:若groupId为空,则会默认打开相机胶卷(所有照片)的相册分类**
+
 - 类型：字符串
-- 描述：要打开的相册分组 ID
+- 描述：(可选项)要打开的相册分组 ID
+
 
 
 selectedPaths：
@@ -958,6 +1065,7 @@ ret：
 
 ```js
 {
+   groupName:''                      //字符串类型；分组名称当'groupId'为空时,会返回
    eventType: 'camera',              //字符串类型；交互事件类型，取值范围如下：
                                      //camera：点击拍照按钮
                                      //select：选中图片事件
@@ -1051,3 +1159,159 @@ iOS系统，Android系统
 
 可提供的1.0.3及更高版本
 
+
+<div id="openAlbum"></div>
+
+# **openAlbum**
+
+以 frame 形式打开一个图片预览区域
+
+openAlbum({params}, callback(ret))
+
+
+## params
+
+rect：
+
+- 类型：JSON 对象
+- 描述：（可选项）模块的位置及尺寸
+- 内部字段：
+
+```js
+{
+    x: 0,   //（可选项）数字类型；模块左上角的 x 坐标（相对于所属的 Window 或 Frame）；默认：0
+    y: 0,   //（可选项）数字类型；模块左上角的 y 坐标（相对于所属的 Window 或 Frame）；默认：0
+    w: 320, //（可选项）数字类型；模块的宽度；默认：屏幕宽度
+    h: 200  //（可选项）数字类型；模块的高度；默认：w 
+}
+```
+
+
+groupId:
+
+**注意:若groupId为空,则会默认打开相机胶卷(所有照片)的相册分类**
+
+- 类型：字符串
+- 描述：(可选项)要打开的相册分组 ID
+
+
+max：
+
+- 类型：数字
+- 描述：（可选项）最多选择几张图片，超过max则用户点击选中按钮只返回eventType为max的事件回调，不会执行选中操作（点击的图片还是未选中状态）
+- 默认值：9
+
+type：
+
+- 类型：字符串
+- 描述：（可选项）显示图片或显示图片和视频
+- 取值范围：
+    * all：展示图片和视频（视频资源缩略图区域左下角有视频小标签）
+    * image：只展示图片
+    * video：只展示视频（视频资源缩略图区域左下角有视频小标签）
+
+styles：
+
+- 类型：JSON对象
+- 描述：
+- 内部字段：
+
+```js
+{
+      column:3,      //（可选项）数字类型；列数；默认：3
+      interval: ,    //（可选项）数字类型；每列和每行之间的间距；默认：5
+      selector: {    //（可选项）JSON类型；选择器样式配置
+         normal: ‘’, //（可选项）字符串类型；选择器常态图标，要求本地路径（fs、widget协议）；默认：默认图标
+         active: ‘’, //（可选项）字符串类型；选择器选中图标，要求本地路径（fs、widget协议）；默认：默认图标
+         size:   ,   //（可选项）数字类型；选择器大小（正方形边长）；默认：20
+
+      }
+}
+```
+
+videoPreview：
+
+- 类型：布尔
+- 描述：（可选项）选中视频资源时，是否进入预览页面，若为false则直接callback相关信息
+- 默认值：true
+
+fixedOn：
+
+ - 类型：字符串类型
+ - 描述：（可选项）模块视图添加到指定 frame 的名字（只指 frame，传 window 无效）
+ - 默认：模块依附于当前 window
+
+fixed:
+
+ - 类型：布尔
+ - 描述：（可选项）模块是否随所属 window 或 frame 滚动
+ - 默认值：true（不随之滚动）
+
+## callback(ret)
+
+ret：
+
+- 类型：JSON 对象
+- 内部字段：
+
+```js
+{
+   groupName:''                      //字符串类型；分组名称当'groupId'为空时,会返回
+   eventType: 'show',                //字符串类型；交互事件类型，取值范围如下：
+                                     //select：选中事件
+                                     //cancel：取消选中图片事件
+                                     //show：打开预览区域成功事件
+                                     //max：超过最大选中图片数事件
+   groupId: '',                      //字符串类型；当前分组 ID                                  
+   target:{                          //JSON对象；返回所操作的资源信息，仅当 eventType 为 select 时返回值
+        type:'image',                //字符串类型；资源类型，image：图片，video：视频
+        gifImagePath:'',             //字符串类型（Android 暂不支持gif图片格式）；gif图路径，返回gif图在本地的绝对路径，可直接使用 注意:当gifImagePath存在，则不返回path和thumbPath路径
+        path: '',                    //字符串类型；资源路径，返回资源在本地的绝对路径，注意：iOS 平台上需要用 transPath 接口转换之后才可读取原图
+        thumbPath: '',               //字符串类型；缩略图路径，返回资源缩略图在本地的绝对路径
+    }
+}
+```
+
+## 示例代码
+
+```js
+var UIAlbumBrowser = api.require('UIAlbumBrowser');
+UIAlbumBrowser.openAlbum({
+	groupId:''
+}, function(ret) {
+	alert(JSON.stringify(ret));
+});
+```
+
+## 可用性
+
+iOS系统，Android系统
+
+可提供的1.0.3及更高版本
+
+
+
+<div id="closeAlbum"></div>
+
+# **closeAlbum**
+
+关闭 openAlbum 打开的相册预览区域
+
+closeAlbum()
+
+## 示例代码
+
+```js
+var UIAlbumBrowser = api.require('UIAlbumBrowser');
+UIAlbumBrowser.closeAlbum();
+```
+
+## 可用性
+
+iOS系统，Android系统
+
+可提供的1.0.3及更高版本
+
+# 论坛示例
+
+为帮助用户更好更快的使用模块，论坛维护了一个[示例](https://community.apicloud.com/bbs/thread-109416-1-1.html)，示例中包含示例代码、知识点讲解、注意事项等，供您参考。
